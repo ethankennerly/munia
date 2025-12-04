@@ -1,6 +1,7 @@
 import { ButtonLink } from '@/components/ui/ButtonLink';
 import { ButtonAnchor } from '@/components/ui/ButtonAnchor';
 import React from 'react';
+import { getServerUser } from '@/lib/getServerUser';
 
 function TechStackCard({ header, children }: { header: string; children: React.ReactNode }) {
   return (
@@ -12,7 +13,10 @@ function TechStackCard({ header, children }: { header: string; children: React.R
   );
 }
 
-export default function Page() {
+export default async function Page() {
+  const [user] = await getServerUser();
+  const isLoggedIn = !!user;
+
   return (
     <main>
       <div className="mt-28 flex flex-col items-center sm:mt-36">
@@ -23,8 +27,8 @@ export default function Page() {
           A responsive and accessible full stack social media web app.
         </h1>
         <div className="mt-6 flex justify-center gap-3">
-          <ButtonLink href="/login" size="medium">
-            Get Started
+          <ButtonLink href={isLoggedIn ? '/feed' : '/login'} size="medium">
+            {isLoggedIn ? 'Browse Feed' : 'Get Started'}
           </ButtonLink>
           <ButtonAnchor href="https://github.com/leandronorcio/munia" size="medium" mode="secondary">
             Github

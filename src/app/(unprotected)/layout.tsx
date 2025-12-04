@@ -2,6 +2,7 @@ import { Feather } from '@/svg_components';
 import { LogoText } from '@/components/LogoText';
 import Link from 'next/link';
 import React from 'react';
+import { getServerUser } from '@/lib/getServerUser';
 import { HomeMobileDropdownMenu } from './HomeMobileDropdownMenu';
 
 function HomeNavLink({ children, href }: { children: React.ReactNode; href: string }) {
@@ -12,7 +13,10 @@ function HomeNavLink({ children, href }: { children: React.ReactNode; href: stri
   );
 }
 
-export default function Layout({ children }: { children: React.ReactNode }) {
+export default async function Layout({ children }: { children: React.ReactNode }) {
+  const [user] = await getServerUser();
+  const isLoggedIn = !!user;
+
   return (
     <div className="flex min-h-screen w-full justify-center">
       <div className="w-full max-w-3xl gap-3 py-4 sm:py-8">
@@ -27,8 +31,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             <HomeNavLink href="/terms">Terms</HomeNavLink>
             <HomeNavLink href="/privacy-policy">Privacy Policy</HomeNavLink>
 
-            <HomeNavLink href="/login">Login</HomeNavLink>
-            <HomeNavLink href="/register">Sign Up</HomeNavLink>
+            {!isLoggedIn && (
+              <>
+                <HomeNavLink href="/login">Login</HomeNavLink>
+                <HomeNavLink href="/register">Sign Up</HomeNavLink>
+              </>
+            )}
           </div>
           <div className="sm:hidden">
             <HomeMobileDropdownMenu />
