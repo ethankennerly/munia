@@ -70,6 +70,12 @@ export async function useUpdateProfileAndCoverPhoto({
 
     return NextResponse.json({ uploadedTo });
   } catch (error) {
+    console.error('Error updating photo:', error);
+
+    // --- Log the LENGTH of the credentials to verify they aren't empty/invalid ---
+    console.log('S3_ACCESS_KEY_ID length:', process.env.S3_ACCESS_KEY_ID?.length);
+    console.log('S3_SECRET_ACCESS_KEY length:', process.env.S3_SECRET_ACCESS_KEY?.length);
+    // -------------------------------------------------------------------------
     return NextResponse.json({ error: 'Server error.' }, { status: 500 });
   }
 }
