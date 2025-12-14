@@ -6,7 +6,7 @@ import { AriaTextFieldProps, useTextField } from 'react-aria';
 import SvgClose from '@/svg_components/Close';
 import Button from './Button';
 
-interface TextareaProps extends AriaTextFieldProps {
+interface TextareaProps extends AriaTextFieldProps<'textarea'> {
   className?: string;
   Icon?: (props: SVGProps<SVGSVGElement>) => JSX.Element;
 }
@@ -15,7 +15,10 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
   ({ className, Icon, ...props }, forwardedRef) => {
     // Support forwarded refs: https://github.com/adobe/react-spectrum/pull/2293#discussion_r714337674
     const ref = useObjectRef(forwardedRef);
-    const { labelProps, inputProps, errorMessageProps } = useTextField({ inputElementType: 'textarea', ...props }, ref);
+    const { labelProps, inputProps, errorMessageProps } = useTextField(
+      { inputElementType: 'textarea', label: props.label },
+      ref,
+    );
     const { errorMessage, label } = props;
     const isError = errorMessage !== undefined;
 

@@ -19,3 +19,12 @@
 ```
 npm run lint && npm run build
 ```
+
+- Verify on localhost that the app works as expected. The following command summarizes:
+```
+npm test --silent && npm run lint --silent && npm run build --silent
+```
+- A manual review follows.
+```
+npm run dev
+```

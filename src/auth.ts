@@ -1,6 +1,7 @@
 import NextAuth from 'next-auth';
 import authConfig from '@/auth.config';
 import { PrismaAdapter } from '@auth/prisma-adapter';
+import type { Adapter } from '@auth/core/adapters';
 import prisma from '@/lib/prisma/prisma';
 import { createSendEmailCommand } from '@/lib/ses/createSendEmailCommand';
 import { sesClient } from '@/lib/ses/sesClient';
@@ -70,7 +71,8 @@ export const {
       },
     },
   ],
-  adapter: PrismaAdapter(prisma),
+  // Type cast to unify potential duplicate @auth/core versions between root and adapter package
+  adapter: PrismaAdapter(prisma) as unknown as Adapter,
   session: {
     strategy: 'jwt',
   },

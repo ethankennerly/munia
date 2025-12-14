@@ -14,7 +14,7 @@ export function CalendarGrid({ state, ...props }: CalendarGridProps) {
   const weeksInMonth = getWeeksInMonth(state.visibleRange.start, locale);
 
   return (
-    <table {...gridProps} cellPadding="0" className="flex-1">
+    <table {...gridProps} aria-label="Calendar" cellPadding="0" className="flex-1">
       <thead {...headerProps}>
         <tr>
           {weekDays.map((day) => (
@@ -33,7 +33,7 @@ export function CalendarGrid({ state, ...props }: CalendarGridProps) {
                 <CalendarCell key={i} state={state} date={date} />
               ) : (
                 // eslint-disable-next-line react/no-array-index-key
-                <td key={i} />
+                <td key={i} aria-hidden="true" />
               ),
             )}
           </tr>

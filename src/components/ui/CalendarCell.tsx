@@ -14,11 +14,9 @@ export function CalendarCell({ state, date }: CalendarCellProps) {
 
   // The start and end date of the selected range will have
   // an emphasized appearance.
-  const isSelectionStart =
-    'highlightedRange' in state // This is a type guard to check whether state is of type `RangeCalendarState`
-      ? isSameDay(date, state.highlightedRange.start)
-      : isSelected;
-  const isSelectionEnd = 'highlightedRange' in state ? isSameDay(date, state.highlightedRange.end) : isSelected;
+  const range = 'highlightedRange' in state ? state.highlightedRange : null; // Range may be null
+  const isSelectionStart = range ? isSameDay(date, range.start) : isSelected;
+  const isSelectionEnd = range ? isSameDay(date, range.end) : isSelected;
 
   // We add rounded corners on the left for the first day of the month,
   // the first day of each week, and the start date of the selection.
