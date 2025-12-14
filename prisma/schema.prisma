@@ -9,6 +9,11 @@ generator client {
   previewFeatures = ["fullTextSearch"]
 }
 
+enum Role {
+  USER
+  ADMIN
+}
+
 model Account {
   id                String  @id @default(cuid())
   userId            String
@@ -66,6 +71,7 @@ model User {
   following          Follow[]            @relation("follower")
   activities         Activity[]          @relation("activity")
   notifications      Activity[]          @relation("notification")
+  role               Role                @default(USER)
 }
 
 model VerificationToken {

@@ -7,6 +7,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { Poppins } from 'next/font/google';
 import { cn } from '@/lib/cn';
 import { Providers } from '@/components/Providers';
+import { CaptureInitClient } from '@/components/replay/CaptureInitClient';
 import { auth } from '@/auth';
 import React from 'react';
 
@@ -28,7 +29,11 @@ export default async function Layout({ children }: { children: React.ReactNode }
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
       </head>
       <body className={cn('bg-background text-foreground', poppins.className)}>
-        <Providers session={session}>{children}</Providers>
+        <Providers session={session}>
+          {/* Feature-flagged; component no-ops when disabled or unauthenticated */}
+          <CaptureInitClient />
+          {children}
+        </Providers>
       </body>
     </html>
   );

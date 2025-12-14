@@ -78,18 +78,24 @@ export const {
   },
   callbacks: {
     ...authConfig.callbacks,
-    session({ token, user, ...rest }) {
+    async session({ token, user, ...rest }) {
+      const emailFromToken = ((): string | undefined => {
+        const t = token as unknown as { email?: unknown };
+        return typeof t?.email === 'string' ? (t.email as string) : undefined;
+      })();
+      const emailFromUser = ((): string | undefined => {
+        const u = user as unknown as { email?: unknown };
+        return typeof u?.email === 'string' ? (u.email as string) : undefined;
+      })();
       return {
         /**
-         * We need to explicitly return the `id` here to make it available to the client
-         * when calling `useSession()` as NextAuth does not include the user's id.
-         *
-         * If you only need to get the `id` of the user in the client, use NextAuth's
-         * `useSession()`, but if you need more of user's data, use the `useSessionUserData()`
-         * custom hook instead.
+         * Expose only stable identifiers and IdP-derived email for server auth checks.
+         * Do not trust user-editable profile fields for authorization.
          */
         user: {
           id: token.sub!,
+          // Prefer provider/JWT email (stable), fallback to adapter user email
+          email: emailFromToken ?? emailFromUser,
         },
         expires: rest.session.expires,
       };
