@@ -1,5 +1,6 @@
 import prisma from '@/lib/prisma/prisma';
 import { deleteObject } from '@/lib/s3/deleteObject';
+import { logger } from '@/lib/logging';
 
 type DeleteAccountResult = {
   deletedUserId: string | null;
@@ -12,9 +13,7 @@ type DeleteAccountResult = {
  * Idempotent: if user is not found, returns success with no-op.
  */
 export async function deleteAccount(userId: string): Promise<DeleteAccountResult> {
-  console.log(
-    JSON.stringify({ level: 'info', msg: 'delete_account_fn_enter', userId }),
-  );
+  logger.info({ msg: 'delete_account_fn_enter', userId });
   // Collect S3 object keys before deleting the user (since cascades will remove rows)
   const user = await prisma.user.findUnique({
     where: { id: userId },
@@ -22,9 +21,7 @@ export async function deleteAccount(userId: string): Promise<DeleteAccountResult
   });
 
   if (!user) {
-    console.log(
-      JSON.stringify({ level: 'info', msg: 'delete_account_user_not_found', userId }),
-    );
+    logger.info({ msg: 'delete_account_user_not_found', userId });
     return { deletedUserId: null, deletedFileNames: [] };
   }
 
@@ -39,33 +36,26 @@ export async function deleteAccount(userId: string): Promise<DeleteAccountResult
     ...(user.coverPhoto ? [user.coverPhoto] : []),
   ];
 
-  console.log(
-    JSON.stringify({
-      level: 'debug',
-      msg: 's3_cleanup_start',
-      counts: { profile: Number(!!user.profilePhoto), cover: Number(!!user.coverPhoto), media: visualMedia.length },
-    }),
-  );
+  logger.debug({
+    msg: 's3_cleanup_start',
+    counts: { profile: Number(!!user.profilePhoto), cover: Number(!!user.coverPhoto), media: visualMedia.length },
+  });
   // Best-effort S3 cleanup; continue even if some deletions fail
   await Promise.all(
     fileNames.map(async (key) => {
       try {
         await deleteObject(key);
       } catch (err) {
-        console.error(
-          JSON.stringify({ level: 'error', msg: 's3_delete_failed', key, err: (err as Error).message }),
-        );
+        logger.error({ msg: 's3_delete_failed', key, err: (err as Error).message });
       }
     }),
   );
-  console.log(
-    JSON.stringify({ level: 'debug', msg: 's3_cleanup_result', ok: true, deletions: fileNames.length }),
-  );
+  logger.debug({ msg: 's3_cleanup_result', ok: true, deletions: fileNames.length });
 
   // Delete user (cascades remove related rows)
-  console.log(JSON.stringify({ level: 'debug', msg: 'db_delete_start', userId }));
+  logger.debug({ msg: 'db_delete_start', userId });
   await prisma.user.delete({ where: { id: userId } });
-  console.log(JSON.stringify({ level: 'info', msg: 'db_delete_result', ok: true, userId }));
+  logger.info({ msg: 'db_delete_result', ok: true, userId });
 
   return { deletedUserId: userId, deletedFileNames: fileNames };
 }

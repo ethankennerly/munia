@@ -1,7 +1,7 @@
-import { getProfile } from '../../getProfile';
-import { About } from './About';
 import { getServerUser } from '@/lib/getServerUser';
 import { DeleteAccountButton } from '@/components/DeleteAccountButton';
+import { getProfile } from '../../getProfile';
+import { About } from './About';
 
 export async function generateMetadata({ params }: { params: { username: string } }) {
   const profile = await getProfile(params.username);

@@ -1,5 +1,6 @@
 import { promises as fs } from 'fs';
 import path from 'path';
+import { logger } from '@/lib/logging';
 
 export const PRIVACY_POLICY_PATH = path.join(process.cwd(), 'public', 'privacy-policy.txt');
 export const PRIVACY_POLICY_PLACEHOLDER = 'Privacy policy not available';
@@ -14,16 +15,9 @@ export async function getPrivacyPolicyText(): Promise<string | null> {
     const buf = await fs.readFile(PRIVACY_POLICY_PATH, 'utf8');
     // Ensure it's a string and preserve as-is (rendering layer will handle whitespace)
     return typeof buf === 'string' ? buf : String(buf);
-  } catch (err: any) {
-    try {
-      console.warn(
-        JSON.stringify({
-          level: 'warn',
-          msg: 'privacy_policy_read_failed',
-          reason: err?.code || err?.message || String(err),
-        }),
-      );
-    } catch {}
+  } catch (err) {
+    const e = err as { code?: string; message?: string } | undefined;
+    logger.warn({ msg: 'privacy_policy_read_failed', reason: e?.code || e?.message || 'unknown' });
     return null;
   }
 }

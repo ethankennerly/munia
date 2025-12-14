@@ -1,6 +1,7 @@
 import 'server-only';
 
 import { NextResponse } from 'next/server';
+import { logger } from '@/lib/logging';
 import prisma from '@/lib/prisma/prisma';
 import { v4 as uuid } from 'uuid';
 import { uploadObject } from '@/lib/s3/uploadObject';
@@ -70,12 +71,13 @@ export async function useUpdateProfileAndCoverPhoto({
 
     return NextResponse.json({ uploadedTo });
   } catch (error) {
-    console.error('Error updating photo:', error);
-
-    // --- Log the LENGTH of the credentials to verify they aren't empty/invalid ---
-    console.log('S3_ACCESS_KEY_ID length:', process.env.S3_ACCESS_KEY_ID?.length);
-    console.log('S3_SECRET_ACCESS_KEY length:', process.env.S3_SECRET_ACCESS_KEY?.length);
-    // -------------------------------------------------------------------------
+    logger.error({ msg: 'update_profile_or_cover_error', err: (error as Error)?.message || 'unknown' });
+    // Log lengths of credentials without exposing secrets (non-PII)
+    logger.debug({
+      msg: 's3_credentials_length',
+      accessKeyLen: process.env.S3_ACCESS_KEY_ID?.length ?? null,
+      secretKeyLen: process.env.S3_SECRET_ACCESS_KEY?.length ?? null,
+    });
     return NextResponse.json({ error: 'Server error.' }, { status: 500 });
   }
 }

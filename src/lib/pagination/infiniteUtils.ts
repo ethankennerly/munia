@@ -10,7 +10,7 @@ export type InfiniteDataLike<T> = {
  * - First param is undefined (initial page)
  * - Subsequent params are the last post id of each preceding page
  */
-export function computePageParams(pages: PostIds[][]): unknown[] {
+export function computePageParams(pages: PostIds[]): unknown[] {
   if (!Array.isArray(pages) || pages.length === 0) return [];
   const params: unknown[] = [undefined];
   for (let i = 0; i < pages.length - 1; i += 1) {

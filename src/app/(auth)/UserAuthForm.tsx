@@ -7,7 +7,7 @@ import { signIn } from 'next-auth/react';
 import { useSearchParams } from 'next/navigation';
 import { useCallback, useState } from 'react';
 
-export function UserAuthForm({ mode }: { mode: 'login' | 'register' }) {
+export function UserAuthForm() {
   const [loading, setLoading] = useState({
     google: false,
   });
@@ -37,19 +37,17 @@ export function UserAuthForm({ mode }: { mode: 'login' | 'register' }) {
   );
 
   return (
-    <>
-      <div className="mb-4 flex flex-col gap-3">
-        <Button
-          onPress={signInWithProvider('google')}
-          shape="pill"
-          expand="full"
-          mode="subtle"
-          Icon={Google}
-          loading={loading.google}
-          isDisabled={areButtonsDisabled}>
-          Continue with Google
-        </Button>
-      </div>
-    </>
+    <div className="mb-4 flex flex-col gap-3">
+      <Button
+        onPress={signInWithProvider('google')}
+        shape="pill"
+        expand="full"
+        mode="subtle"
+        Icon={Google}
+        loading={loading.google}
+        isDisabled={areButtonsDisabled}>
+        Continue with Google
+      </Button>
+    </div>
   );
 }

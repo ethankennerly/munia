@@ -8,6 +8,7 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma/prisma';
 import { deleteObject } from '@/lib/s3/deleteObject';
+import { logger } from '@/lib/logging';
 import { verifyAccessToPost } from './verifyAccessToPost';
 
 // 5 minutes in ms
@@ -15,94 +16,53 @@ const RECENT_MS = 5 * 60 * 1000;
 
 export async function DELETE(request: Request, { params }: { params: { postId: string } }) {
   // Entry log
-  try {
-    console.log(
-      JSON.stringify({
-        level: 'info',
-        msg: 'api_post_delete_enter',
-        url: (request as any)?.url,
-        method: 'DELETE',
-        at: new Date().toISOString(),
-      }),
-    );
-  } catch {}
+  logger.info({
+    msg: 'api_post_delete_enter',
+    url: (request as unknown as { url?: string })?.url ?? null,
+    method: 'DELETE',
+    at: new Date().toISOString(),
+  });
 
   const postId = parseInt(params.postId, 10);
-  try {
-    console.log(
-      JSON.stringify({
-        level: 'debug',
-        msg: 'api_post_delete_params',
-        postId,
-        isNaN: Number.isNaN(postId),
-        contentType: request.headers.get('content-type'),
-      }),
-    );
-  } catch {}
+  logger.debug({
+    msg: 'api_post_delete_params',
+    postId,
+    isNaN: Number.isNaN(postId),
+    contentType: request.headers.get('content-type') || null,
+  });
 
   // Validate request body for confirmation and recent-auth timestamp
   let confirm: unknown;
   let recentAuthTimestamp: unknown;
   try {
-    const body = await request.json();
-    confirm = (body as any)?.confirm;
-    recentAuthTimestamp = (body as any)?.recentAuthTimestamp;
-    try {
-      console.log(
-        JSON.stringify({
-          level: 'debug',
-          msg: 'api_post_body_parsed',
-          hasConfirm: typeof confirm === 'boolean',
-          hasRecent: typeof recentAuthTimestamp === 'number',
-          recentType: typeof recentAuthTimestamp,
-        }),
-      );
-    } catch {}
-  } catch {
-    try {
-      console.warn(
-        JSON.stringify({ level: 'warn', msg: 'api_post_guard_fail', reason: 'invalid_json' }),
-      );
-    } catch {}
+    const body = (await request.json()) as { confirm?: unknown; recentAuthTimestamp?: unknown };
+    confirm = body?.confirm;
+    recentAuthTimestamp = body?.recentAuthTimestamp;
+    logger.debug({
+      msg: 'api_post_body_parsed',
+      hasConfirm: typeof confirm === 'boolean',
+      hasRecent: typeof recentAuthTimestamp === 'number',
+      recentType: typeof recentAuthTimestamp,
+    });
+  } catch (e) {
+    logger.warn({ msg: 'api_post_guard_fail', reason: 'invalid_json' });
     return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
   }
 
   if (!confirm) {
-    try {
-      console.warn(
-        JSON.stringify({ level: 'warn', msg: 'api_post_guard_fail', reason: 'missing_confirmation' }),
-      );
-    } catch {}
+    logger.warn({ msg: 'api_post_guard_fail', reason: 'missing_confirmation' });
     return NextResponse.json({ error: 'Confirmation required' }, { status: 400 });
   }
   const ts = Number(recentAuthTimestamp);
   if (!Number.isFinite(ts) || Date.now() - ts > RECENT_MS) {
-    try {
-      console.warn(
-        JSON.stringify({
-          level: 'warn',
-          msg: 'api_post_guard_fail',
-          reason: 'stale_recent_auth',
-          now: Date.now(),
-          recentAuthAt: ts,
-        }),
-      );
-    } catch {}
+    logger.warn({ msg: 'api_post_guard_fail', reason: 'stale_recent_auth', now: Date.now(), recentAuthAt: ts });
     return NextResponse.json({ error: 'Re-authentication required' }, { status: 401 });
   }
 
   // Ownership/auth check
-  try {
-    console.log(
-      JSON.stringify({ level: 'debug', msg: 'api_post_verify_access_start', postId }),
-    );
-  } catch {}
+  logger.debug({ msg: 'api_post_verify_access_start', postId });
   const hasAccess = await verifyAccessToPost(postId);
-  try {
-    console.log(
-      JSON.stringify({ level: 'debug', msg: 'api_post_verify_access_result', hasAccess }),
-    );
-  } catch {}
+  logger.debug({ msg: 'api_post_verify_access_result', hasAccess });
   if (!hasAccess) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
   }
@@ -124,10 +84,7 @@ export async function DELETE(request: Request, { params }: { params: { postId: s
       }),
       prisma.user.findMany({
         where: {
-          OR: [
-            { profilePhoto: { in: filenames } },
-            { coverPhoto: { in: filenames } },
-          ],
+          OR: [{ profilePhoto: { in: filenames } }, { coverPhoto: { in: filenames } }],
         },
         select: { profilePhoto: true, coverPhoto: true },
       }),
@@ -142,37 +99,19 @@ export async function DELETE(request: Request, { params }: { params: { postId: s
     const keepSet = new Set<string>([...otherSet, ...userSet]);
     const kept = filenames.filter((f) => keepSet.has(f));
     toDelete = filenames.filter((f) => !keepSet.has(f));
-    try {
-      console.log(
-        JSON.stringify({
-          level: 'debug',
-          msg: 'media_reference_scan',
-          total: filenames.length,
-          keep: kept.length,
-          delete: toDelete.length,
-        }),
-      );
-    } catch {}
+    logger.debug({ msg: 'media_reference_scan', total: filenames.length, keep: kept.length, delete: toDelete.length });
   }
 
   // Delete the `post` (its VisualMedia rows are removed via cascade)
-  try {
-    console.log(JSON.stringify({ level: 'debug', msg: 'db_delete_start', postId }));
-  } catch {}
+  logger.debug({ msg: 'db_delete_start', postId });
   const deleted = await prisma.post.delete({
     select: { id: true },
     where: { id: postId },
   });
-  try {
-    console.log(JSON.stringify({ level: 'info', msg: 'db_delete_result', ok: true, postId }));
-  } catch {}
+  logger.info({ msg: 'db_delete_result', ok: true, postId });
 
   // Best-effort S3 cleanup for files that are no longer referenced anywhere
-  try {
-    console.log(
-      JSON.stringify({ level: 'debug', msg: 's3_cleanup_start', count: toDelete.length }),
-    );
-  } catch {}
+  logger.debug({ msg: 's3_cleanup_start', count: toDelete.length });
   await Promise.all(
     toDelete.map(async (f) => {
       try {
@@ -182,12 +121,8 @@ export async function DELETE(request: Request, { params }: { params: { postId: s
       }
     }),
   );
-  try {
-    console.log(JSON.stringify({ level: 'debug', msg: 's3_cleanup_result', ok: true }));
-  } catch {}
+  logger.debug({ msg: 's3_cleanup_result', ok: true });
 
-  try {
-    console.log(JSON.stringify({ level: 'info', msg: 'api_post_response', status: 200 }));
-  } catch {}
+  logger.info({ msg: 'api_post_response', status: 200 });
   return NextResponse.json({ id: deleted.id });
 }

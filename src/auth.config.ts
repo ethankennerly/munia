@@ -3,6 +3,7 @@ import GitHub from 'next-auth/providers/github';
 import Facebook from 'next-auth/providers/facebook';
 import Google from 'next-auth/providers/google';
 import { NextResponse } from 'next/server';
+import { logger } from '@/lib/logging';
 
 export default {
   providers: [GitHub, Facebook, Google],
@@ -14,24 +15,9 @@ export default {
       const { pathname, search } = nextUrl;
       const isLoggedIn = !!auth?.user;
       // Log request path and auth state (non-PII)
-      try {
-        // Using console.log so it appears in `npm run dev --loglevel verbose`
-        console.log(
-          JSON.stringify({
-            level: 'info',
-            msg: 'api_request',
-            path: pathname,
-          }),
-        );
-        console.log(
-          JSON.stringify({
-            level: 'info',
-            msg: 'auth_state',
-            isAuthenticated: isLoggedIn,
-            userId: auth?.user ? (auth.user as any).id ?? null : null,
-          }),
-        );
-      } catch {}
+      const safeUser = auth?.user as unknown as { id?: string } | undefined;
+      logger.debug({ msg: 'api_request', path: pathname });
+      logger.debug({ msg: 'auth_state', isAuthenticated: isLoggedIn, userId: safeUser?.id ?? null });
       const isOnAuthPage = pathname.startsWith('/login') || pathname.startsWith('/register');
 
       const unProtectedPages = ['/terms', '/privacy-policy']; // Add more here if needed

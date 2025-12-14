@@ -1,15 +1,16 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 vi.mock('fs/promises', async () => {
-  const mod = await vi.importActual<any>('fs/promises');
+  const mod = await vi.importActual<typeof import('fs/promises')>('fs/promises');
   return {
     ...mod,
     readFile: vi.fn(),
   };
 });
 
+/* eslint-disable import/first, @typescript-eslint/no-explicit-any */
 import { readFile } from 'fs/promises';
-import { getTermsText, TERMS_FILE_PATH, TERMS_PLACEHOLDER } from './terms';
+import { getTermsText, TERMS_FILE_PATH } from './terms';
 
 describe('getTermsText', () => {
   beforeEach(() => {

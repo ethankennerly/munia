@@ -14,3 +14,8 @@
 - Make tests deterministic and isolated: reset all mocks/Module state between tests; avoid relying on wall‑clock time—use fake timers for time‑based logic (e.g., recent‑auth windows).
 - Keep per‑suite runtime under 1s on a typical laptop; prefer unit/integration tests with mocked boundaries over end‑to‑end flows.
 - Ensure no PII is asserted or printed in test logs.
+- Vercel deploy should succeed.
+- Vercel requires lint. Use a linter to enforce test naming conventions. After all automated tests pass, automate the following command to inspect lint:
+```
+npm run lint && npm run build
+```

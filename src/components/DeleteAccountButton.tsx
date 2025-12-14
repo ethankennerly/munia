@@ -3,14 +3,13 @@
 import Button from '@/components/ui/Button';
 import { useCallback, useState } from 'react';
 import { signOut } from 'next-auth/react';
+import { ConfirmDialog } from '@/components/ConfirmDialog';
 
 export function DeleteAccountButton() {
   const [loading, setLoading] = useState(false);
+  const [open, setOpen] = useState(false);
 
-  const handleDelete = useCallback(async () => {
-    const confirmed = typeof window !== 'undefined' && window.confirm('This will permanently delete your account and all data. This action cannot be undone. Continue?');
-    if (!confirmed) return;
-
+  const confirmAndDelete = useCallback(async () => {
     setLoading(true);
     try {
       const res = await fetch('/api/account', {
@@ -20,19 +19,31 @@ export function DeleteAccountButton() {
       });
       if (!res.ok) throw new Error('Deletion failed');
       await signOut({ callbackUrl: '/register' });
-    } catch (e) {
-      // You may want to show a toast; keeping minimal per spec
-      console.error(e);
+    } catch (_e) {
+      // optional toast here
     } finally {
       setLoading(false);
+      setOpen(false);
     }
   }, []);
 
+  const openDialog = useCallback(() => setOpen(true), []);
+  const closeDialog = useCallback(() => setOpen(false), []);
+
   return (
     <div className="mt-6">
-      <Button onPress={handleDelete} shape="pill" expand="full" mode="secondary" loading={loading}>
+      <Button onPress={openDialog} shape="pill" expand="full" mode="secondary" loading={loading}>
         Delete Account
       </Button>
+      <ConfirmDialog
+        open={open}
+        title="Delete account"
+        message="This will permanently delete your account and all data. This action cannot be undone. Continue?"
+        confirmText="Delete"
+        cancelText="Cancel"
+        onCancel={closeDialog}
+        onConfirm={confirmAndDelete}
+      />
     </div>
   );
 }

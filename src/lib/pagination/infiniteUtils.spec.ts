@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any, prettier/prettier */
 import { describe, it, expect } from 'vitest';
 import { computePageParams, rebuildAfterRemoval } from './infiniteUtils';
 
