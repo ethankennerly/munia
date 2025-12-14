@@ -106,18 +106,19 @@ export function Posts({ type, hashtag, userId }: PostsProps) {
       return isForwards ? postIds : postIds.reverse();
     },
     getNextPageParam: (lastPage, pages) => {
-      // If the `pages` `length` is 0, that means there is not a single post to load
-      if (pages.length === 0) return undefined;
+      // If there are no pages, there is nothing to paginate
+      if (!Array.isArray(pages) || pages.length === 0) return undefined;
 
-      // If the last page doesn't have posts, that means the end is reached
-      if (lastPage.length === 0) return undefined;
+      // Guard: lastPage might be undefined or non-array in edge cases (e.g., optimistic updates)
+      if (!Array.isArray(lastPage) || lastPage.length === 0) return undefined;
 
       // Return the id of the last post, this will serve as the cursor
       // that will be passed to `queryFn` as `pageParam` property
-      return lastPage.slice(-1)[0].id;
+      return lastPage[lastPage.length - 1]?.id;
     },
     getPreviousPageParam: (firstPage) => {
-      if (firstPage.length > 0) return firstPage[0].id;
+      // Guard against undefined/non-array firstPage
+      if (Array.isArray(firstPage) && firstPage.length > 0) return firstPage[0].id;
       return 0;
     },
     refetchOnWindowFocus: false,

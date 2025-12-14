@@ -8,6 +8,7 @@
 
 ## Clarifications
 
+- Implement each spec or revised spec with automated tests too. For every implementation or revision, run all automated tests.
 - Use a conventional headless testing harness favored by professional React developers: Vitest is the default for this repo. Place unit tests under `src` using `*.spec.ts(x)` naming or a `__tests__` folder.
 - Do not spin up a Next.js dev server in tests. Import route handlers and library functions directly and mock external modules (e.g., Prisma, S3, SES, logging).
 - Make tests deterministic and isolated: reset all mocks/Module state between tests; avoid relying on wall‑clock time—use fake timers for time‑based logic (e.g., recent‑auth windows).
