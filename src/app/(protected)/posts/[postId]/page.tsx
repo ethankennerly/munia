@@ -1,6 +1,7 @@
 'use client';
 
 import { Post } from '@/components/Post';
+import { DeletePostButton } from '@/components/DeletePostButton';
 import { useCallback, useState } from 'react';
 
 export default function Page({ params }: { params: { postId: string } }) {
@@ -12,6 +13,7 @@ export default function Page({ params }: { params: { postId: string } }) {
   return (
     <div className="m-4">
       <Post id={postId} commentsShown={commentsShown} toggleComments={toggleComments} />
+      <DeletePostButton postId={postId} />
     </div>
   );
 }

@@ -17,6 +17,8 @@ export function useDeletePostMutation() {
     mutationFn: async ({ postId }: { postId: number }) => {
       const res = await fetch(`/api/posts/${postId}`, {
         method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ confirm: true, recentAuthTimestamp: Date.now() }),
       });
 
       if (!res.ok) {

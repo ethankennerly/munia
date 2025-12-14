@@ -55,15 +55,3 @@ This specification outlines the process for deleting a user account from the sys
 - The deleted user can sign up again using the same authentication credentials, and no previous profile data, media references, or posts appear.
 
 - Logs contain structured, non‑PII events for deletion requested and completed.
-
-## Automated Testing
-
-- Tests should be written for this feature.
-
-- Tests should validate each requirement and acceptance criterion.
-
-- Tests should execute in less than 1 second.
-
-- Tests should not require network requests (use in‑memory or mocked dependencies for DB/storage and logging).
-
-- Tests should not require user interaction.

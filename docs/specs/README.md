@@ -2,3 +2,5 @@
 
 - [Authentication](spec-authentication.md)
 - [User Deletion](spec-user-deletion.md)
+- [Removing a Post](spec-removing-a-post.md)
+- [Automated Testing](spec-automated-testing.md)
