@@ -83,3 +83,7 @@ Follow these steps to deploy Munia on an EC2 instance.
 ## Running Locally
 
     npm run dev --loglevel verbose
+
+## Docs
+
+- [docs](docs/overview.md)

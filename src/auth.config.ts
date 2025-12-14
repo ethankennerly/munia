@@ -13,6 +13,25 @@ export default {
     authorized({ auth, request: { nextUrl } }) {
       const { pathname, search } = nextUrl;
       const isLoggedIn = !!auth?.user;
+      // Log request path and auth state (non-PII)
+      try {
+        // Using console.log so it appears in `npm run dev --loglevel verbose`
+        console.log(
+          JSON.stringify({
+            level: 'info',
+            msg: 'api_request',
+            path: pathname,
+          }),
+        );
+        console.log(
+          JSON.stringify({
+            level: 'info',
+            msg: 'auth_state',
+            isAuthenticated: isLoggedIn,
+            userId: auth?.user ? (auth.user as any).id ?? null : null,
+          }),
+        );
+      } catch {}
       const isOnAuthPage = pathname.startsWith('/login') || pathname.startsWith('/register');
 
       const unProtectedPages = ['/terms', '/privacy-policy']; // Add more here if needed
