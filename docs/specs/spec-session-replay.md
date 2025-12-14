@@ -1,23 +1,54 @@
-# Session Replay
+# Session Replay (MVP)
 
-Replay a session of a user's interaction with the web application. This aids debugging and discovering real user experiences.
+Enable lightweight, privacy-conscious session replay to aid debugging and understanding real user behavior, with minimal code changes and small scope.
+
+## Scope
+- Record minimal client-side interactions (DOM changes, inputs, clicks, viewport, navigation) and timings.
+- Store captured event streams; replay them in an internal admin UI for selected sessions.
+- Accept visual fidelity limits for shared/dynamic feeds. Do not attempt to reconstruct personalized data beyond what was captured.
+
+## Non-Goals
+- Full state rehydration across users/devices.
+- Recording network payload bodies or sensitive fields by default.
+- End-user facing replay UI.
 
 ## Requirements
-- Use industry standards for replaying a session.
-- The web server will record a session.
-- The web client will replay a session.
-- Use industry standard tools for recording and replaying sessions.
-- Minimize the edits to code required to record and replay.
-- The social feed is shared by users. This is a tricky issue for session replay. Keep the replay simple.
-- For production, do not record PII. Replace PII with equivalent data.
-- An ideal session replay would show the actions with the same time passage as the original session.
-- A session replay may replay at speeds of 1x, 2x, 4x, 8x, 16x.
-- Keep the code simple. Sacrifice perfection for simplicity.
-- Keep the scope small. Sacrifice perfection for scope.
-- The ideal use case of session replay is for debugging and discovering use cases that a user is experiencing.
-- An ideal record and replay would not require the user to manually report on what happened during their session.
-- An ideal implementation would reuse existing services or libraries.
-- An admin page has a button to replay a session of a user.
-- The server data defines which users have admin role.
-- Data recording is minimal.
-- All users are recording minimal data to replay.
+- Use standard, battle‑tested tooling for capture/playback (e.g., rrweb/rrweb-player or similar).
+- Keep code changes minimal: a small capture initializer, a redaction/masking config, and an admin replay page.
+- Recording enabled for authenticated users; toggle via env/feature flag.
+- Performance budget: <2% CPU overhead and <50KB/s average upload under typical usage (batching is allowed).
+- Replay controls: play/pause, seek, speeds 1x, 2x, 4x, 8x, 16x.
+- Admin-only access: server determines admins; only admins can list/view sessions.
+
+## Privacy & Security
+- Do not record PII in production by default. Mask/redact inputs such as email, names, phone, address, tokens, passwords.
+- Treat elements with `data-private` (and configured CSS selectors) as masked.
+- Do not store raw request/response bodies; if needed, keep only timing and redacted URLs.
+- Apply retention (default 7–14 days) and honor deletion requests. Prefer encrypted storage and signed URLs for access.
+
+## Data Model (minimal)
+- Session: `id, userId, startedAt, endedAt, bytes, meta{ ua, viewport }, storageKey`
+- Chunks: stored in object storage (e.g., S3) referenced by `storageKey`.
+
+## Admin UX (internal)
+- List: `/admin/sessions` shows `userId`, time range, size, status; filter by user/date.
+- Detail: `/admin/sessions/[id]` embeds the player with speed controls.
+
+## Ops
+- Env: `REPLAY_ENABLED`, `REPLAY_PRIVATE_SELECTORS`, `REPLAY_RETENTION_DAYS`.
+- Guards: server‑only admin APIs; verify admin role on access.
+- Observability: basic metrics (events/min, capture failures) and error logs.
+
+## Implementation Outline
+- Client: initialize recorder with masking rules; throttle and batch uploads to `/api/replay/upload`.
+- Server: accept chunk uploads, validate auth, persist to object storage, index metadata in DB.
+- Replay: admin page fetches metadata and streams chunks to the player.
+
+## Risks / Possible Bugs
+- PII leakage from incomplete masking.
+- Performance regressions on low‑end devices.
+- Unbounded storage growth due to large sessions. Omit the beginning of long sessions. Only record the last 10 minutes of sessions.
+- Replay drift on dynamic/shared feeds.
+- Upload failures causing gaps in recordings.
+
+Note: Testing guidance is defined globally in `docs/specs/spec-automated-testing.md` and applies to this feature.
