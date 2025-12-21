@@ -157,6 +157,31 @@ globs: **/*.{ts,tsx}
   2. `npm run test` (must complete in < 10 seconds)
   3. `npm run build` (catches TypeScript and build issues)
 
+## 9. Environment Variables & Configuration
+
+- **NEXT_PUBLIC_* Variables**: Next.js replaces `NEXT_PUBLIC_*` environment variables at build time. Access them directly, not through helper functions:
+  ```typescript
+  // ✅ CORRECT: Direct access (Next.js replaces at build time)
+  const value = process.env.NEXT_PUBLIC_MY_VAR;
+  
+  // ❌ WRONG: Using helper function may fail silently
+  const value = readEnv('NEXT_PUBLIC_MY_VAR'); // May return undefined
+  ```
+- **Pattern for NEXT_PUBLIC_* Access**: Use try-catch with direct access:
+  ```typescript
+  let myVar: string | undefined;
+  try {
+    myVar = typeof process !== 'undefined' && process.env
+      ? process.env.NEXT_PUBLIC_MY_VAR ?? process.env.MY_VAR
+      : undefined;
+  } catch {
+    myVar = undefined;
+  }
+  ```
+- **Why Direct Access**: Next.js replaces `NEXT_PUBLIC_*` vars at build time. Helper functions that access `process.env` dynamically may not work correctly in the browser.
+- **Server-Only Variables**: For server-only env vars (without `NEXT_PUBLIC_`), helper functions are acceptable.
+- **Testing**: When adding new `NEXT_PUBLIC_*` variables, verify they're accessible in the browser console after restarting the dev server.
+
 ## 10. Observability & Logging
 
 - **Diagnostic Logging for Bug Isolation**: When implementing features that involve data flow (API → DB → Cache → UI), add logging at each step:

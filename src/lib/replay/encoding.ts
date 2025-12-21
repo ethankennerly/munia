@@ -6,6 +6,7 @@
 export const TYPE_ENCODE: Record<string, string> = {
   route: 'r',
   click: 'c',
+  scroll: 'sc',
   input: 'i',
   submit: 's',
   component: 'm',
@@ -16,6 +17,7 @@ export const TYPE_ENCODE: Record<string, string> = {
 export const TYPE_DECODE: Record<string, string> = {
   r: 'route',
   c: 'click',
+  sc: 'scroll',
   i: 'input',
   s: 'submit',
   m: 'component',
@@ -33,6 +35,8 @@ export const KEY_ENCODE: Record<string, string> = {
   name: 'n',
   props: 'pr',
   userId: 'u',
+  scrollY: 'sy',
+  scrollX: 'sx',
 };
 
 export const KEY_DECODE: Record<string, string> = {
@@ -45,6 +49,8 @@ export const KEY_DECODE: Record<string, string> = {
   n: 'name',
   pr: 'props',
   u: 'userId',
+  sy: 'scrollY',
+  sx: 'scrollX',
 };
 
 export type Action = {

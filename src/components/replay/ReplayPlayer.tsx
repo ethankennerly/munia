@@ -30,6 +30,21 @@ export function ReplayPlayer({ actions, onComplete }: ReplayPlayerProps) {
       // Navigate in the replay window
       // eslint-disable-next-line no-param-reassign
       targetWindow.location.href = path;
+    } else if (action.type === 'scroll') {
+      // Scroll positions are normalized (0-1 ratio), convert back to pixels for replay window
+      const normalizedY = action.data.scrollY as number; // 0-1 ratio
+      const normalizedX = (action.data.scrollX as number) || 0; // 0-1 ratio
+
+      // Get replay window's scrollable dimensions
+      const doc = targetWindow.document.documentElement;
+      const maxScrollY = Math.max(0, doc.scrollHeight - targetWindow.innerHeight);
+      const maxScrollX = Math.max(0, doc.scrollWidth - targetWindow.innerWidth);
+
+      // Convert normalized position back to pixels
+      const scrollY = normalizedY * maxScrollY;
+      const scrollX = normalizedX * maxScrollX;
+
+      targetWindow.scrollTo({ top: scrollY, left: scrollX, behavior: 'auto' });
     } else if (action.type === 'click') {
       const selector = action.data.selector as string;
       const target = action.data.target as string;

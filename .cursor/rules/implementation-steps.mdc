@@ -16,7 +16,12 @@ Each implementation step MUST be:
 ## Process
 
 1. **Plan the Step**: Identify the smallest end-user-testable increment
-2. **Add Diagnostic Logging**: Before implementing, add structured logging at each critical step to isolate failures:
+2. **Environment Variables**: When using `NEXT_PUBLIC_*` variables:
+   - Access directly: `process.env.NEXT_PUBLIC_MY_VAR` (not through helper functions)
+   - Use try-catch pattern for safe access
+   - Verify in browser console after restarting dev server
+   - Document in `.env.local.example` if public-facing
+3. **Add Diagnostic Logging**: Before implementing, add structured logging at each critical step to isolate failures:
    - Log inputs (what data is received)
    - Log transformations (what data is processed)
    - Log outputs (what data is returned/saved)

@@ -24,6 +24,7 @@ export type ReplayConfig = {
   enabled: boolean;
   privateSelectors: string[]; // CSS selectors to mask
   retentionDays: number; // storage TTL target; informational at this layer
+  scrollThreshold?: number; // Normalized threshold (0-1 ratio), e.g., 0.1 = 10% of scrollable area. If undefined, scroll recording is disabled (zero overhead)
 };
 
 function parseBoolean(value: string | undefined, fallback = false): boolean {
@@ -71,5 +72,28 @@ export function getReplayConfig(): ReplayConfig {
     10,
   );
   const retentionDays = Math.max(1, Math.min(365, retentionDaysRaw));
-  return { enabled, privateSelectors, retentionDays };
+
+  // Scroll threshold: normalized value (0-1 ratio), e.g., 0.1 = record when scroll changes by 10% of scrollable area
+  // If not set, scroll recording is disabled (zero overhead)
+  // Access directly like NEXT_PUBLIC_REPLAY_ENABLED (Next.js replaces at build time)
+  let scrollThresholdStr: string | undefined;
+  try {
+    scrollThresholdStr =
+      typeof process !== 'undefined' && process.env
+        ? process.env.NEXT_PUBLIC_REPLAY_SCROLL_THRESHOLD_NORMALIZED ??
+          process.env.REPLAY_SCROLL_THRESHOLD_NORMALIZED ??
+          process.env.NEXT_PUBLIC_REPLAY_SCROLL_THRESHOLD ?? // Legacy support
+          process.env.REPLAY_SCROLL_THRESHOLD // Legacy support
+        : undefined;
+  } catch {
+    scrollThresholdStr = undefined;
+  }
+  // Parse as normalized value (0-1), clamp to valid range
+  // Minimum threshold: 0.01 (1%) to prevent spam from tiny adjustments
+  // Maximum threshold: 1.0 (100%) - no point recording if threshold is 100%
+  const scrollThresholdRaw = scrollThresholdStr ? parseNumber(scrollThresholdStr, 0.1) : undefined;
+  const scrollThreshold =
+    scrollThresholdRaw !== undefined ? Math.max(0.01, Math.min(1, scrollThresholdRaw)) : undefined;
+
+  return { enabled, privateSelectors, retentionDays, scrollThreshold };
 }

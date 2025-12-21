@@ -7,6 +7,7 @@
 Record and replay:
 - Route changes (navigation)
 - Clicks (button clicks, link clicks)
+- Scroll position (minimal, non-redundant)
 
 ## What We're NOT Doing (Yet)
 - Input fields
@@ -14,6 +15,7 @@ Record and replay:
 - Component prop recording
 - Advanced UI controls
 - API call recording
+- Fine-grained scroll tracking (only significant scrolls)
 
 ## Encoding Strategy
 
@@ -23,6 +25,7 @@ Record and replay:
 export const TYPE_ENCODE: Record<string, string> = {
   'route': 'r',
   'click': 'c',
+  'scroll': 'sc',
   'input': 'i',
   'submit': 's',
   'component': 'm',
@@ -33,6 +36,7 @@ export const TYPE_ENCODE: Record<string, string> = {
 export const TYPE_DECODE: Record<string, string> = {
   'r': 'route',
   'c': 'click',
+  'sc': 'scroll',
   'i': 'input',
   's': 'submit',
   'm': 'component',
@@ -55,6 +59,8 @@ export const KEY_ENCODE: Record<string, string> = {
   'name': 'n',
   'props': 'p',
   'userId': 'u',
+  'scrollY': 'sy',
+  'scrollX': 'sx',
 };
 
 export const KEY_DECODE: Record<string, string> = {
@@ -67,6 +73,8 @@ export const KEY_DECODE: Record<string, string> = {
   'n': 'name',
   'p': 'props',
   'u': 'userId',
+  'sy': 'scrollY',
+  'sx': 'scrollX',
 };
 
 // Encode action for storage
@@ -253,6 +261,138 @@ export function ClickRecorder({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 ```
+
+#### Scroll Recording (MVP)
+```typescript
+// src/lib/replay/config.ts
+export interface ReplayConfig {
+  enabled: boolean;
+  scrollThreshold?: number; // If undefined, scroll recording is disabled
+}
+
+export function getReplayConfig(): ReplayConfig {
+  const enabled = process.env.NEXT_PUBLIC_REPLAY_ENABLED === 'true';
+  const scrollThresholdStr = process.env.NEXT_PUBLIC_REPLAY_SCROLL_THRESHOLD_NORMALIZED;
+  const scrollThreshold = scrollThresholdStr ? parseFloat(scrollThresholdStr) : undefined;
+
+  return {
+    enabled,
+    scrollThreshold, // undefined = disabled, number = threshold in pixels
+  };
+}
+
+// src/lib/replay/recordScroll.ts
+import { recordAction } from './actionBuffer';
+import { encodeAction } from './encoding';
+import { getReplayConfig } from './config';
+
+// Track last recorded scroll position to avoid redundant logs
+let lastScrollY = 0;
+let lastScrollX = 0;
+
+export function recordScroll(scrollY: number, scrollX: number = 0) {
+  const config = getReplayConfig();
+  
+  // Zero overhead: if scroll threshold not configured, do nothing
+  if (config.scrollThreshold === undefined) {
+    return;
+  }
+
+  const deltaY = Math.abs(scrollY - lastScrollY);
+  const deltaX = Math.abs(scrollX - lastScrollX);
+  
+  // Only record if scroll changed significantly
+  if (deltaY >= config.scrollThreshold || deltaX >= config.scrollThreshold) {
+    recordAction(encodeAction({
+      type: 'scroll',
+      timestamp: Date.now(),
+      data: { scrollY, scrollX }
+    }));
+    
+    lastScrollY = scrollY;
+    lastScrollX = scrollX;
+  }
+}
+
+// src/components/replay/ScrollRecorder.tsx
+'use client';
+import { useEffect, useRef } from 'react';
+import { recordScroll } from '@/lib/replay/recordScroll';
+import { getReplayConfig } from '@/lib/replay/config';
+import { useSession } from 'next-auth/react';
+import { useReplayContext } from '@/lib/replay/replayContext';
+
+/**
+ * Records scroll events for session replay.
+ * Only records significant scroll changes (>= threshold) to minimize log data.
+ * Records scroll position before clicks to show context.
+ * Zero overhead when NEXT_PUBLIC_REPLAY_SCROLL_THRESHOLD is not set.
+ */
+export function ScrollRecorder() {
+  const { data: session } = useSession();
+  const config = getReplayConfig();
+  const { isReplaying } = useReplayContext();
+  const scrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    // Zero overhead: if scroll threshold not configured, don't add listeners
+    if (config.scrollThreshold === undefined) {
+      return undefined;
+    }
+
+    // Don't record during replay
+    if (isReplaying) {
+      return undefined;
+    }
+
+    // Only record if enabled and user is authenticated
+    if (!config.enabled || !session?.user?.id) {
+      return undefined;
+    }
+
+    const handleScroll = () => {
+      const scrollY = window.scrollY;
+      const scrollX = window.scrollX;
+
+      // Debounce scroll recording (wait 200ms after last scroll event)
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
+      }
+
+      scrollTimeoutRef.current = setTimeout(() => {
+        recordScroll(scrollY, scrollX);
+      }, 200);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
+      }
+    };
+  }, [config.enabled, config.scrollThreshold, session?.user?.id, isReplaying]);
+
+  return null;
+}
+```
+
+**Scroll Recording Strategy:**
+- **Environment Variable**: `NEXT_PUBLIC_REPLAY_SCROLL_THRESHOLD_NORMALIZED` (optional, normalized 0-1 ratio, e.g., `0.1` = 10% of scrollable area)
+- **Zero Overhead**: If not set, scroll recording is completely disabled (no event listeners, no function calls)
+- **Normalized Positions**: Scroll positions are recorded as normalized ratios (0-1) instead of absolute pixels:
+  - `scrollY = 0` = top of page, `scrollY = 1` = bottom of page
+  - `scrollX = 0` = left edge, `scrollX = 1` = right edge
+  - Enables accurate replay even if replay window has different dimensions
+- **Normalized Threshold**: Threshold is also normalized (0-1 ratio), e.g., `0.1` means record when scroll changes by 10% of scrollable area
+  - More consistent across different screen sizes than pixel-based thresholds
+  - Example: `0.1` on a 1000px scrollable area = 100px, on a 2000px area = 200px (same relative change)
+  - **Minimum Guard**: Threshold is clamped to minimum 0.01 (1%) to prevent spam from tiny adjustments
+  - **No Scrollbar Guard**: Pages without scrollable content (no scrollbar) don't record scroll events
+- **Debouncing**: Wait 200ms after scroll stops before recording (avoids recording every pixel)
+- **Context**: Scroll position is recorded before clicks automatically (via timestamp ordering)
+- **Storage**: Minimal - only significant scroll changes, not every pixel movement
 
 #### Action Buffer & Upload
 ```typescript
@@ -442,6 +582,12 @@ export default function Page({ params }: { params: { id: string } }) {
           const element = document.querySelector(selector);
           element?.click();
           break;
+        case 'scroll':
+          // Only replay scroll if scroll recording was enabled (has scrollThreshold config)
+          const scrollY = action.data.scrollY as number;
+          const scrollX = (action.data.scrollX as number) || 0;
+          window.scrollTo({ top: scrollY, left: scrollX, behavior: 'instant' });
+          break;
       }
       
       index++;
@@ -548,8 +694,10 @@ export async function getSessions(): Promise<SessionInfo[]> {
 // src/components/Providers.tsx (or src/app/layout.tsx)
 import { RouteRecorder } from '@/components/replay/RouteRecorder';
 import { ClickRecorder } from '@/components/replay/ClickRecorder';
+import { ScrollRecorder } from '@/components/replay/ScrollRecorder';
 
 // Inside Providers or Layout
+<ScrollRecorder />
 <ClickRecorder>
   <RouteRecorder />
   {children}
@@ -582,27 +730,35 @@ import { ClickRecorder } from '@/components/replay/ClickRecorder';
 
 ### Manual Test
 1. Run migration: `npx prisma migrate dev`
-2. Start recording (enabled if `NEXT_PUBLIC_REPLAY_ENABLED=true`)
-3. Navigate to `/feed`
-4. Click a button
-5. Navigate to `/profile`
-6. Go to `/admin/sessions`
-7. Find your session (should be sorted newest first)
-8. Click session ID
-9. Click "Play"
-10. Verify: Route changes and button clicks replay
+2. Set environment variables:
+   - `NEXT_PUBLIC_REPLAY_ENABLED=true`
+   - `NEXT_PUBLIC_REPLAY_SCROLL_THRESHOLD_NORMALIZED=0.1` (optional, normalized 0-1 ratio, e.g., 0.1 = 10% of scrollable area, omit to disable)
+3. Start recording
+4. Navigate to `/feed`
+5. Scroll down significantly (>= threshold % of scrollable area if configured)
+6. Click a button
+7. Scroll up significantly (>= threshold % of scrollable area if configured)
+8. Navigate to `/profile`
+9. Go to `/admin/sessions`
+10. Find your session (should be sorted newest first)
+11. Click session ID
+12. Click "Play"
+13. Verify: Route changes, scroll positions (if enabled), and button clicks replay correctly even if replay window has different dimensions
 
 ## Success Criteria
 
 - ✅ Can record route changes to database (encoded)
 - ✅ Can record clicks to database (encoded)
+- ✅ Can record scroll positions to database (encoded, minimal)
 - ✅ Can replay route changes
 - ✅ Can replay clicks
+- ✅ Can replay scroll positions
 - ✅ Basic play button works
 - ✅ Sessions sorted by time (newest first)
-- ✅ Storage < 2 KB per session (50 actions)
-- ✅ Network payload < 1 KB per upload (with gzip)
-- ✅ Implementation time < 8 hours
+- ✅ Storage < 2.5 KB per session (50 actions + scrolls)
+- ✅ Network payload < 1.2 KB per upload (with gzip)
+- ✅ Scroll recording only captures significant changes (>= 100px)
+- ✅ Implementation time < 9 hours
 
 ## Database Considerations
 
@@ -643,9 +799,63 @@ WHERE startedAt < NOW() - INTERVAL '14 days';
 ## Estimated Time
 
 - Database migration: 30 minutes
-- Encoding utilities: 1 hour
-- Recording infrastructure: 2-3 hours
+- Encoding utilities: 1 hour (includes scroll type/key encoding)
+- Recording infrastructure: 2-3 hours (includes scroll recorder)
 - Server storage (database): 1-2 hours
-- Replay engine: 2-3 hours
+- Replay engine: 2-3 hours (includes scroll replay)
 - Integration & testing: 1 hour
 - **Total: 7.5-10.5 hours** (one day)
+
+## Scroll Position MVP Details
+
+### Recording Strategy
+- **Threshold**: Only record scroll changes >= 100px (vertical or horizontal)
+- **Debouncing**: Wait 200ms after scroll stops before recording
+- **Context**: Scroll position automatically provides context before clicks (via timestamp ordering)
+- **Storage**: Minimal - typically 2-5 scroll events per page, not hundreds
+
+### Example Scroll Action
+```json
+// Encoded (normalized 0-1 values, not pixels)
+{"t": "sc", "ts": 1234567890, "d": {"sy": 0.25, "sx": 0}}
+
+// Decoded
+{"type": "scroll", "timestamp": 1234567890, "data": {"scrollY": 0.25, "scrollX": 0}}
+// scrollY: 0.25 means 25% down the page (works regardless of window size)
+```
+
+### Storage Impact
+- **Before threshold**: User scrolls 1000px → could generate 100+ events
+- **After threshold**: User scrolls 1000px → generates ~10 events (threshold increments)
+- **Savings**: ~90% reduction in scroll events
+- **Typical session**: 50 actions + 5-10 scrolls = ~55 total actions (~2.5 KB encoded)
+- **When disabled**: Zero scroll events, zero overhead
+
+### Replay Behavior
+- Scroll positions are replayed in chronological order with other actions
+- Normalized positions (0-1) are converted back to pixels based on replay window size:
+  - Original: scrollY=500px, documentHeight=2000px → normalized=0.25
+  - Replay: documentHeight=1500px → scrollY=1500*0.25=375px (same relative position)
+- Scroll happens instantly (`behavior: 'auto'`) to match original timing
+- Scroll position before a click shows what was visible when user clicked
+- Large scrolls (>= threshold) ensure elements are visible before interaction
+- **When disabled**: Scroll actions are ignored during replay (no performance impact)
+- **Size Independence**: Replay works correctly even if replay window has different dimensions than recording window
+
+### Environment Variable Configuration
+```bash
+# .env.local
+NEXT_PUBLIC_REPLAY_ENABLED=true
+NEXT_PUBLIC_REPLAY_SCROLL_THRESHOLD_NORMALIZED=0.1  # Optional: normalized ratio (0-1), e.g., 0.1 = 10% of scrollable area
+```
+
+**Behavior:**
+- `NEXT_PUBLIC_REPLAY_SCROLL_THRESHOLD_NORMALIZED` not set → Scroll recording disabled, zero overhead
+- `NEXT_PUBLIC_REPLAY_SCROLL_THRESHOLD_NORMALIZED=0.1` → Record when scroll changes by 10% of scrollable area
+- `NEXT_PUBLIC_REPLAY_SCROLL_THRESHOLD_NORMALIZED=0.05` → Record when scroll changes by 5% (more granular)
+- `NEXT_PUBLIC_REPLAY_SCROLL_THRESHOLD_NORMALIZED=0.2` → Record when scroll changes by 20% (less granular)
+- Values are clamped to 0.01-1 range:
+  - Minimum: 0.01 (1%) prevents spam from tiny adjustments
+  - Maximum: 1.0 (100%) - no point recording if threshold is 100%
+  - Invalid values default to 0.1 (10%)
+- **No Scrollbar Protection**: Pages without scrollable content don't record scroll events (prevents spam)
