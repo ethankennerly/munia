@@ -1,6 +1,7 @@
 'use client';
 
-import { recordAction } from './actionBuffer';
+import { recordCommand } from './commandBuffer';
+import { createClickCommand } from './commands/clickCommand';
 import { getReplayConfig } from './config';
 
 /**
@@ -106,12 +107,13 @@ export function recordClick(event: MouseEvent | KeyboardEvent): void {
     }
   }
 
-  recordAction({
-    type: 'click',
+  const command = createClickCommand({
     timestamp: Date.now(),
-    data: {
+    payload: {
       selector, // Will be encoded as 's'
       target: targetPath || target.tagName.toLowerCase(), // Will be encoded as 'tg' (pathname only)
     },
   });
+
+  recordCommand(command);
 }

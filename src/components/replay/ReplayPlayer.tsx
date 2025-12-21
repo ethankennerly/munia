@@ -2,6 +2,9 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { Action } from '@/lib/replay/encoding';
+import { decodeAction } from '@/lib/replay/encoding';
+import { createCommandFromAction } from '@/lib/replay/commands';
+import { defaultCommandPlayer } from '@/lib/replay/commandPlayer';
 import { useReplayContext } from '@/lib/replay/replayContext';
 
 type ReplayState = 'idle' | 'playing' | 'paused' | 'completed';
@@ -25,88 +28,13 @@ export function ReplayPlayer({ actions, onComplete }: ReplayPlayerProps) {
   const replayWindowRef = useRef<Window | null>(null);
 
   const executeAction = useCallback((action: Action, targetWindow: Window) => {
-    if (action.type === 'route' && action.data.path) {
-      const path = action.data.path as string;
-      // Navigate in the replay window
-      // eslint-disable-next-line no-param-reassign
-      targetWindow.location.href = path;
-    } else if (action.type === 'scroll') {
-      // Scroll positions are normalized (0-1 ratio), convert back to pixels for replay window
-      const normalizedY = action.data.scrollY as number; // 0-1 ratio
-      const normalizedX = (action.data.scrollX as number) || 0; // 0-1 ratio
-
-      // Get replay window's scrollable dimensions
-      const doc = targetWindow.document.documentElement;
-      const maxScrollY = Math.max(0, doc.scrollHeight - targetWindow.innerHeight);
-      const maxScrollX = Math.max(0, doc.scrollWidth - targetWindow.innerWidth);
-
-      // Convert normalized position back to pixels
-      const scrollY = normalizedY * maxScrollY;
-      const scrollX = normalizedX * maxScrollX;
-
-      targetWindow.scrollTo({ top: scrollY, left: scrollX, behavior: 'auto' });
-    } else if (action.type === 'click') {
-      const selector = action.data.selector as string;
-      const target = action.data.target as string;
-
-      // Try to find element by selector in the replay window
-      let element: HTMLElement | null = null;
-
-      // Handle different selector types
-      if (selector.startsWith('[data-testid=')) {
-        const testId = selector.match(/data-testid="([^"]+)"/)?.[1];
-        if (testId) {
-          element = targetWindow.document.querySelector(`[data-testid="${testId}"]`) as HTMLElement;
-        }
-      } else if (selector.startsWith('a[href=')) {
-        const href = selector.match(/href="([^"]+)"/)?.[1];
-        if (href) {
-          element = targetWindow.document.querySelector(`a[href="${href}"]`) as HTMLElement;
-        }
-      } else if (selector.startsWith('[role=')) {
-        // Try to match role and aria-label
-        const roleMatch = selector.match(/role="([^"]+)"/);
-        const labelMatch = selector.match(/aria-label="([^"]+)"/);
-        if (roleMatch && labelMatch) {
-          const role = roleMatch[1];
-          const label = labelMatch[1];
-          element = targetWindow.document.querySelector(`[role="${role}"][aria-label="${label}"]`) as HTMLElement;
-        }
-      } else if (selector.startsWith('button:contains(')) {
-        const text = selector.match(/contains\("([^"]+)"/)?.[1];
-        if (text) {
-          // Find button with matching text
-          const buttons = Array.from(targetWindow.document.querySelectorAll('button'));
-          element = buttons.find((btn) => btn.textContent?.trim() === text) || null;
-        }
-      } else if (selector.startsWith('button[type=')) {
-        const type = selector.match(/type="([^"]+)"/)?.[1];
-        if (type) {
-          element = targetWindow.document.querySelector(`button[type="${type}"]`) as HTMLElement;
-        }
-      } else if (selector.startsWith('input[type=')) {
-        const typeMatch = selector.match(/type="([^"]+)"/);
-        const valueMatch = selector.match(/value="([^"]+)"/);
-        if (typeMatch) {
-          const type = typeMatch[1];
-          if (valueMatch) {
-            const value = valueMatch[1];
-            element = targetWindow.document.querySelector(`input[type="${type}"][value="${value}"]`) as HTMLElement;
-          } else {
-            element = targetWindow.document.querySelector(`input[type="${type}"]`) as HTMLElement;
-          }
-        }
-      }
-
-      // If element found, click it
-      if (element) {
-        element.click();
-      } else if (typeof target === 'string' && target.startsWith('/')) {
-        // Fallback: if target is a path, navigate to it
-        // eslint-disable-next-line no-param-reassign
-        targetWindow.location.href = target;
-      }
-    }
+    // Convert action to command and execute using shared CommandPlayer
+    const command = createCommandFromAction(action);
+    const context = {
+      window: targetWindow,
+      document: targetWindow.document,
+    };
+    defaultCommandPlayer.executeCommand(command, context);
   }, []);
 
   const scheduleNextAction = useCallback(

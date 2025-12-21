@@ -1,6 +1,7 @@
 'use client';
 
-import { recordAction } from './actionBuffer';
+import { recordCommand } from './commandBuffer';
+import { createScrollCommand } from './commands/scrollCommand';
 import { getReplayConfig } from './config';
 
 // Track last recorded scroll position (normalized 0-1) to avoid redundant logs
@@ -86,14 +87,15 @@ export function recordScroll(scrollY: number, scrollX: number = 0): void {
   if (deltaY >= config.scrollThreshold || deltaX >= config.scrollThreshold) {
     // eslint-disable-next-line no-console
     console.log('[recordScroll] recording normalized scroll action', { normalizedY, normalizedX });
-    recordAction({
-      type: 'scroll',
+    const command = createScrollCommand({
       timestamp: Date.now(),
-      data: {
+      payload: {
         scrollY: normalizedY, // Store normalized 0-1 value, not pixels
         scrollX: normalizedX, // Store normalized 0-1 value, not pixels
       },
     });
+
+    recordCommand(command);
 
     lastScrollYNormalized = normalizedY;
     lastScrollXNormalized = normalizedX;

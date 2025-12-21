@@ -1,6 +1,7 @@
 'use client';
 
-import { recordAction } from './actionBuffer';
+import { recordCommand } from './commandBuffer';
+import { createRouteCommand } from './commands/routeCommand';
 import { getReplayConfig } from './config';
 
 /**
@@ -13,9 +14,10 @@ export function recordRoute(path: string): void {
   // Don't record admin routes
   if (path.startsWith('/admin')) return;
 
-  recordAction({
-    type: 'route',
+  const command = createRouteCommand({
     timestamp: Date.now(),
-    data: { path },
+    payload: { path },
   });
+
+  recordCommand(command);
 }

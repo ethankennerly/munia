@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import { recordRoute } from '@/lib/replay/recordRoute';
-import { initActionBuffer } from '@/lib/replay/actionBuffer';
+import { initCommandBuffer } from '@/lib/replay/commandBuffer';
 import { getReplayConfig } from '@/lib/replay/config';
 import { useSession } from 'next-auth/react';
 import { useReplayContext } from '@/lib/replay/replayContext';
@@ -26,8 +26,8 @@ export function RouteRecorder() {
     // Only record if enabled and user is authenticated
     if (!config.enabled || !session?.user?.id) return;
 
-    // Initialize action buffer on mount
-    initActionBuffer();
+    // Initialize command buffer on mount
+    initCommandBuffer();
 
     // Record route change
     recordRoute(pathname);
