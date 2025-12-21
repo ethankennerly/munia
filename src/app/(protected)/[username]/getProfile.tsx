@@ -1,23 +1,26 @@
 import prisma from '@/lib/prisma/prisma';
-import { GetUser } from '@/types/definitions';
+import { GetUser, FindUserResult } from '@/types/definitions';
+import { includeToUser } from '@/lib/prisma/includeToUser';
+import { toGetUser } from '@/lib/prisma/toGetUser';
+import { getServerUser } from '@/lib/getServerUser';
 
 export async function getProfile(username: string) {
-  // Get the id of the user from the given username.
-  const check = await prisma.user.findFirst({
+  // Get the authenticated user for follow status check
+  const [user] = await getServerUser();
+
+  // Query user directly from Prisma instead of making HTTP request
+  // This avoids caching issues and ensures fresh data
+  const findUserResult: FindUserResult | null = await prisma.user.findFirst({
     where: {
       username,
     },
-    select: {
-      id: true,
-    },
+    include: includeToUser(user?.id),
   });
 
-  if (!check) return null;
+  if (!findUserResult) return null;
 
-  // Use the id to fetch from the /api/users/:userId endpoint
-  const res = await fetch(`${process.env.URL}/api/users/${check.id}`);
-  if (!res.ok) throw new Error('Error fetching profile information');
-  const user: GetUser = await res.json();
+  // Convert to GetUser type (same as API endpoint)
+  const profile: GetUser = toGetUser(findUserResult);
 
-  return user;
+  return profile;
 }
