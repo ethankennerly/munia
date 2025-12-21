@@ -1,20 +1,19 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function Page({ params }: { params: { id: string } }) {
-  const containerRef = useRef<HTMLDivElement | null>(null);
-  const [events, setEvents] = useState<unknown[] | null>(null);
+  const [actions, setActions] = useState<unknown[] | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  // Load events
+  // Load actions
   useEffect(() => {
     (async () => {
       try {
         const res = await fetch(`/api/replay/sessions/${params.id}`, { cache: 'no-store' });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
-        setEvents(data.events || []);
+        setActions(data.actions || []);
       } catch (e) {
         const msg = e instanceof Error ? e.message : 'Failed to load session';
         setError(msg);
@@ -22,32 +21,19 @@ export default function Page({ params }: { params: { id: string } }) {
     })();
   }, [params.id]);
 
-  // Initialize rrweb Replayer when events load
-  useEffect(() => {
-    (async () => {
-      if (!events || !containerRef.current) return;
-      const mod = (await import('rrweb')) as unknown as {
-        Replayer: new (
-          evts: unknown[],
-          options: { speed: number },
-        ) => {
-          play: (container?: HTMLElement) => void;
-        };
-      };
-      const { Replayer } = mod;
-      const replayer = new Replayer(events, { speed: 1 });
-      containerRef.current.innerHTML = '';
-      replayer.play(containerRef.current);
-    })();
-  }, [events]);
-
   if (error) return <p className="p-4 text-red-600">{error}</p>;
-  if (!events) return <p className="p-4">Loading...</p>;
+  if (!actions) return <p className="p-4">Loading...</p>;
 
   return (
     <main className="p-4">
       <h1 className="mb-4 text-2xl font-bold">Session {params.id}</h1>
-      <div ref={containerRef} className="h-[70vh] w-full border" />
+      <p className="mb-4">Replay functionality will be implemented per Day 1 MVP spec.</p>
+      <div className="mt-4">
+        <p>Actions recorded: {actions.length}</p>
+        <pre className="mt-2 p-2 bg-gray-100 text-xs overflow-auto max-h-96">
+          {JSON.stringify(actions, null, 2)}
+        </pre>
+      </div>
     </main>
   );
 }

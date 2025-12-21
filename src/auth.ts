@@ -77,6 +77,26 @@ export const {
     strategy: 'jwt',
   },
   callbacks: {
+    // Store reference to authConfig JWT callback before spreading
+    async jwt({ token, user, ...rest }) {
+      // Call the JWT callback from authConfig first if it exists
+      const authConfigJwt = authConfig.callbacks?.jwt;
+      if (authConfigJwt) {
+        token = await authConfigJwt({ token, user, ...rest });
+      }
+      // Ensure user ID is in token (for both adapter and non-adapter flows)
+      if (user) {
+        const userId = (user as { id?: string })?.id;
+        if (userId) {
+          token.sub = userId;
+        }
+        const userEmail = (user as { email?: string })?.email;
+        if (userEmail) {
+          token.email = userEmail;
+        }
+      }
+      return token;
+    },
     ...authConfig.callbacks,
     async session({ token, user, ...rest }) {
       const emailFromToken = ((): string | undefined => {
@@ -87,13 +107,18 @@ export const {
         const u = user as unknown as { email?: unknown };
         return typeof u?.email === 'string' ? (u.email as string) : undefined;
       })();
+      // Ensure we have a user ID from token.sub or user.id
+      const userId = token.sub || (user as { id?: string })?.id;
+      if (!userId) {
+        throw new Error('User ID not found in token or user object');
+      }
       return {
         /**
          * Expose only stable identifiers and IdP-derived email for server auth checks.
          * Do not trust user-editable profile fields for authorization.
          */
         user: {
-          id: token.sub!,
+          id: userId,
           // Prefer provider/JWT email (stable), fallback to adapter user email
           email: emailFromToken ?? emailFromUser,
         },

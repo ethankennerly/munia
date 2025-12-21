@@ -11,30 +11,30 @@ export async function GET(_req: NextRequest, { params }: { params: { id: string 
 
   const dir = path.join(ROOT, params.id);
   try {
-    const files = (await fs.readdir(dir)).filter((f) => f.endsWith('.json'));
-    files.sort((a, b) => Number.parseInt(a, 10) - Number.parseInt(b, 10));
-    let events: unknown[] = [];
-    let meta: Record<string, unknown> = {};
-    let startedAt = Infinity;
-    let endedAt = 0;
-    const jsons = await Promise.all(
-      files.map(async (f) => {
-        return JSON.parse(await fs.readFile(path.join(dir, f), 'utf8')) as unknown as {
-          startedAt?: number;
-          endedAt?: number;
-          meta?: Record<string, unknown>;
+    // Look for actions.json (new format) or chunk files (old format)
+    const actionsFile = path.join(dir, 'actions.json');
+    let actions: unknown[] = [];
+    
+    try {
+      // Try new format first
+      const content = await fs.readFile(actionsFile, 'utf8');
+      actions = JSON.parse(content);
+    } catch {
+      // Fallback: try old chunk format for backward compatibility
+      const files = (await fs.readdir(dir)).filter((f) => f.endsWith('.json'));
+      files.sort((a, b) => Number.parseInt(a, 10) - Number.parseInt(b, 10));
+      
+      for (const f of files) {
+        const json = JSON.parse(await fs.readFile(path.join(dir, f), 'utf8')) as unknown as {
           events?: unknown[];
         };
-      }),
-    );
-    for (const j of jsons) {
-      if (!meta || Object.keys(meta).length === 0) meta = j.meta || {};
-      events = events.concat(j.events || []);
-      startedAt = Math.min(startedAt, Number(j.startedAt) || Date.now());
-      endedAt = Math.max(endedAt, Number(j.endedAt) || 0);
+        if (json.events) {
+          actions = actions.concat(json.events);
+        }
+      }
     }
-    if (startedAt === Infinity) startedAt = Date.now();
-    return NextResponse.json({ id: params.id, startedAt, endedAt, meta, events });
+    
+    return NextResponse.json({ id: params.id, actions });
   } catch {
     return NextResponse.json({ error: 'not_found' }, { status: 404 });
   }

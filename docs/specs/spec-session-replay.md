@@ -1,54 +1,249 @@
-# Session Replay (MVP)
+# Session Replay - Architecture & Vision
 
-Enable lightweight, privacy-conscious session replay to aid debugging and understanding real user behavior, with minimal code changes and small scope.
+## Overview
+Client-side-only forward replay system that records component-based commands and replays them using existing React components. Actions are stored in a database with compact encoding to minimize storage and network size.
 
-## Scope
-- Record minimal client-side interactions (DOM changes, inputs, clicks, viewport, navigation) and timings.
-- Store captured event streams; replay them in an internal admin UI for selected sessions.
-- Accept visual fidelity limits for shared/dynamic feeds. Do not attempt to reconstruct personalized data beyond what was captured.
+## Core Principle
+**Components already exist and can render from props. Replay = feed components same props + execute same actions.**
 
-## Non-Goals
-- Full state rehydration across users/devices.
-- Recording network payload bodies or sensitive fields by default.
-- End-user facing replay UI.
+## Architecture
 
-## Requirements
-- Use standard, battle‑tested tooling for capture/playback (e.g., rrweb/rrweb-player or similar).
-- Keep code changes minimal: a small capture initializer, a redaction/masking config, and an admin replay page.
-- Recording enabled for authenticated users; toggle via env/feature flag.
-- Performance budget: <2% CPU overhead and <50KB/s average upload under typical usage (batching is allowed).
-- Replay controls: play/pause, seek, speeds 1x, 2x, 4x, 8x, 16x.
-- Admin-only access: server determines admins; only admins can list/view sessions.
+### Recording (Client-Side)
+```
+User Action → Component Event → Recording Hook → Encode Action → Upload to Server → Database
+```
 
-## Privacy & Security
-- Do not record PII in production by default. Mask/redact inputs such as email, names, phone, address, tokens, passwords.
-- Treat elements with `data-private` (and configured CSS selectors) as masked.
-- Do not store raw request/response bodies; if needed, keep only timing and redacted URLs.
-- Apply retention (default 7–14 days) and honor deletion requests. Prefer encrypted storage and signed URLs for access.
+**Components**:
+- Recording context/hook that wraps components
+- Intercepts route changes (Next.js router)
+- Records component renders with props
+- Records user actions (clicks, inputs, etc.)
+- Encodes actions with brief representations
+- Batches and uploads to server
 
-## Data Model (minimal)
-- Session: `id, userId, startedAt, endedAt, bytes, meta{ ua, viewport }, storageKey`
-- Chunks: stored in object storage (e.g., S3) referenced by `storageKey`.
+### Storage (Server-Side Database)
+```
+Encoded Action Log → API Endpoint → Decode → Prisma → PostgreSQL
+```
 
-## Admin UX (internal)
-- List: `/admin/sessions` shows `userId`, time range, size, status; filter by user/date.
-- Detail: `/admin/sessions/[id]` embeds the player with speed controls.
+**Database Schema**:
+```prisma
+model ReplaySession {
+  id        String   @id @default(cuid())
+  userId    String
+  startedAt DateTime @default(now())
+  endedAt   DateTime?
 
-## Ops
-- Env: `REPLAY_ENABLED`, `REPLAY_PRIVATE_SELECTORS`, `REPLAY_RETENTION_DAYS`.
-- Guards: server‑only admin APIs; verify admin role on access.
-- Observability: basic metrics (events/min, capture failures) and error logs.
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-## Implementation Outline
-- Client: initialize recorder with masking rules; throttle and batch uploads to `/api/replay/upload`.
-- Server: accept chunk uploads, validate auth, persist to object storage, index metadata in DB.
-- Replay: admin page fetches metadata and streams chunks to the player.
+  @@index([userId, startedAt])
+  @@index([startedAt])
+}
 
-## Risks / Possible Bugs
-- PII leakage from incomplete masking.
-- Performance regressions on low‑end devices.
-- Unbounded storage growth due to large sessions. Omit the beginning of long sessions. Only record the last 10 minutes of sessions.
-- Replay drift on dynamic/shared feeds.
-- Upload failures causing gaps in recordings.
+model ReplayAction {
+  id        Int      @id @default(autoincrement())
+  sessionId String
+  timestamp BigInt   // Milliseconds since epoch
+  type      String   // Encoded type: 'r'=route, 'c'=click, 'i'=input, etc.
+  data      Json     // Compact JSON with short keys
 
-Note: Testing guidance is defined globally in `docs/specs/spec-automated-testing.md` and applies to this feature.
+  session ReplaySession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@index([sessionId, timestamp])
+}
+```
+
+### Encoding Strategy
+
+#### Action Type Encoding
+```typescript
+// Short codes instead of full strings
+const TYPE_ENCODING = {
+  'route': 'r',
+  'click': 'c',
+  'input': 'i',
+  'submit': 's',
+  'component': 'm', // 'm' for component (module)
+  'api_call': 'a',
+  'error': 'e',
+} as const;
+
+const TYPE_DECODING = {
+  'r': 'route',
+  'c': 'click',
+  'i': 'input',
+  's': 'submit',
+  'm': 'component',
+  'a': 'api_call',
+  'e': 'error',
+} as const;
+```
+
+#### Data Payload Encoding
+```typescript
+// Full representation → Encoded representation
+// Route
+{ type: 'route', data: { path: '/feed' } }
+→ { t: 'r', d: { p: '/feed' } }
+
+// Click
+{ type: 'click', data: { target: 'CreatePostButton', selector: '[data-replay-id="create"]' } }
+→ { t: 'c', d: { tg: 'CreatePostButton', s: '[data-replay-id="create"]' } }
+
+// Input
+{ type: 'input', data: { component: 'PostEditor', field: 'content', value: 'Hello' } }
+→ { t: 'i', d: { c: 'PostEditor', f: 'content', v: 'Hello' } }
+
+// Component
+{ type: 'component', data: { name: 'Feed', props: { userId: '123' } } }
+→ { t: 'm', d: { n: 'Feed', p: { u: '123' } } }
+```
+
+**Key Mapping**:
+- `type` → `t`
+- `data` → `d`
+- `path` → `p`
+- `target` → `tg`
+- `selector` → `s`
+- `component` → `c`
+- `field` → `f`
+- `value` → `v`
+- `name` → `n`
+- `props` → `p`
+- `userId` → `u`
+
+### Storage Size Comparison
+
+#### Before Encoding
+```json
+{"type": "route", "timestamp": 1234567890, "data": {"path": "/feed"}}
+// Size: ~60 bytes
+```
+
+#### After Encoding
+```json
+{"t": "r", "ts": 1234567890, "d": {"p": "/feed"}}
+// Size: ~35 bytes
+// Savings: ~42%
+```
+
+#### Per Session Estimate
+- **Before**: 50 actions × 60 bytes = 3 KB
+- **After**: 50 actions × 35 bytes = 1.75 KB
+- **Savings**: ~42% reduction
+
+### Network Compression
+- Use gzip compression for uploads (Next.js handles automatically)
+- Batch multiple actions in single request
+- Further reduces network payload by 60-80%
+
+## Replay (Client-Side)
+```
+Load Actions from DB → Decode Actions → Parse Actions → Reconstruct Route → Render Components → Execute Actions
+```
+
+**Process**:
+1. Load actions from database (ordered by timestamp)
+2. Decode action types and data keys
+3. Parse actions sequentially
+4. For each action:
+   - Route change → use Next.js router
+   - Component render → render component with recorded props
+   - User action → simulate event (click, input, etc.)
+
+## Data Model
+
+### Action Types (Encoded)
+- **`r`** (route): Navigation to new route
+- **`c`** (click): User clicked element
+- **`i`** (input): User typed in input field
+- **`s`** (submit): Form submitted
+- **`m`** (component): Component rendered with props
+- **`a`** (api_call): API request made (optional)
+- **`e`** (error): Error occurred
+
+### Storage Size
+- **Per action row**: ~50-150 bytes (with encoding + DB overhead)
+- **Typical session** (5 min, 50 actions): ~2.5-7.5 KB in database
+- **With gzip compression**: ~1-3 KB network payload
+- **Comparison**: 50-60% smaller than unencoded
+
+## Implementation Phases
+
+### Phase 1: Day-1 MVP (See spec-session-replay-mvp-day1.md)
+- Record route changes only
+- Record clicks only
+- Basic replay (route + click simulation)
+- Minimal UI (play button)
+- Database storage with encoding
+
+### Phase 2: Week-1 MVP
+- Add component prop recording
+- Add input recording
+- Add form submission recording
+- Enhanced replay UI (play/pause/speed)
+- Action filtering/search
+
+### Phase 3: Enhanced
+- Add API call recording
+- Add business event recording
+- Timeline scrubber
+- Advanced filtering (by user, date, action type)
+- Analytics dashboard
+
+## Technical Decisions
+
+### Why Encoding?
+- **Storage**: 40-50% reduction in database size
+- **Network**: 50-60% reduction in payload size (with gzip)
+- **Cost**: Minimal complexity (simple encode/decode functions)
+- **Professional**: Common optimization pattern
+
+### Why Component-Based?
+- Components already exist → no rendering logic needed
+- React handles re-rendering → just feed props
+- Smaller storage → props only, not DOM
+- More accurate → components render themselves
+
+### Why Database Storage?
+- **Queryable**: Can search and filter actions
+- **Relational**: Can join with User table
+- **Indexed**: Fast queries on common fields
+- **Scalable**: Handles growth better than files
+- **Professional**: Standard approach for structured data
+
+### Why Client-Side Only?
+- No server simulation overhead
+- Scales infinitely (server just queries database)
+- Simpler architecture
+- Faster implementation
+
+### Why Forward-Only?
+- Simpler than bidirectional
+- Sufficient for debugging
+- Can add backward later if needed
+
+## Exclusions
+
+### Do NOT Record
+- Admin routes (`/admin/*`)
+- Admin users (users with `role: 'ADMIN'`)
+- Sensitive inputs (passwords, emails in forms)
+- External API responses (optional, for size)
+
+### Do NOT Implement (Out of Scope)
+- Bidirectional scrubbing
+- Server-side state simulation
+- DOM snapshot storage
+- Real-time monitoring
+- Cross-device synchronization
+
+## Success Criteria
+
+- ✅ Can record user session as encoded action log in database
+- ✅ Can replay session using existing components
+- ✅ Storage efficient (< 8 KB per session)
+- ✅ Network efficient (< 3 KB per session upload)
+- ✅ Queryable (can filter by user, date, action type)
+- ✅ Replay accuracy sufficient for debugging
+- ✅ Implementation time < 1 week for full version

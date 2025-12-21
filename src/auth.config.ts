@@ -11,6 +11,14 @@ export default {
     signIn: '/login',
   },
   callbacks: {
+    async jwt({ token, user }) {
+      // Populate user ID in token for middleware access
+      if (user) {
+        token.sub = (user as { id?: string })?.id ?? token.sub;
+        token.email = (user as { email?: string })?.email ?? token.email;
+      }
+      return token;
+    },
     authorized({ auth, request: { nextUrl } }) {
       const { pathname, search } = nextUrl;
       const isLoggedIn = !!auth?.user;

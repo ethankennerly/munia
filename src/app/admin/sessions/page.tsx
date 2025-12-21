@@ -1,18 +1,13 @@
 import { requireAdmin } from '@/lib/replay/admin';
+import { getSessions } from '@/lib/replay/getSessions';
 
 export const dynamic = 'force-dynamic';
 
 export default async function Page() {
   const admin = await requireAdmin();
   if (!admin) return <p>Forbidden</p>;
-  // On the server, fetch requires an absolute URL. Derive base from env.
-  const base = process.env.NEXT_PUBLIC_BASE_URL || process.env.VERCEL_URL || 'http://localhost:3002';
-  const url = base.startsWith('http') ? `${base}/api/replay/sessions` : `https://${base}/api/replay/sessions`;
-  const res = await fetch(url, {
-    cache: 'no-store',
-  });
-  const data = (await res.json()) as { sessions?: { id: string; bytes: number; startedAt: number; endedAt: number }[] };
-  const sessions = data.sessions || [];
+  // Directly call the function instead of making an HTTP request
+  const sessions = await getSessions();
   return (
     <main className="p-4">
       <h1 className="mb-4 text-2xl font-bold">Sessions</h1>

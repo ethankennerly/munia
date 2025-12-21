@@ -4,8 +4,8 @@ import { logger } from '@/lib/logging';
 import prisma from '@/lib/prisma/prisma';
 
 /**
- * Admin utility based on a simple environment allowlist.
- * Set IS_ADMIN_EMAILS to a comma-separated list of admin emails.
+ * Admin utility that checks the database for ADMIN role.
+ * Users must have role: 'ADMIN' in the database to access admin routes.
  */
 type SessionUser = { id: string; email?: string };
 
@@ -20,45 +20,34 @@ export async function requireAdmin(): Promise<{ userId: string; email?: string }
   const idFromSession = user.id;
   const idForDb = typeof idFromSession === 'string' && idFromSession.length > 0 ? idFromSession : undefined;
   const email = user.email;
-  // Primary: DB role check (preferred, non-spoofable)
+
+  if (!idForDb) {
+    if (process.env.NODE_ENV !== 'production')
+      logger.warn({ msg: 'admin_check_no_user_id', userId: idFromSession });
+    return null;
+  }
+
+  // Check database for ADMIN role
   try {
-    const dbUser = idForDb ? await prisma.user.findUnique({ where: { id: idForDb } }) : null;
-    const role = (dbUser as unknown as { role?: string })?.role;
-    if (role === 'ADMIN') {
-      const dbEmail = (dbUser as unknown as { email?: string })?.email;
+    const dbUser = await prisma.user.findUnique({ where: { id: idForDb } });
+    if (!dbUser) {
       if (process.env.NODE_ENV !== 'production')
-        logger.debug({ msg: 'admin_check_db_role', userId: idForDb, role });
-      return { userId: idForDb!, email: dbEmail || email };
+        logger.debug({ msg: 'admin_check_user_not_found', userId: idForDb });
+      return null;
     }
+    // Compare with string literal 'ADMIN' (Role enum value from database)
+    if (dbUser.role === 'ADMIN') {
+      if (process.env.NODE_ENV !== 'production')
+        logger.debug({ msg: 'admin_check_db_role', userId: idForDb, role: dbUser.role });
+      return { userId: idForDb, email: dbUser.email || email };
+    }
+    if (process.env.NODE_ENV !== 'production')
+      logger.debug({ msg: 'admin_check_not_admin', userId: idForDb, role: dbUser.role });
   } catch (e) {
     if (process.env.NODE_ENV !== 'production')
       logger.error({ msg: 'admin_check_db_error', error: (e as Error).message });
   }
 
-  // Fallback: env allowlists (IDs first, then verified IdP email)
-  const idList = (process.env.IS_ADMIN_USER_IDS || '')
-    .split(',')
-    .map((s) => s.trim())
-    .filter(Boolean);
-  const emailList = (process.env.IS_ADMIN_EMAILS || '')
-    .split(',')
-    .map((s) => s.trim().toLowerCase())
-    .filter(Boolean);
-  const isAdminById = !!idForDb && idList.includes(idForDb);
-  const isAdminByEmail = !!email && emailList.includes(email.toLowerCase());
-  const isAdmin = isAdminById || isAdminByEmail;
-  if (process.env.NODE_ENV !== 'production')
-    logger.debug({
-      msg: 'admin_check_env',
-      userId: idForDb,
-      email,
-      idList,
-      emailList,
-      isAdminById,
-      isAdminByEmail,
-      isAdmin,
-    });
-  if (isAdmin && idForDb) return { userId: idForDb, email };
   return null;
 }
 

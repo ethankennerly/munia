@@ -5,7 +5,18 @@
 
 // In the browser, Next.js exposes only NEXT_PUBLIC_* envs. Keep both for flexibility in tests.
 function readEnv(name: string): string | undefined {
-  if (typeof process !== 'undefined' && process.env) return process.env[name];
+  // Next.js replaces process.env.NEXT_PUBLIC_* at build time
+  // In browser, process.env exists but may be a proxy, so we need to access it directly
+  try {
+    if (typeof process !== 'undefined' && process.env) {
+      const value = process.env[name];
+      if (value !== undefined && value !== null) {
+        return String(value);
+      }
+    }
+  } catch (e) {
+    // Ignore errors accessing process.env
+  }
   return undefined;
 }
 
@@ -38,7 +49,18 @@ function parseCsv(value: string | undefined): string[] {
 
 export function getReplayConfig(): ReplayConfig {
   // Prefer NEXT_PUBLIC_* so it works on the client as well.
-  const enabled = parseBoolean(readEnv('NEXT_PUBLIC_REPLAY_ENABLED') ?? readEnv('REPLAY_ENABLED'), false);
+  // Next.js replaces process.env.NEXT_PUBLIC_REPLAY_ENABLED at build time
+  // Access it directly - Next.js will replace this with the actual value
+  let replayEnabled: string | undefined;
+  try {
+    // Direct access - Next.js replaces this at build time
+    replayEnabled = typeof process !== 'undefined' && process.env 
+      ? (process.env.NEXT_PUBLIC_REPLAY_ENABLED ?? process.env.REPLAY_ENABLED)
+      : undefined;
+  } catch {
+    replayEnabled = undefined;
+  }
+  const enabled = parseBoolean(replayEnabled, false);
   const privateSelectors = parseCsv(
     readEnv('NEXT_PUBLIC_REPLAY_PRIVATE_SELECTORS') ?? readEnv('REPLAY_PRIVATE_SELECTORS'),
   );
