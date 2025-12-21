@@ -1,7 +1,3 @@
-# Documentation - Reference material, not active code
-# Estimated savings: ~108KB + token overhead per search
-/docs
-
 # Prisma Migrations - Historical database changes, rarely needed for coding
 # Estimated savings: ~116KB + token overhead per search
 /prisma/migrations
@@ -14,7 +10,7 @@
 # Source SVG Vectors - Source files for SVG generation (optional exclusion)
 # Only exclude if you don't work with SVG assets directly
 # Estimated savings: ~224KB + token overhead per search
-# /src/vectors
+/src/vectors
 
 # Build artifacts (if any slip through .gitignore)
 /.next
