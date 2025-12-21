@@ -30,14 +30,14 @@ Encoded Action Log → API Endpoint → Decode → Prisma → PostgreSQL
 ```prisma
 model ReplaySession {
   id        String   @id @default(cuid())
-  userId    String
+  userId    String   // User ID (authenticated) or anonymous ID (future)
   startedAt DateTime @default(now())
   endedAt   DateTime?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@index([userId, startedAt])
-  @@index([startedAt])
+  @@index([userId, startedAt])  // Fast queries by user ID
+  @@index([startedAt])           // Fast time-based sorting
 }
 
 model ReplayAction {
@@ -223,13 +223,35 @@ Load Actions from DB → Decode Actions → Parse Actions → Reconstruct Route 
 - Sufficient for debugging
 - Can add backward later if needed
 
+## User Association (Future Requirement)
+
+### Requirement
+Associate replay sessions with user IDs, even for actions before login. This enables:
+- Querying all sessions for a specific user
+- Understanding user journey from first visit to login
+- Analytics per user
+
+### Implementation Approach (Post-MVP)
+1. **Anonymous Sessions**: Record sessions before login with temporary/anonymous user ID
+2. **Session Merging**: When user logs in, associate pre-login sessions with their user ID
+3. **Fingerprinting**: Use browser fingerprinting or cookies to link anonymous sessions
+4. **Query Support**: Database already supports querying by `userId` (indexed)
+
+### MVP Support
+- ✅ Database schema includes `userId` field
+- ✅ Indexed on `(userId, startedAt)` for fast queries
+- ✅ Can query: `WHERE userId = '...'`
+- ⚠️ MVP only records authenticated users (post-login)
+- ⚠️ Anonymous session association deferred to future phase
+
 ## Exclusions
 
-### Do NOT Record
+### Do NOT Record (MVP)
 - Admin routes (`/admin/*`)
 - Admin users (users with `role: 'ADMIN'`)
 - Sensitive inputs (passwords, emails in forms)
 - External API responses (optional, for size)
+- Anonymous/pre-login sessions (future requirement)
 
 ### Do NOT Implement (Out of Scope)
 - Bidirectional scrubbing
@@ -237,6 +259,7 @@ Load Actions from DB → Decode Actions → Parse Actions → Reconstruct Route 
 - DOM snapshot storage
 - Real-time monitoring
 - Cross-device synchronization
+- Anonymous session association (future requirement)
 
 ## Success Criteria
 
