@@ -167,6 +167,13 @@ globs: **/*.{ts,tsx}
   - Use consistent prefixes: `[component]` for client-side, structured keys for server-side
   - Log critical fields (e.g., `birthDate`, `userId`) with their types to catch serialization issues
 
+- **Date Handling**: Always use date-only utilities (`@/lib/utils/dateOnly`) when displaying or parsing date-only values:
+  - **Rule**: Never use `new Date(isoString)` directly for date-only values (e.g., birthdates, event dates)
+  - **Use**: `parseDateOnly()` for creating local Date objects from ISO strings or Date objects
+  - **Use**: `extractDateOnly()` for getting YYYY-MM-DD strings from dates
+  - **Why**: Prevents timezone conversion bugs where UTC dates shift backward in US timezones
+  - **Example**: `format(parseDateOnly(birthDate), 'MMMM d, yyyy')` instead of `format(new Date(birthDate), 'MMMM d, yyyy')`
+
 - **Structured Logging**: Use consistent JSON format for all logs:
   ```typescript
   logger.info({

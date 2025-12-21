@@ -13,6 +13,7 @@ import {
 import { format } from 'date-fns';
 import { capitalize, lowerCase } from 'lodash';
 import { GetUser } from '@/types/definitions';
+import { parseDateOnly } from '@/lib/utils/dateOnly';
 import { AboutItem } from './AboutItem';
 
 export function About({ profile }: { profile: GetUser }) {
@@ -46,14 +47,8 @@ export function About({ profile }: { profile: GetUser }) {
         value={
           birthDate !== null
             ? (() => {
-                // Parse date string to avoid timezone conversion issues
-                // If it's an ISO string like "1976-04-05T00:00:00.000Z", extract just the date part
-                const dateStr = typeof birthDate === 'string' ? birthDate : birthDate.toISOString();
-                const dateOnly = dateStr.split('T')[0]; // Extract "1976-04-05"
-                const [year, month, day] = dateOnly.split('-').map(Number);
-                // Create date in local timezone to avoid UTC conversion
-                const localDate = new Date(year, month - 1, day);
-                return format(localDate, 'MMMM d, yyyy');
+                const localDate = parseDateOnly(birthDate);
+                return localDate ? format(localDate, 'MMMM d, yyyy') : null;
               })()
             : null
         }

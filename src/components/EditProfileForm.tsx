@@ -8,6 +8,7 @@ import { Item } from 'react-stately';
 import { AtSign, BuildingBusinessOffice, Bullhorn, Heart, Other, Phone, Profile, WorldNet } from '@/svg_components';
 import { UserAboutSchema, userAboutSchema } from '@/lib/validations/userAbout';
 import { parseDate } from '@internationalized/date';
+import { extractDateOnly } from '@/lib/utils/dateOnly';
 import { useSessionUserData } from '@/hooks/useSessionUserData';
 import { useSessionUserDataMutation } from '@/hooks/mutations/useSessionUserDataMutation';
 import { useRouter } from 'next/navigation';
@@ -267,10 +268,8 @@ export function EditProfileForm({ redirectTo }: { redirectTo?: string }) {
             // Extract date part to avoid timezone conversion issues
             const getDateValue = () => {
               if (!userData.birthDate) return undefined;
-              const dateStr =
-                typeof userData.birthDate === 'string' ? userData.birthDate : userData.birthDate.toISOString();
-              const dateOnly = dateStr.split('T')[0]; // Extract "1976-04-06"
-              return parseDate(dateOnly);
+              const dateOnly = extractDateOnly(userData.birthDate);
+              return dateOnly ? parseDate(dateOnly) : undefined;
             };
 
             // eslint-disable-next-line no-console
