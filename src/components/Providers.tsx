@@ -11,6 +11,7 @@ import { SessionProvider } from 'next-auth/react';
 import type { Session } from 'next-auth';
 import React from 'react';
 import { RouteRecorder } from '@/components/replay/RouteRecorder';
+import { ClickRecorder } from '@/components/replay/ClickRecorder';
 
 export function Providers({ children, session }: { children: React.ReactNode; session: Session | null }) {
   return (
@@ -19,6 +20,7 @@ export function Providers({ children, session }: { children: React.ReactNode; se
         <ReactQueryProvider>
           <SessionProvider session={session}>
             <RouteRecorder />
+            <ClickRecorder />
             <DialogsContextProvider>
               <VisualMediaModalContextProvider>
                 <CreatePostModalContextProvider>

@@ -8,6 +8,10 @@ This directory contains manual testing guides for features that can be verified 
   - Test route change recording for session replay
   - Verification time: ~60 seconds
 
+- **[Session Replay - Click Recording](session-replay-click-recording.md)** ✅
+  - Test click event recording for session replay
+  - Verification time: ~60 seconds
+
 ## Purpose
 
 These documents provide:
