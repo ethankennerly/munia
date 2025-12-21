@@ -30,11 +30,27 @@ function getSelector(element: HTMLElement): string | null {
     }
   }
 
-  // For buttons, use text content
+  // For buttons (including submit buttons), use text content or type
   if (element.tagName === 'BUTTON' || role === 'button') {
     const text = element.textContent?.trim();
     if (text && text.length < 50) {
       return `button:contains("${text}")`;
+    }
+    // Fallback: use button type if available
+    const type = element.getAttribute('type');
+    if (type) {
+      return `button[type="${type}"]`;
+    }
+  }
+
+  // For input submit buttons
+  if (element.tagName === 'INPUT' && element instanceof HTMLInputElement) {
+    const { type, value } = element;
+    if (type === 'submit' || type === 'button') {
+      if (value) {
+        return `input[type="${type}"][value="${value}"]`;
+      }
+      return `input[type="${type}"]`;
     }
   }
 
@@ -42,9 +58,9 @@ function getSelector(element: HTMLElement): string | null {
 }
 
 /**
- * Record a click event
+ * Record a click or keyboard activation event
  */
-export function recordClick(event: MouseEvent): void {
+export function recordClick(event: MouseEvent | KeyboardEvent): void {
   const config = getReplayConfig();
   if (!config.enabled) return;
 
@@ -53,11 +69,28 @@ export function recordClick(event: MouseEvent): void {
     return;
   }
 
-  // Don't record clicks on admin pages
+  // Don't record on admin pages
   if (window.location.pathname.startsWith('/admin')) return;
 
-  // Don't record clicks on the recording components themselves
+  // Don't record on the recording components themselves
   if (target.closest('[data-replay-recorder]')) return;
+
+  // For keyboard events, only record Enter or Space on interactive elements
+  if (event instanceof KeyboardEvent) {
+    const { key } = event;
+    if (key !== 'Enter' && key !== ' ') {
+      return;
+    }
+    // Only record if the element is focusable/interactive
+    const isInteractive =
+      target.tagName === 'BUTTON' ||
+      target.tagName === 'A' ||
+      target.getAttribute('role') === 'button' ||
+      target.getAttribute('tabindex') !== null;
+    if (!isInteractive) {
+      return;
+    }
+  }
 
   const selector = getSelector(target);
   if (!selector) return; // Skip if we can't create a stable selector

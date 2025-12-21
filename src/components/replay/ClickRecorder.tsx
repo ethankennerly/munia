@@ -32,10 +32,17 @@ export function ClickRecorder() {
       recordClick(event);
     };
 
+    // Add keyboard event listener for Enter/Space on buttons/links
+    const handleKeyDown = (event: KeyboardEvent) => {
+      recordClick(event);
+    };
+
     document.addEventListener('click', handleClick, true); // Use capture phase
+    document.addEventListener('keydown', handleKeyDown, true); // Use capture phase
 
     return () => {
       document.removeEventListener('click', handleClick, true);
+      document.removeEventListener('keydown', handleKeyDown, true);
     };
   }, [config.enabled, session?.user?.id, isReplaying]);
 

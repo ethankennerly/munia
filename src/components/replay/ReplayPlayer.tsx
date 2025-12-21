@@ -64,6 +64,23 @@ export function ReplayPlayer({ actions, onComplete }: ReplayPlayerProps) {
           const buttons = Array.from(targetWindow.document.querySelectorAll('button'));
           element = buttons.find((btn) => btn.textContent?.trim() === text) || null;
         }
+      } else if (selector.startsWith('button[type=')) {
+        const type = selector.match(/type="([^"]+)"/)?.[1];
+        if (type) {
+          element = targetWindow.document.querySelector(`button[type="${type}"]`) as HTMLElement;
+        }
+      } else if (selector.startsWith('input[type=')) {
+        const typeMatch = selector.match(/type="([^"]+)"/);
+        const valueMatch = selector.match(/value="([^"]+)"/);
+        if (typeMatch) {
+          const type = typeMatch[1];
+          if (valueMatch) {
+            const value = valueMatch[1];
+            element = targetWindow.document.querySelector(`input[type="${type}"][value="${value}"]`) as HTMLElement;
+          } else {
+            element = targetWindow.document.querySelector(`input[type="${type}"]`) as HTMLElement;
+          }
+        }
       }
 
       // If element found, click it
