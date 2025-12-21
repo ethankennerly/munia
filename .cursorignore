@@ -1,0 +1,29 @@
+# Documentation - Reference material, not active code
+# Estimated savings: ~108KB + token overhead per search
+/docs
+
+# Prisma Migrations - Historical database changes, rarely needed for coding
+# Estimated savings: ~116KB + token overhead per search
+/prisma/migrations
+
+# Generated SVG Components - Auto-generated from source vectors
+# Can be regenerated with: npm run svgr
+# Estimated savings: ~228KB + token overhead per search
+/src/svg_components
+
+# Source SVG Vectors - Source files for SVG generation (optional exclusion)
+# Only exclude if you don't work with SVG assets directly
+# Estimated savings: ~224KB + token overhead per search
+# /src/vectors
+
+# Build artifacts (if any slip through .gitignore)
+/.next
+/out
+/build
+
+# Test coverage reports
+/coverage
+
+# Temporary replay data (already in .gitignore, but explicit here)
+/tmp
+
