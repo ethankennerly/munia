@@ -12,6 +12,7 @@ import type { Session } from 'next-auth';
 import React from 'react';
 import { RouteRecorder } from '@/components/replay/RouteRecorder';
 import { ClickRecorder } from '@/components/replay/ClickRecorder';
+import { ReplayProvider } from '@/lib/replay/replayContext';
 
 export function Providers({ children, session }: { children: React.ReactNode; session: Session | null }) {
   return (
@@ -19,15 +20,17 @@ export function Providers({ children, session }: { children: React.ReactNode; se
       <ToastContextProvider>
         <ReactQueryProvider>
           <SessionProvider session={session}>
-            <RouteRecorder />
-            <ClickRecorder />
-            <DialogsContextProvider>
-              <VisualMediaModalContextProvider>
-                <CreatePostModalContextProvider>
-                  <ShouldAnimateContextProvider>{children}</ShouldAnimateContextProvider>
-                </CreatePostModalContextProvider>
-              </VisualMediaModalContextProvider>
-            </DialogsContextProvider>
+            <ReplayProvider>
+              <RouteRecorder />
+              <ClickRecorder />
+              <DialogsContextProvider>
+                <VisualMediaModalContextProvider>
+                  <CreatePostModalContextProvider>
+                    <ShouldAnimateContextProvider>{children}</ShouldAnimateContextProvider>
+                  </CreatePostModalContextProvider>
+                </VisualMediaModalContextProvider>
+              </DialogsContextProvider>
+            </ReplayProvider>
           </SessionProvider>
         </ReactQueryProvider>
       </ToastContextProvider>

@@ -12,6 +12,10 @@ This directory contains manual testing guides for features that can be verified 
   - Test click event recording for session replay
   - Verification time: ~60 seconds
 
+- **[Session Replay - Player](session-replay-player.md)** ✅
+  - Test replaying recorded routes and clicks
+  - Verification time: ~60 seconds
+
 ## Purpose
 
 These documents provide:
