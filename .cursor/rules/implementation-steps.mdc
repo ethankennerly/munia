@@ -1,0 +1,75 @@
+---
+description: Implementation step requirements for incremental development
+globs: **/*.{ts,tsx,js,jsx}
+---
+
+# Implementation Step Requirements
+
+## Rule: End-User-Testable Steps
+
+Each implementation step MUST be:
+- **End-user-testable**: Can be manually tested by a user in the browser/app
+- **Fully debuggable**: Can be debugged with standard tools (browser devtools, server logs)
+- **Perfected**: Complete, working, and polished (not half-baked)
+- **Time-bound**: Achievable within **one hour of effort**
+
+## Process
+
+1. **Plan the Step**: Identify the smallest end-user-testable increment
+2. **Implement**: Build the complete feature for that step
+3. **Test**: Manually test as an end-user would
+4. **Debug**: Fix any issues until it works perfectly
+5. **Verify**: Confirm it's debuggable and testable
+6. **Document**: Create or update test documentation (see Domain Documentation Driven Development)
+7. **Commit**: Only commit when the step is complete and working
+8. **Prevention**: After fixing a bug, update Cursor rules to prevent similar high-risk issues in the future. Keep rules brief and actionable.
+
+## Domain Documentation Driven Development
+
+### Requirements
+
+- **Public-Facing**: Documentation must be accessible to anyone with the git repo
+- **Reproducible**: Steps must allow anyone to verify the feature works
+- **Brief**: Keep instructions concise and actionable and under 400 words per doc
+- **Fast Verification**: Each feature should be manually-verifiable within **60 seconds**
+- **Quality Verification**: Include verification features when needed:
+  - **Preferred**: Integrated into end-user experience
+  - **Fallback**: Safe verification mode for end-users
+  - **Constraints**: Maintain security, stability, and performance
+- **Organization**: Store in `docs/` folder or subfolder
+- **Linking**: Link from README.md
+- **Format**: Markdown with Mermaid diagrams (GitHub/GitLab compatible)
+- **Completion**: When a step is complete, mention the documentation file path
+
+### Documentation Structure
+
+Each feature test document should include:
+1. **Quick Start** (30 seconds): Fastest path to verify
+2. **Prerequisites**: Required setup/environment
+3. **Test Steps**: Step-by-step manual testing instructions
+4. **Expected Results**: What should happen
+5. **Architecture Diagram**: Mermaid diagram showing the feature flow
+6. **Troubleshooting**: Common issues and solutions
+
+## Examples
+
+### ✅ Good: End-User-Testable Step
+- "User can see their session appear in admin sessions list after navigating"
+- Testable: Navigate → Check admin page → See session
+- Debuggable: Check browser console, server logs, database
+- Time: ~1 hour
+- Documentation: `docs/testing/session-replay-route-recording.md`
+
+### ❌ Bad: Not End-User-Testable
+- "Add encoding utilities" (no user-visible change)
+- "Create database schema" (no user-visible change)
+- "Set up test infrastructure" (no user-visible change)
+
+## Benefits
+
+- **Fast Feedback**: See results immediately
+- **Early Validation**: Confirm approach works before building more
+- **Easier Debugging**: Smaller scope = easier to debug
+- **User Value**: Each step delivers visible value
+- **Momentum**: Quick wins keep development moving
+- **Documentation**: Living documentation that stays current with implementation
