@@ -30,7 +30,7 @@ export default function Page({ params }: { params: { id: string } }) {
       <p className="mb-4">Replay functionality will be implemented per Day 1 MVP spec.</p>
       <div className="mt-4">
         <p>Actions recorded: {actions.length}</p>
-        <pre className="mt-2 p-2 bg-gray-100 text-xs overflow-auto max-h-96">
+        <pre className="mt-2 max-h-96 overflow-auto rounded border border-gray-300 bg-gray-50 p-4 text-xs text-gray-900 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100">
           {JSON.stringify(actions, null, 2)}
         </pre>
       </div>

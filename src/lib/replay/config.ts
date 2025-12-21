@@ -54,9 +54,10 @@ export function getReplayConfig(): ReplayConfig {
   let replayEnabled: string | undefined;
   try {
     // Direct access - Next.js replaces this at build time
-    replayEnabled = typeof process !== 'undefined' && process.env 
-      ? (process.env.NEXT_PUBLIC_REPLAY_ENABLED ?? process.env.REPLAY_ENABLED)
-      : undefined;
+    replayEnabled =
+      typeof process !== 'undefined' && process.env
+        ? process.env.NEXT_PUBLIC_REPLAY_ENABLED ?? process.env.REPLAY_ENABLED
+        : undefined;
   } catch {
     replayEnabled = undefined;
   }

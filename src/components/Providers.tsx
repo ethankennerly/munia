@@ -10,6 +10,7 @@ import { VisualMediaModalContextProvider } from '@/contexts/VisualMediaModalCont
 import { SessionProvider } from 'next-auth/react';
 import type { Session } from 'next-auth';
 import React from 'react';
+import { RouteRecorder } from '@/components/replay/RouteRecorder';
 
 export function Providers({ children, session }: { children: React.ReactNode; session: Session | null }) {
   return (
@@ -17,6 +18,7 @@ export function Providers({ children, session }: { children: React.ReactNode; se
       <ToastContextProvider>
         <ReactQueryProvider>
           <SessionProvider session={session}>
+            <RouteRecorder />
             <DialogsContextProvider>
               <VisualMediaModalContextProvider>
                 <CreatePostModalContextProvider>

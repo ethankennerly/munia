@@ -18,7 +18,7 @@ export default async function Page() {
           <thead>
             <tr>
               <th className="p-2">ID</th>
-              <th className="p-2">Size</th>
+              <th className="p-2">Actions</th>
               <th className="p-2">Started</th>
               <th className="p-2">Ended</th>
             </tr>
@@ -28,12 +28,12 @@ export default async function Page() {
               <tr key={s.id} className="border-t">
                 <td className="p-2">
                   <a className="text-primary underline" href={`/admin/sessions/${s.id}`}>
-                    {s.id}
+                    {s.id.substring(0, 8)}...
                   </a>
                 </td>
-                <td className="p-2">{(s.bytes / 1024).toFixed(1)} KB</td>
+                <td className="p-2">{s.actionCount}</td>
                 <td className="p-2">{new Date(s.startedAt).toLocaleString()}</td>
-                <td className="p-2">{new Date(s.endedAt).toLocaleString()}</td>
+                <td className="p-2">{s.endedAt ? new Date(s.endedAt).toLocaleString() : '—'}</td>
               </tr>
             ))}
           </tbody>

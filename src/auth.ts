@@ -78,26 +78,33 @@ export const {
   },
   callbacks: {
     // Store reference to authConfig JWT callback before spreading
+    // eslint-disable-next-line no-param-reassign
     async jwt({ token, user, ...rest }) {
       // Call the JWT callback from authConfig first if it exists
       const authConfigJwt = authConfig.callbacks?.jwt;
       if (authConfigJwt) {
+        // eslint-disable-next-line no-param-reassign
         token = await authConfigJwt({ token, user, ...rest });
       }
       // Ensure user ID is in token (for both adapter and non-adapter flows)
       if (user) {
         const userId = (user as { id?: string })?.id;
         if (userId) {
+          // eslint-disable-next-line no-param-reassign
           token.sub = userId;
         }
         const userEmail = (user as { email?: string })?.email;
         if (userEmail) {
+          // eslint-disable-next-line no-param-reassign
           token.email = userEmail;
         }
       }
       return token;
     },
-    ...authConfig.callbacks,
+    // Spread other callbacks from authConfig (excluding jwt which we've already defined)
+    ...(authConfig.callbacks
+      ? Object.fromEntries(Object.entries(authConfig.callbacks).filter(([key]) => key !== 'jwt'))
+      : {}),
     async session({ token, user, ...rest }) {
       const emailFromToken = ((): string | undefined => {
         const t = token as unknown as { email?: unknown };

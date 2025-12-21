@@ -17,13 +17,11 @@ export async function requireAdmin(): Promise<{ userId: string; email?: string }
   }
   const user = session.user as SessionUser;
   // Derive the most reliable server-side identifier for DB lookups.
-  const idFromSession = user.id;
+  const { id: idFromSession, email } = user;
   const idForDb = typeof idFromSession === 'string' && idFromSession.length > 0 ? idFromSession : undefined;
-  const email = user.email;
 
   if (!idForDb) {
-    if (process.env.NODE_ENV !== 'production')
-      logger.warn({ msg: 'admin_check_no_user_id', userId: idFromSession });
+    if (process.env.NODE_ENV !== 'production') logger.warn({ msg: 'admin_check_no_user_id', userId: idFromSession });
     return null;
   }
 
@@ -31,8 +29,7 @@ export async function requireAdmin(): Promise<{ userId: string; email?: string }
   try {
     const dbUser = await prisma.user.findUnique({ where: { id: idForDb } });
     if (!dbUser) {
-      if (process.env.NODE_ENV !== 'production')
-        logger.debug({ msg: 'admin_check_user_not_found', userId: idForDb });
+      if (process.env.NODE_ENV !== 'production') logger.debug({ msg: 'admin_check_user_not_found', userId: idForDb });
       return null;
     }
     // Compare with string literal 'ADMIN' (Role enum value from database)

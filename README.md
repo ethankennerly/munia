@@ -87,3 +87,4 @@ Follow these steps to deploy Munia on an EC2 instance.
 ## Docs
 
 - [docs](docs/overview.md)
+- [Testing Documentation](docs/testing/)
