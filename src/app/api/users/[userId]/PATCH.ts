@@ -9,28 +9,58 @@ import { getServerUser } from '@/lib/getServerUser';
 import { userAboutSchema } from '@/lib/validations/userAbout';
 import { toGetUser } from '@/lib/prisma/toGetUser';
 import { includeToUser } from '@/lib/prisma/includeToUser';
+import { logger } from '@/lib/logging';
 
 export async function PATCH(request: Request, { params }: { params: { userId: string } }) {
   const [user] = await getServerUser();
   if (!user || user.id !== params.userId) return NextResponse.json({}, { status: 401 });
 
   const userAbout = await request.json();
+  logger.info({
+    msg: 'profile_update_request',
+    userId: user.id,
+    incomingBirthDate: userAbout.birthDate,
+    incomingData: userAbout,
+  });
 
   const validate = userAboutSchema.safeParse(userAbout);
   if (validate.success) {
     try {
+      const birthDateValue = validate.data.birthDate ? new Date(validate.data.birthDate) : null;
+      logger.info({
+        msg: 'profile_update_db_save',
+        userId: user.id,
+        birthDateInput: validate.data.birthDate,
+        birthDateParsed: birthDateValue?.toISOString() || null,
+      });
+
       const res = await prisma.user.update({
         where: {
           id: user.id,
         },
         data: {
           ...validate.data,
-          birthDate: validate.data.birthDate && new Date(validate.data.birthDate),
+          birthDate: birthDateValue,
         },
         include: includeToUser(user.id),
       });
 
-      return NextResponse.json(toGetUser(res));
+      logger.info({
+        msg: 'profile_update_db_result',
+        userId: user.id,
+        dbBirthDate: res.birthDate?.toISOString() || null,
+      });
+
+      const updatedUser = toGetUser(res);
+
+      logger.info({
+        msg: 'profile_update_api_response',
+        userId: user.id,
+        responseBirthDate: updatedUser.birthDate?.toISOString() || null,
+        responseBirthDateType: typeof updatedUser.birthDate,
+      });
+
+      return NextResponse.json(updatedUser);
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError) {
         if (e.code === 'P2002') {

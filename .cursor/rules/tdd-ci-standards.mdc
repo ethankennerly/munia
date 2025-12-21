@@ -159,6 +159,14 @@ globs: **/*.{ts,tsx}
 
 ## 10. Observability & Logging
 
+- **Diagnostic Logging for Bug Isolation**: When implementing features that involve data flow (API → DB → Cache → UI), add logging at each step:
+  - API routes: Log incoming request data, DB operations, and response data
+  - Mutations: Log data sent, received, and cache updates
+  - Server Components: Log data fetched from DB and returned to components
+  - Client Components: Log data received and displayed
+  - Use consistent prefixes: `[component]` for client-side, structured keys for server-side
+  - Log critical fields (e.g., `birthDate`, `userId`) with their types to catch serialization issues
+
 - **Structured Logging**: Use consistent JSON format for all logs:
   ```typescript
   logger.info({

@@ -7,7 +7,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Item } from 'react-stately';
 import { AtSign, BuildingBusinessOffice, Bullhorn, Heart, Other, Phone, Profile, WorldNet } from '@/svg_components';
 import { UserAboutSchema, userAboutSchema } from '@/lib/validations/userAbout';
-import { formatISO } from 'date-fns';
 import { parseDate } from '@internationalized/date';
 import { useSessionUserData } from '@/hooks/useSessionUserData';
 import { useSessionUserDataMutation } from '@/hooks/mutations/useSessionUserDataMutation';
@@ -22,8 +21,16 @@ import { TextInput } from './ui/TextInput';
 
 export function EditProfileForm({ redirectTo }: { redirectTo?: string }) {
   const [userData] = useSessionUserData();
-  const defaultValues = useMemo(
-    () => ({
+
+  // eslint-disable-next-line no-console
+  console.log('[EditProfileForm] userData', {
+    birthDate: userData?.birthDate,
+    birthDateType: typeof userData?.birthDate,
+    birthDateToString: userData?.birthDate?.toString(),
+  });
+
+  const defaultValues = useMemo(() => {
+    const values = {
       // `undefined` is not allowed as a `defaultValue` https://www.react-hook-form.com/api/usecontroller/controller/
       username: userData?.username || userData?.id || '',
       // email: userData?.email || '',
@@ -35,9 +42,16 @@ export function EditProfileForm({ redirectTo }: { redirectTo?: string }) {
       gender: userData?.gender || null,
       relationshipStatus: userData?.relationshipStatus || null,
       birthDate: userData?.birthDate?.toString() || null,
-    }),
-    [userData],
-  );
+    };
+
+    // eslint-disable-next-line no-console
+    console.log('[EditProfileForm] defaultValues', {
+      birthDate: values.birthDate,
+      birthDateType: typeof values.birthDate,
+    });
+
+    return values;
+  }, [userData]);
 
   const { control, handleSubmit, reset, setError, setFocus } = useForm<UserAboutSchema>({
     resolver: zodResolver(userAboutSchema),
@@ -59,7 +73,12 @@ export function EditProfileForm({ redirectTo }: { redirectTo?: string }) {
           setFocus(field);
         },
         onSuccess: () => {
-          router.push(redirectTo || `/${data.username}`);
+          // Force server-side re-render to get fresh data for Server Components
+          router.refresh();
+          // Navigate after refresh
+          setTimeout(() => {
+            router.push(redirectTo || `/${data.username}`);
+          }, 100);
         },
       },
     );
@@ -244,26 +263,42 @@ export function EditProfileForm({ redirectTo }: { redirectTo?: string }) {
         <Controller
           control={control}
           name="birthDate"
-          render={({ field: { onChange, ref }, fieldState: { error } }) => (
-            <div>
-              <DatePicker
-                label="Birth Date"
-                defaultValue={
-                  userData.birthDate &&
-                  parseDate(
-                    formatISO(new Date(userData.birthDate), {
-                      representation: 'date',
-                    }),
-                  )
-                }
-                onChange={(value) => {
-                  onChange(value?.toString() ?? null);
-                }}
-                errorMessage={error?.message}
-                triggerRef={ref}
-              />
-            </div>
-          )}
+          render={({ field: { onChange, ref }, fieldState: { error } }) => {
+            // Extract date part to avoid timezone conversion issues
+            const getDateValue = () => {
+              if (!userData.birthDate) return undefined;
+              const dateStr =
+                typeof userData.birthDate === 'string' ? userData.birthDate : userData.birthDate.toISOString();
+              const dateOnly = dateStr.split('T')[0]; // Extract "1976-04-06"
+              return parseDate(dateOnly);
+            };
+
+            // eslint-disable-next-line no-console
+            console.log('[EditProfileForm] DatePicker defaultValue', {
+              userDataBirthDate: userData.birthDate,
+              dateOnly: userData.birthDate
+                ? (typeof userData.birthDate === 'string'
+                    ? userData.birthDate
+                    : userData.birthDate.toISOString()
+                  ).split('T')[0]
+                : null,
+              parsedValue: getDateValue(),
+            });
+
+            return (
+              <div>
+                <DatePicker
+                  label="Birth Date"
+                  defaultValue={getDateValue()}
+                  onChange={(value) => {
+                    onChange(value?.toString() ?? null);
+                  }}
+                  errorMessage={error?.message}
+                  triggerRef={ref}
+                />
+              </div>
+            );
+          }}
         />
 
         <div className="flex justify-end gap-4">
