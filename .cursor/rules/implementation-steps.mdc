@@ -26,7 +26,8 @@ Each implementation step MUST be:
    - Log transformations (what data is processed)
    - Log outputs (what data is returned/saved)
    - Use consistent log keys (e.g., `profile_update_request`, `profile_update_db_save`)
-   - Log both server-side (`logger.info`) and client-side (`console.log` with `[component]` prefix)
+   - Log both server-side (`logger.info`) and client-side (`logging-client.log` with `[component]` prefix)
+
    - Log critical fields with their types to catch serialization issues
 3. **Implement**: Build the complete feature for that step. Name code that is self-documenting. Do not add comments to code.
 4. **Test**: Manually test as an end-user would

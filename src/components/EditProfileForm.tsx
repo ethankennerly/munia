@@ -19,16 +19,10 @@ import { Textarea } from './ui/Textarea';
 import { Select } from './ui/Select';
 import Button from './ui/Button';
 import { TextInput } from './ui/TextInput';
+import { logger } from '@/lib/logging';
 
 export function EditProfileForm({ redirectTo }: { redirectTo?: string }) {
   const [userData] = useSessionUserData();
-
-  // eslint-disable-next-line no-console
-  console.log('[EditProfileForm] userData', {
-    birthDate: userData?.birthDate,
-    birthDateType: typeof userData?.birthDate,
-    birthDateToString: userData?.birthDate?.toString(),
-  });
 
   const defaultValues = useMemo(() => {
     const values = {
@@ -44,12 +38,6 @@ export function EditProfileForm({ redirectTo }: { redirectTo?: string }) {
       relationshipStatus: userData?.relationshipStatus || null,
       birthDate: userData?.birthDate?.toString() || null,
     };
-
-    // eslint-disable-next-line no-console
-    console.log('[EditProfileForm] defaultValues', {
-      birthDate: values.birthDate,
-      birthDateType: typeof values.birthDate,
-    });
 
     return values;
   }, [userData]);
@@ -84,8 +72,7 @@ export function EditProfileForm({ redirectTo }: { redirectTo?: string }) {
       },
     );
   };
-  // eslint-disable-next-line no-console
-  const onInvalid: SubmitErrorHandler<UserAboutSchema> = (errors) => console.log(errors);
+  const onInvalid: SubmitErrorHandler<UserAboutSchema> = (errors) => logger.error(errors);
   const resetForm = useCallback(() => reset(defaultValues), [reset, defaultValues]);
 
   useEffect(() => {
@@ -271,18 +258,6 @@ export function EditProfileForm({ redirectTo }: { redirectTo?: string }) {
               const dateOnly = extractDateOnly(userData.birthDate);
               return dateOnly ? parseDate(dateOnly) : undefined;
             };
-
-            // eslint-disable-next-line no-console
-            console.log('[EditProfileForm] DatePicker defaultValue', {
-              userDataBirthDate: userData.birthDate,
-              dateOnly: userData.birthDate
-                ? (typeof userData.birthDate === 'string'
-                    ? userData.birthDate
-                    : userData.birthDate.toISOString()
-                  ).split('T')[0]
-                : null,
-              parsedValue: getDateValue(),
-            });
 
             return (
               <div>

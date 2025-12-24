@@ -16,13 +16,6 @@ export function useSessionUserDataMutation() {
 
   const updateSessionUserDataMutation = useMutation({
     mutationFn: async ({ data }: { data: UserAboutSchema }) => {
-      // eslint-disable-next-line no-console
-      console.log('[mutation] profile_update_sending', {
-        userId,
-        birthDate: data.birthDate,
-        data,
-      });
-
       const res = await fetch(`/api/users/${userId}`, {
         method: 'PATCH',
         headers: {
@@ -33,35 +26,13 @@ export function useSessionUserDataMutation() {
 
       const response = await res.json();
       if (!res.ok) throw new Error(JSON.stringify(response));
-
-      // eslint-disable-next-line no-console
-      console.log('[mutation] profile_update_received', {
-        userId,
-        responseBirthDate: response.birthDate,
-        responseBirthDateType: typeof response.birthDate,
-        fullResponse: response,
-      });
-
       return response as GetUser;
     },
     onSuccess: (updatedUser) => {
-      // eslint-disable-next-line no-console
-      console.log('[mutation] profile_update_cache_set', {
-        userId,
-        cacheBirthDate: updatedUser.birthDate,
-        cacheBirthDateType: typeof updatedUser.birthDate,
-      });
-
       // Update cache and invalidate to ensure fresh data everywhere
       qc.setQueryData<GetUser>(['users', userId], updatedUser);
       // Invalidate with refetch to ensure all components get fresh data
       qc.invalidateQueries({ queryKey: ['users', userId], refetchType: 'active' });
-
-      // eslint-disable-next-line no-console
-      console.log('[mutation] profile_update_cache_after_set', {
-        userId,
-        cachedData: qc.getQueryData<GetUser>(['users', userId]),
-      });
 
       showToast({
         type: 'success',

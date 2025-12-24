@@ -19,24 +19,6 @@ import { AboutItem } from './AboutItem';
 export function About({ profile }: { profile: GetUser }) {
   const { username, email, name, birthDate, gender, relationshipStatus, phoneNumber, bio, website, address } = profile;
 
-  // eslint-disable-next-line no-console
-  console.log('[About] rendering', {
-    username,
-    birthDate,
-    birthDateType: typeof birthDate,
-    birthDateValue: birthDate,
-    formatted:
-      birthDate !== null
-        ? (() => {
-            const dateStr = typeof birthDate === 'string' ? birthDate : birthDate.toISOString();
-            const dateOnly = dateStr.split('T')[0];
-            const [year, month, day] = dateOnly.split('-').map(Number);
-            const localDate = new Date(year, month - 1, day);
-            return format(localDate, 'MMMM d, yyyy');
-          })()
-        : null,
-  });
-
   return (
     <div className="flex flex-col gap-4">
       <AboutItem field="Username" value={username} Icon={AtSign} />
