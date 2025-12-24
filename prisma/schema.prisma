@@ -1,7 +1,8 @@
 datasource db {
-  provider          = "postgresql"
-  url               = env("DATABASE_URL")
-  shadowDatabaseUrl = env("SHADOW_DATABASE_URL") // Only needed when using a cloud provider that doesn't support the creation of new databases, like Heroku. Learn more: https://pris.ly/d/migrate-shadow
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  // shadowDatabaseUrl is optional and only needed for certain cloud providers
+  // Vercel doesn't require it, so we make it truly optional
 }
 
 generator client {
