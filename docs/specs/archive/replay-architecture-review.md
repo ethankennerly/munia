@@ -4,9 +4,6 @@
 
 This document analyzes a proposed architectural refactor to implement a **Command Pattern** for session replay, introducing a command buffer layer and command player layer to share execution logic between the live client and replay system.
 
-**Recommendation**: ⚠️ **Conditional Approval** - The architecture is sound and professional, but the productivity cost may outweigh benefits for the current codebase size. Consider implementing incrementally if replay functionality expands significantly.
-
----
 
 ## Current Architecture
 
@@ -34,11 +31,7 @@ ReplayPlayer Component
 - **Replay**: `ReplayPlayer` directly executes actions via DOM manipulation
 - **Separation**: Recording and replay use different execution paths
 
----
-
-## Proposed Architecture
-
-### Command Pattern Implementation
+## Command Pattern Implementation
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -91,28 +84,32 @@ ReplayPlayer Component
               └─────────────────┘
 ```
 
-### Key Components
+**Database Schema**:
+```prisma
+model ReplaySession {
+  id        String   @id @default(cuid())
+  userId    String   // User ID (authenticated) or anonymous ID (future)
+  startedAt DateTime @default(now())
+  endedAt   DateTime?
 
-1. **Command Interface**
-   ```typescript
-   interface Command {
-     type: 'click' | 'route' | 'scroll' | 'input' | 'submit';
-     timestamp: number;
-     payload: CommandPayload;
-     execute(context: ExecutionContext): void;
-   }
-   ```
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-2. **Command Buffer**
-   - Recording mode: Buffers commands, uploads to server
-   - Replay mode: Reads commands from server, provides to player
-   - Handles encoding/decoding
+  @@index([userId, startedAt])  // Fast queries by user ID
+  @@index([startedAt])           // Fast time-based sorting
+}
 
-3. **Command Player**
-   - Single execution engine used by both:
-     - Live client (immediate execution)
-     - Replay player (timed execution)
-   - Shared logic ensures consistency
+model ReplayAction {
+  id        Int      @id @default(autoincrement())
+  sessionId String
+  timestamp BigInt   // Milliseconds since epoch
+  type      String   // Encoded type: 'r'=route, 'c'=click, 'i'=input, etc.
+  data      Json     // Compact JSON with short keys
+
+  session ReplaySession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@index([sessionId, timestamp])
+}
+```
 
 ---
 
@@ -153,6 +150,7 @@ This architecture follows established design patterns:
 - Server Components for replay data fetching
 - Client Components for interactive command execution
 - Next.js API routes for command upload/retrieval
+
 
 **Implementation Approach:**
 ```typescript
@@ -403,6 +401,98 @@ executeClickAction(action, { window: replayWindow });
 - [Command Pattern (Refactoring Guru)](https://refactoring.guru/design-patterns/command)
 - [React Patterns: Command Pattern](https://kentcdodds.com/blog/compound-components-with-react-hooks)
 - Current codebase: `src/lib/replay/`, `src/components/replay/`
+
+## Technical Decisions
+
+### Why Encoding?
+- **Storage**: 40-50% reduction in database size
+- **Network**: 50-60% reduction in payload size (with gzip)
+- **Cost**: Minimal complexity (simple encode/decode functions)
+- **Professional**: Common optimization pattern
+
+### Why Component-Based?
+- Components already exist → no rendering logic needed
+- React handles re-rendering → just feed props
+- Smaller storage → props only, not DOM
+- More accurate → components render themselves
+
+### Why Database Storage?
+- **Queryable**: Can search and filter actions
+- **Relational**: Can join with User table
+- **Indexed**: Fast queries on common fields
+- **Scalable**: Handles growth better than files
+- **Professional**: Standard approach for structured data
+
+### Why Client-Side Only?
+- No server simulation overhead
+- Scales infinitely (server just queries database)
+- Simpler architecture
+- Faster implementation
+
+### Why Forward-Only?
+- Simpler than bidirectional
+- Sufficient for debugging
+- Can add backward later if needed
+
+## Implementation Phases
+
+### Phase 1: Day-1 MVP (See spec-session-replay-mvp-day1.md)
+- Record route changes only
+- Record clicks only
+- Basic replay (route + click simulation)
+- Minimal UI (play button)
+- Database storage with encoding
+
+
+### Do NOT Implement (Out of Scope)
+- Bidirectional scrubbing
+- Server-side state simulation
+- DOM snapshot storage
+- Real-time monitoring
+- Cross-device synchronization
+
+### Phase 2: Week-1 MVP
+- Add component prop recording
+- Enhanced replay UI (play/pause/speed)
+- Action filtering/search
+
+### Phase 3: Enhanced
+- Add API call recording
+- Add business event recording
+- Timeline scrubber
+- Advanced filtering (by user, date, action type)
+- Analytics dashboard
+
+## User Association (Future Requirement)
+
+### Requirement
+Associate replay sessions with user IDs, even for actions before login. This enables:
+- Querying all sessions for a specific user
+- Understanding user journey from first visit to login
+- Analytics per user
+
+### Implementation Approach (Post-MVP)
+1. **Anonymous Sessions**: Record sessions before login with temporary/anonymous user ID
+2. **Session Merging**: When user logs in, associate pre-login sessions with their user ID
+3. **Fingerprinting**: Use browser fingerprinting or cookies to link anonymous sessions
+4. **Query Support**: Database already supports querying by `userId` (indexed)
+
+### MVP Support
+- ✅ Database schema includes `userId` field
+- ✅ Indexed on `(userId, startedAt)` for fast queries
+- ✅ Can query: `WHERE userId = '...'`
+- ⚠️ MVP only records authenticated users (post-login)
+- ⚠️ Anonymous session association deferred to future phase
+
+## Success Criteria
+
+- ✅ Can record user session as encoded action log in database
+- ✅ Can replay session using existing components
+- ✅ Storage efficient (< 8 KB per session)
+- ✅ Network efficient (< 3 KB per session upload)
+- ✅ Queryable (can filter by user, date, action type)
+- ✅ Replay accuracy sufficient for debugging
+- ✅ Implementation time < 1 week for full version
 
 ---
 

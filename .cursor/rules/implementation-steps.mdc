@@ -48,9 +48,9 @@ Each implementation step MUST be:
   - **Preferred**: Integrated into end-user experience
   - **Fallback**: Safe verification mode for end-users
   - **Constraints**: Maintain security, stability, and performance
-- **Organization**: Store in `docs/` folder or subfolder
+- **Organization**: Store testing in a section of the **same** tech spec document in `docs/specs`.
 - **Linking**: Link from README.md
-- **Format**: Markdown with Mermaid diagrams (GitHub/GitLab compatible)
+- **Format**: Markdown only with Mermaid diagrams (GitHub/GitLab compatible)
 - **Completion**: When a step is complete, mention the documentation file path
 
 ### Documentation Structure

@@ -12,6 +12,8 @@
 # Estimated savings: ~224KB + token overhead per search
 /src/vectors
 
+/docs/reviews
+
 # Build artifacts (if any slip through .gitignore)
 /.next
 /out
