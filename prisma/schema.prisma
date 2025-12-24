@@ -229,13 +229,13 @@ model ReplaySession {
 }
 
 model ReplayAction {
-  id        Int    @id @default(autoincrement())
-  sessionId String
-  timestamp BigInt // Milliseconds since epoch
-  type      String // Encoded type: 'r'=route, 'c'=click, 'i'=input, etc.
-  data      Json // Compact JSON with encoded keys
+  id            Int      @id @default(autoincrement())
+  sessionId     String
+  datetimestamp DateTime // Timestamp as datetime
+  type          String   // Encoded type: 'r'=route, 'c'=click, 'i'=input, etc.
+  data          Json     // Compact JSON with encoded keys
 
   session ReplaySession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
 
-  @@index([sessionId, timestamp])
+  @@index([sessionId, datetimestamp])
 }

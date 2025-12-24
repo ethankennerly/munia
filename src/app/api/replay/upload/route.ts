@@ -54,7 +54,7 @@ export async function POST(req: NextRequest) {
     await prisma.replayAction.createMany({
       data: actions.map((action) => ({
         sessionId,
-        timestamp: BigInt(action.ts),
+        datetimestamp: new Date(action.ts), // Convert milliseconds to DateTime
         type: action.t, // Already encoded ('r', 'a', 'sc', etc.)
         data: action.d as unknown as Prisma.InputJsonValue, // Already encoded (short keys)
       })),

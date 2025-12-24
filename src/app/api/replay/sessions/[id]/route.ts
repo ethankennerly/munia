@@ -9,15 +9,15 @@ export async function GET(_req: NextRequest, { params }: { params: { id: string 
   try {
     const actions = await prisma.replayAction.findMany({
       where: { sessionId: params.id },
-      orderBy: { timestamp: 'asc' },
-      select: { type: true, timestamp: true, data: true },
+      orderBy: { datetimestamp: 'asc' },
+      select: { type: true, datetimestamp: true, data: true },
     });
 
     return NextResponse.json({
       id: params.id,
       actions: actions.map((a) => ({
         t: a.type, // Already encoded ('r', 'c', etc.)
-        ts: Number(a.timestamp), // Convert BigInt to number
+        ts: a.datetimestamp.getTime(), // Convert DateTime to milliseconds
         d: a.data, // Already encoded (short keys)
       })),
     });
