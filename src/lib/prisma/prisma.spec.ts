@@ -16,7 +16,6 @@ describe('Prisma Client Generation', () => {
     const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf-8'));
 
     const isInDeps = packageJson.dependencies?.prisma !== undefined;
-    const isInDevDeps = packageJson.devDependencies?.prisma !== undefined;
 
     // Prisma must be in dependencies for Vercel builds
     expect(isInDeps, 'Prisma must be in dependencies for Vercel builds').toBe(true);
@@ -30,20 +29,16 @@ describe('Prisma Client Generation', () => {
     const hasPostinstall = scripts.postinstall?.includes('prisma generate');
     const hasPrebuild = scripts.prebuild?.includes('prisma generate');
 
-    expect(
-      hasPostinstall || hasPrebuild,
-      'Either postinstall or prebuild must run prisma generate',
-    ).toBe(true);
+    expect(hasPostinstall || hasPrebuild, 'Either postinstall or prebuild must run prisma generate').toBe(true);
   });
 
-  it('should be able to import PrismaClient', () => {
+  it('should be able to import PrismaClient', async () => {
     // This test verifies that @prisma/client can be imported
     // The actual client generation is tested by the build process
-    expect(() => {
+    await expect(
       // Dynamic import to avoid issues if client isn't generated
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
-      require('@prisma/client');
-    }).not.toThrow();
+      import('@prisma/client'),
+    ).resolves.toBeDefined();
   });
 
   it('should have matching versions of @prisma/client and prisma', () => {
@@ -66,4 +61,3 @@ describe('Prisma Client Generation', () => {
     ).toBe(true);
   });
 });
-
