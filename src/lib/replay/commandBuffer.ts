@@ -3,6 +3,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import { encodeAction, type Action, type EncodedAction } from './encoding';
 import type { Command } from './commands';
+import { logger } from '@/lib/logging-client';
 
 /**
  * Command Buffer - stores commands and uploads them to the server
@@ -52,8 +53,7 @@ async function flushCommands(): Promise<void> {
 export function recordCommand(command: Command): void {
   if (!sessionId) {
     sessionId = uuidv4();
-    // eslint-disable-next-line no-console
-    console.log('[commandBuffer] session ID created', { sessionId });
+    logger.debug({ message: '[commandBuffer] session ID created', sessionId });
   }
 
   // Convert command to action format for encoding
@@ -94,8 +94,7 @@ export function initCommandBuffer(): void {
   // fire before route changes
   if (!sessionId) {
     sessionId = uuidv4();
-    // eslint-disable-next-line no-console
-    console.log('[commandBuffer] initialized with session ID', { sessionId });
+    logger.debug({ message: '[commandBuffer] initialized with session ID', sessionId });
   }
 
   // Flush every 5 seconds

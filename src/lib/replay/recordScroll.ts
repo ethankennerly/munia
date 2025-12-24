@@ -3,6 +3,7 @@
 import { recordCommand } from './commandBuffer';
 import { createScrollCommand } from './commands/scrollCommand';
 import { getReplayConfig } from './config';
+import { logger } from '@/lib/logging-client';
 
 // Track last recorded scroll position (normalized 0-1) to avoid redundant logs
 let lastScrollYNormalized: number | null = null;
@@ -40,42 +41,45 @@ function normalizeScroll(scrollY: number, scrollX: number): { normalizedY: numbe
  * Zero overhead if scrollThreshold is not configured
  */
 export function recordScroll(scrollY: number, scrollX: number = 0): void {
-  // eslint-disable-next-line no-console
-  console.log('[recordScroll] FUNCTION CALLED', { scrollY, scrollX, stack: new Error().stack });
-  
+  logger.debug({ message: '[recordScroll] FUNCTION CALLED', scrollY, scrollX });
+
   const config = getReplayConfig();
-  // eslint-disable-next-line no-console
-  console.log('[recordScroll] config retrieved', { scrollThreshold: config.scrollThreshold, enabled: config.enabled });
+  logger.debug({
+    message: '[recordScroll] config retrieved',
+    scrollThreshold: config.scrollThreshold,
+    enabled: config.enabled,
+  });
 
   // Zero overhead: if scroll threshold not configured, do nothing
   if (config.scrollThreshold === undefined) {
-    // eslint-disable-next-line no-console
-    console.warn('[recordScroll] scrollThreshold is undefined - scroll recording disabled');
+    logger.warn({ message: '[recordScroll] scrollThreshold is undefined - scroll recording disabled' });
     return;
   }
 
-  // eslint-disable-next-line no-console
-  console.log('[recordScroll] config check passed', { scrollThreshold: config.scrollThreshold });
+  logger.debug({ message: '[recordScroll] config check passed', scrollThreshold: config.scrollThreshold });
 
   const normalized = normalizeScroll(scrollY, scrollX);
 
   // Guard: If there's no scrollable area, don't record (prevents spam)
   if (normalized === null) {
-    // eslint-disable-next-line no-console
-    console.log('[recordScroll] no scrollable area - skipping');
+    logger.debug({ message: '[recordScroll] no scrollable area - skipping' });
     return;
   }
 
   const { normalizedY, normalizedX } = normalized;
-  // eslint-disable-next-line no-console
-  console.log('[recordScroll] normalized', { normalizedY, normalizedX, lastY: lastScrollYNormalized, lastX: lastScrollXNormalized });
+  logger.debug({
+    message: '[recordScroll] normalized',
+    normalizedY,
+    normalizedX,
+    lastY: lastScrollYNormalized,
+    lastX: lastScrollXNormalized,
+  });
 
   // Initialize on first call
   if (lastScrollYNormalized === null || lastScrollXNormalized === null) {
     lastScrollYNormalized = normalizedY;
     lastScrollXNormalized = normalizedX;
-    // eslint-disable-next-line no-console
-    console.log('[recordScroll] initialized scroll position', { normalizedY, normalizedX });
+    logger.debug({ message: '[recordScroll] initialized scroll position', normalizedY, normalizedX });
     return; // Don't record initial position
   }
 
@@ -84,8 +88,8 @@ export function recordScroll(scrollY: number, scrollX: number = 0): void {
   const deltaY = Math.abs(normalizedY - lastScrollYNormalized);
   const deltaX = Math.abs(normalizedX - lastScrollXNormalized);
 
-  // eslint-disable-next-line no-console
-  console.log('[recordScroll] checking threshold', {
+  logger.debug({
+    message: '[recordScroll] checking threshold',
     scrollY,
     scrollX,
     normalizedY,
@@ -101,8 +105,7 @@ export function recordScroll(scrollY: number, scrollX: number = 0): void {
   // Only record if scroll changed significantly (in normalized space)
   // Threshold is clamped to minimum 0.01 (1%) to prevent spam from tiny adjustments
   if (deltaY >= config.scrollThreshold || deltaX >= config.scrollThreshold) {
-    // eslint-disable-next-line no-console
-    console.log('[recordScroll] recording normalized scroll action', { normalizedY, normalizedX });
+    logger.debug({ message: '[recordScroll] recording normalized scroll action', normalizedY, normalizedX });
     const command = createScrollCommand({
       timestamp: Date.now(),
       payload: {
@@ -116,8 +119,8 @@ export function recordScroll(scrollY: number, scrollX: number = 0): void {
     lastScrollYNormalized = normalizedY;
     lastScrollXNormalized = normalizedX;
   } else {
-    // eslint-disable-next-line no-console
-    console.log('[recordScroll] scroll delta below threshold - not recording', {
+    logger.debug({
+      message: '[recordScroll] scroll delta below threshold - not recording',
       deltaY,
       deltaX,
       threshold: config.scrollThreshold,
