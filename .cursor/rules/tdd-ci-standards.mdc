@@ -99,9 +99,7 @@ globs: **/*.{ts,tsx}
   - Execution order
   - Shared variables
   - Previous test results
-- **Linting**: All new/modified code must pass `next lint` and `prettier` checks.
-  - Consider husky/lint-staged for pre-commit hooks
-  - CI pipeline must run: `npm run test`, `npm run lint`, `npm run build`
+- **Code Quality Checks**: All checks (linting, tests, build) are enforced by the pre-push hook. The hook automatically fixes linting issues where possible.
 
 ## 7. Component Architecture for Testability
 
@@ -147,15 +145,11 @@ globs: **/*.{ts,tsx}
 
 - **Development**: Use `vitest watch` for TDD workflow (auto-rerun on changes).
 - **CI**: Use `vitest run` for one-time execution.
-- **Pre-Commit**: Run tests and linting before commit (use husky + lint-staged).
-- **Build Check**: Run `npm run build` before:
-  - Opening PR
-  - Merging to main
-  - Deploying
-- **CI Pipeline**: Must run in order:
-  1. `npm run lint` (fastest, fails early)
-  2. `npm run test` (must complete in < 10 seconds)
-  3. `npm run build` (catches TypeScript and build issues)
+- **Pre-Push Hook**: Automatically runs and enforces:
+  1. `npm run lint -- --fix` (autofixes formatting issues)
+  2. `npm run lint` (verifies all linting passes)
+  3. `npm run test` (must complete in < 10 seconds)
+  4. `npm run build` (catches TypeScript and build issues)
 
 ## 9. Environment Variables & Configuration
 
@@ -250,17 +244,12 @@ globs: **/*.{ts,tsx}
   - Reset database state between tests
   - Clear caches (React Query, etc.)
 
-## 12. Pre-Commit & CI Integration
+## 12. Pre-Push Hook Integration
 
-- **Pre-Commit Hooks**: Run automatically before commit:
-  - `npm run lint` (fast, catches syntax errors)
-  - `npm run test` (must pass, < 10 seconds)
-  - `npm run type-check` (TypeScript validation)
-- **CI Pipeline**: Must include:
-  - Linting (`next lint`)
-  - Testing (`vitest run`)
-  - Type checking (`tsc --noEmit`)
-  - Build (`next build`)
+- **Pre-Push Hook**: All code quality checks are enforced automatically before push:
+  - Linting (with autofix)
+  - Testing (must pass, < 10 seconds)
+  - Build (TypeScript validation and production build)
 - **Fast Feedback**: Keep test suite fast for developer productivity:
   - Unit tests: < 100ms each
   - Integration tests: < 500ms each

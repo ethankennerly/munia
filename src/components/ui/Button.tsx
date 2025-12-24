@@ -19,7 +19,22 @@ export type ButtonProps = VariantProps<typeof buttonVariants> &
   };
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ children, size, mode, shape, expand, Icon, loading, className, iconClassName, 'data-activate-id': activateId, ...rest }, forwardedRef) => {
+  (
+    {
+      children,
+      size,
+      mode,
+      shape,
+      expand,
+      Icon,
+      loading,
+      className,
+      iconClassName,
+      'data-activate-id': activateId,
+      ...rest
+    },
+    forwardedRef,
+  ) => {
     const iconOnly = children === undefined;
     // Support forwarded refs: https://github.com/adobe/react-spectrum/pull/2293#discussion_r714337674
     const ref = useObjectRef(forwardedRef);

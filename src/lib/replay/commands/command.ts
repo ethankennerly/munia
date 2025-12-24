@@ -1,10 +1,10 @@
 /**
  * Command Pattern for Session Replay
- * 
+ *
  * Commands encapsulate user actions and can be executed both:
  * - Immediately (live client)
  * - With timing (replay player)
- * 
+ *
  * This ensures consistency between live and replay behavior.
  */
 
@@ -48,4 +48,3 @@ export type CommandFactory<T extends Command = Command> = (data: {
   timestamp: number;
   payload: Record<string, unknown>;
 }) => T;
-

@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { Action } from '@/lib/replay/encoding';
-import { decodeAction } from '@/lib/replay/encoding';
 import { createCommandFromAction } from '@/lib/replay/commands';
 import { defaultCommandPlayer } from '@/lib/replay/commandPlayer';
 import { useReplayContext } from '@/lib/replay/replayContext';

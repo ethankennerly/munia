@@ -4,17 +4,18 @@ import type { Command, ExecutionContext } from './commands';
 
 /**
  * Command Player - executes commands in a given context
- * 
+ *
  * This is the shared execution engine used by both:
  * - Live client (immediate execution)
  * - Replay player (timed execution)
- * 
+ *
  * This ensures consistency between live and replay behavior.
  */
 export class CommandPlayer {
   /**
    * Execute a single command in the given context
    */
+  // eslint-disable-next-line class-methods-use-this
   executeCommand(command: Command, context: ExecutionContext): void {
     command.execute(context);
   }
@@ -34,4 +35,3 @@ export class CommandPlayer {
  * Default command player instance
  */
 export const defaultCommandPlayer = new CommandPlayer();
-

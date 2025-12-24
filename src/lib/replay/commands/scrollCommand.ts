@@ -7,16 +7,15 @@ import type { Command, ExecutionContext } from './command';
  */
 export class ScrollCommand implements Command {
   type = 'scroll';
+
   timestamp: number;
+
   payload: {
     scrollY: number; // Normalized 0-1 ratio
     scrollX: number; // Normalized 0-1 ratio
   };
 
-  constructor(data: {
-    timestamp: number;
-    payload: { scrollY: number; scrollX: number };
-  }) {
+  constructor(data: { timestamp: number; payload: { scrollY: number; scrollX: number } }) {
     this.timestamp = data.timestamp;
     this.payload = data.payload;
   }
@@ -47,4 +46,3 @@ export function createScrollCommand(data: {
 }): ScrollCommand {
   return new ScrollCommand(data);
 }
-

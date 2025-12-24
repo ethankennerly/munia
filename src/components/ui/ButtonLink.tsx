@@ -7,7 +7,15 @@ interface ButtonLinkProps extends ButtonProps {
   href: string;
 }
 
-export function ButtonLink({ href, children, size, mode, shape, expand, 'data-activate-id': activateId }: ButtonLinkProps) {
+export function ButtonLink({
+  href,
+  children,
+  size,
+  mode,
+  shape,
+  expand,
+  'data-activate-id': activateId,
+}: ButtonLinkProps) {
   return (
     <Link
       href={href}

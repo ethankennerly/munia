@@ -11,7 +11,9 @@ function resolveLogLevel(): Level {
   // Read from NEXT_PUBLIC_BUILDTIME_NPM_CONFIG_LOGLEVEL (exposed by next.config.js from npm_config_loglevel)
   // Fallback to npm_config_loglevel for build-time access (may be available during build)
   const npm = (
-    process.env.NEXT_PUBLIC_BUILDTIME_NPM_CONFIG_LOGLEVEL || process.env.npm_config_loglevel || ''
+    process.env.NEXT_PUBLIC_BUILDTIME_NPM_CONFIG_LOGLEVEL ||
+    process.env.npm_config_loglevel ||
+    ''
   ).toLowerCase();
   if (npm === 'silent' || npm === 'error') return 'error';
   if (npm === 'warn') return 'warn';
@@ -54,4 +56,3 @@ export const logger = {
       }
     : () => {},
 };
-

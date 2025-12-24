@@ -195,7 +195,8 @@ describe('replay encoding', () => {
 
     expect(encoded.d).toEqual({
       c: 'Button', // component → c
-      pr: { // props → pr
+      pr: {
+        // props → pr
         n: 'submit', // name → n
         v: 'Click me', // value → v
       },
@@ -258,4 +259,3 @@ describe('replay encoding', () => {
     expect(decoded.data.path).toBe('/user/123');
   });
 });
-

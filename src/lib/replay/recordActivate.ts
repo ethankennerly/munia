@@ -12,7 +12,7 @@ import { getReplayConfig } from './config';
 function getActivateIdFromEvent(event: MouseEvent | KeyboardEvent): string | null {
   // Use composedPath() to get the complete event path (more reliable than parent traversal)
   const path = event.composedPath ? event.composedPath() : [];
-  
+
   // Check each element in the path from target to root
   for (const element of path) {
     if (!(element instanceof HTMLElement)) {
@@ -20,11 +20,9 @@ function getActivateIdFromEvent(event: MouseEvent | KeyboardEvent): string | nul
     }
 
     // Check if this element is interactive
-    const isInteractive = 
-      element.tagName === 'BUTTON' ||
-      element.tagName === 'A' ||
-      element.getAttribute('role') === 'button';
-    
+    const isInteractive =
+      element.tagName === 'BUTTON' || element.tagName === 'A' || element.getAttribute('role') === 'button';
+
     if (isInteractive) {
       const id = element.getAttribute('data-activate-id');
       if (id) {
@@ -66,12 +64,11 @@ export function recordActivate(event: MouseEvent | KeyboardEvent): void {
     }
     // Only record if the element is focusable/interactive
     const isInteractive =
-      target instanceof HTMLElement && (
-        target.tagName === 'BUTTON' ||
+      target instanceof HTMLElement &&
+      (target.tagName === 'BUTTON' ||
         target.tagName === 'A' ||
         target.getAttribute('role') === 'button' ||
-        target.getAttribute('tabindex') !== null
-      );
+        target.getAttribute('tabindex') !== null);
     if (!isInteractive) {
       return;
     }
@@ -93,4 +90,3 @@ export function recordActivate(event: MouseEvent | KeyboardEvent): void {
 
   recordCommand(command);
 }
-

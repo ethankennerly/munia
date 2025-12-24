@@ -32,7 +32,13 @@ export function DeleteAccountButton() {
 
   return (
     <div className="mt-6">
-      <Button onPress={openDialog} shape="pill" expand="full" mode="secondary" loading={loading} data-activate-id="delete-account">
+      <Button
+        onPress={openDialog}
+        shape="pill"
+        expand="full"
+        mode="secondary"
+        loading={loading}
+        data-activate-id="delete-account">
         Delete Account
       </Button>
       <ConfirmDialog

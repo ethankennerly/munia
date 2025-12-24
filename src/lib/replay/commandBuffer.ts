@@ -1,13 +1,13 @@
 'use client';
 
 import { v4 as uuidv4 } from 'uuid';
+import { logger } from '@/lib/logging-client';
 import { encodeAction, type Action, type EncodedAction } from './encoding';
 import type { Command } from './commands';
-import { logger } from '@/lib/logging-client';
 
 /**
  * Command Buffer - stores commands and uploads them to the server
- * 
+ *
  * This replaces actionBuffer.ts and uses the command pattern.
  * Commands are encoded before storage/transmission.
  */
@@ -46,7 +46,7 @@ async function flushCommands(): Promise<void> {
 /**
  * Record a command for session replay
  * Commands are encoded before being added to the buffer
- * 
+ *
  * IMPORTANT: Session ID is created on first call. Ensure initCommandBuffer()
  * is called early to guarantee all commands use the same session ID.
  */
@@ -81,7 +81,7 @@ export function getSessionId(): string | null {
 
 /**
  * Initialize periodic flushing
- * 
+ *
  * IMPORTANT: Call this early (e.g., in RouteRecorder or ScrollRecorder)
  * to ensure the session ID is initialized before any commands are recorded.
  * This guarantees all commands (route, activate, scroll) use the same session ID.
@@ -117,4 +117,3 @@ export function resetCommandBuffer(): void {
     flushTimer = null;
   }
 }
-

@@ -7,7 +7,9 @@ import type { Command, ExecutionContext } from './command';
  */
 export class RouteCommand implements Command {
   type = 'route';
+
   timestamp: number;
+
   payload: {
     path: string;
   };
@@ -28,10 +30,6 @@ export class RouteCommand implements Command {
 /**
  * Create a route command from action data
  */
-export function createRouteCommand(data: {
-  timestamp: number;
-  payload: { path: string };
-}): RouteCommand {
+export function createRouteCommand(data: { timestamp: number; payload: { path: string } }): RouteCommand {
   return new RouteCommand(data);
 }
-

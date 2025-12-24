@@ -21,7 +21,10 @@ export function CreatePostModalLauncher() {
         <div className="mr-3 h-12 w-12">
           <ProfilePhotoOwn />
         </div>
-        <ButtonNaked onPress={launcCreatePostFinderClosed} className="flex flex-grow flex-col justify-center" data-activate-id="create-post-text">
+        <ButtonNaked
+          onPress={launcCreatePostFinderClosed}
+          className="flex flex-grow flex-col justify-center"
+          data-activate-id="create-post-text">
           <p className="text-muted-foreground/70">What&apos;s on your mind?</p>
         </ButtonNaked>
       </div>

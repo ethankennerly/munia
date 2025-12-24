@@ -8,7 +8,9 @@ import type { Command, ExecutionContext } from './command';
  */
 export class ActivateCommand implements Command {
   type = 'activate';
+
   timestamp: number;
+
   payload: {
     selector: string;
   };
@@ -36,10 +38,6 @@ export class ActivateCommand implements Command {
 /**
  * Create an activate command from action data
  */
-export function createActivateCommand(data: {
-  timestamp: number;
-  payload: { selector: string };
-}): ActivateCommand {
+export function createActivateCommand(data: { timestamp: number; payload: { selector: string } }): ActivateCommand {
   return new ActivateCommand(data);
 }
-

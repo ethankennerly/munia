@@ -3,9 +3,21 @@ import { cn } from '@/lib/cn';
 import { buttonVariants } from '@/components/ui/variants/buttonVariants';
 import { VariantProps } from 'class-variance-authority';
 
-type ButtonAnchorProps = React.AnchorHTMLAttributes<HTMLAnchorElement> & VariantProps<typeof buttonVariants>;
+type ButtonAnchorProps = React.AnchorHTMLAttributes<HTMLAnchorElement> &
+  VariantProps<typeof buttonVariants> & {
+    'data-activate-id'?: string;
+  };
 
-export function ButtonAnchor({ href, children, size, mode, shape, expand, 'data-activate-id': activateId, ...rest }: ButtonAnchorProps) {
+export function ButtonAnchor({
+  href,
+  children,
+  size,
+  mode,
+  shape,
+  expand,
+  'data-activate-id': activateId,
+  ...rest
+}: ButtonAnchorProps) {
   return (
     <a
       href={href}

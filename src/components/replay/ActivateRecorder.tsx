@@ -48,4 +48,3 @@ export function ActivateRecorder() {
 
   return null;
 }
-

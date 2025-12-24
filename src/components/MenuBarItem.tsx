@@ -42,10 +42,9 @@ export function MenuBarItem({
   }, [route, router]);
 
   // Generate activation ID from route
-  const activateId = route === '/api/auth/signout' 
-    ? 'sign-out' 
-    : route.replace(/^\//, '').replace(/\//g, '-') || 'home';
-  
+  const activateId =
+    route === '/api/auth/signout' ? 'sign-out' : route.replace(/^\//, '').replace(/\//g, '-') || 'home';
+
   return (
     <ButtonNaked
       aria-label={children as string}

@@ -1,9 +1,9 @@
 'use client';
 
+import { logger } from '@/lib/logging-client';
 import { recordCommand } from './commandBuffer';
 import { createScrollCommand } from './commands/scrollCommand';
 import { getReplayConfig } from './config';
-import { logger } from '@/lib/logging-client';
 
 // Track last recorded scroll position (normalized 0-1) to avoid redundant logs
 let lastScrollYNormalized: number | null = null;

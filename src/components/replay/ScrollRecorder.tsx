@@ -22,8 +22,8 @@ export function ScrollRecorder() {
   const latestScrollRef = useRef<{ scrollY: number; scrollX: number }>({ scrollY: 0, scrollX: 0 });
 
   // Extract stable values for dependencies
-  const scrollThreshold = config.scrollThreshold;
-  const enabled = config.enabled;
+  const { scrollThreshold } = config;
+  const { enabled } = config;
   const userId = session?.user?.id;
 
   useEffect(() => {
@@ -61,24 +61,25 @@ export function ScrollRecorder() {
 
       const timeoutId = setTimeout(() => {
         const { scrollY: finalY, scrollX: finalX } = latestScrollRef.current;
-        
+
         // Verify timeout wasn't cleared
         if (scrollTimeoutRef.current !== timeoutId) {
-          logger.warn({message: '[ScrollRecorder] timeout ID mismatch - timeout was cleared',
+          logger.warn({
+            message: '[ScrollRecorder] timeout ID mismatch - timeout was cleared',
             expected: timeoutId,
-            actual: scrollTimeoutRef.current
+            actual: scrollTimeoutRef.current,
           });
           return;
         }
-        
+
         try {
           recordScroll(finalY, finalX);
         } catch (error) {
-          logger.error({message: '[ScrollRecorder] error in recordScroll', error: error });
+          logger.error({ message: '[ScrollRecorder] error in recordScroll', error });
         }
         scrollTimeoutRef.current = null;
       }, 200);
-      
+
       scrollTimeoutRef.current = timeoutId;
     };
 

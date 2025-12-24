@@ -13,13 +13,13 @@ import { useSessionUserData } from '@/hooks/useSessionUserData';
 import { useSessionUserDataMutation } from '@/hooks/mutations/useSessionUserDataMutation';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useMemo } from 'react';
+import { logger } from '@/lib/logging';
 import { GenericLoading } from './GenericLoading';
 import { DatePicker } from './ui/DatePicker';
 import { Textarea } from './ui/Textarea';
 import { Select } from './ui/Select';
 import Button from './ui/Button';
 import { TextInput } from './ui/TextInput';
-import { logger } from '@/lib/logging';
 
 export function EditProfileForm({ redirectTo }: { redirectTo?: string }) {
   const [userData] = useSessionUserData();
@@ -284,7 +284,10 @@ export function EditProfileForm({ redirectTo }: { redirectTo?: string }) {
             data-activate-id="reset-profile">
             Reset
           </Button>
-          <Button type="submit" loading={updateSessionUserDataMutation.isPending === true} data-activate-id="submit-profile">
+          <Button
+            type="submit"
+            loading={updateSessionUserDataMutation.isPending === true}
+            data-activate-id="submit-profile">
             Submit
           </Button>
         </div>

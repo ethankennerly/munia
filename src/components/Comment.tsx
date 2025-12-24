@@ -110,7 +110,13 @@ export const Comment = memo(
           />
 
           <div className="flex gap-2">
-            <ToggleStepper isSelected={isLiked} onChange={handleLikeToggle} Icon={SvgHeart} quantity={numberOfLikes} data-activate-id="like-comment" />
+            <ToggleStepper
+              isSelected={isLiked}
+              onChange={handleLikeToggle}
+              Icon={SvgHeart}
+              quantity={numberOfLikes}
+              data-activate-id="like-comment"
+            />
             <Button
               onPress={handleCreateReply}
               Icon={SvgArrowReply}

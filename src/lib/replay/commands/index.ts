@@ -2,11 +2,6 @@
  * Command exports
  */
 
-export type { Command, ExecutionContext, CommandFactory } from './command';
-export { ActivateCommand, createActivateCommand } from './activateCommand';
-export { RouteCommand, createRouteCommand } from './routeCommand';
-export { ScrollCommand, createScrollCommand } from './scrollCommand';
-
 /**
  * Create a command from decoded action data
  */
@@ -15,6 +10,11 @@ import { createActivateCommand } from './activateCommand';
 import { createRouteCommand } from './routeCommand';
 import { createScrollCommand } from './scrollCommand';
 import type { Command } from './command';
+
+export type { Command, ExecutionContext, CommandFactory } from './command';
+export { ActivateCommand, createActivateCommand } from './activateCommand';
+export { RouteCommand, createRouteCommand } from './routeCommand';
+export { ScrollCommand, createScrollCommand } from './scrollCommand';
 
 export function createCommandFromAction(action: Action): Command {
   switch (action.type) {
@@ -44,4 +44,3 @@ export function createCommandFromAction(action: Action): Command {
       throw new Error(`Unknown command type: ${action.type}`);
   }
 }
-

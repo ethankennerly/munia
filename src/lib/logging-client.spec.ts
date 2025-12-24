@@ -15,7 +15,7 @@ describe('logging-client', () => {
     delete process.env.npm_config_loglevel;
     delete process.env.NODE_ENV;
     delete process.env.VITEST_WORKER_ID;
-    
+
     consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
     consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
     consoleInfoSpy = vi.spyOn(console, 'info').mockImplementation(() => {});
@@ -41,16 +41,16 @@ describe('logging-client', () => {
     process.env.NODE_ENV = 'production';
     vi.resetModules();
     const { logger } = await import('./logging-client');
-    
+
     logger.error({ message: 'error' });
     expect(consoleErrorSpy).toHaveBeenCalled();
-    
+
     logger.warn({ message: 'warn' });
     expect(consoleWarnSpy).toHaveBeenCalled();
-    
+
     logger.info({ message: 'info' });
     expect(consoleInfoSpy).not.toHaveBeenCalled(); // info disabled at warn level
-    
+
     logger.debug({ message: 'debug' });
     expect(consoleDebugSpy).not.toHaveBeenCalled(); // debug disabled at warn level
   });
@@ -60,16 +60,16 @@ describe('logging-client', () => {
     process.env.NODE_ENV = 'production';
     vi.resetModules();
     const { logger } = await import('./logging-client');
-    
+
     logger.error({ message: 'error' });
     expect(consoleErrorSpy).toHaveBeenCalled();
-    
+
     logger.warn({ message: 'warn' });
     expect(consoleWarnSpy).toHaveBeenCalled();
-    
+
     logger.info({ message: 'info' });
     expect(consoleInfoSpy).toHaveBeenCalled();
-    
+
     logger.debug({ message: 'debug' });
     expect(consoleDebugSpy).not.toHaveBeenCalled(); // debug disabled at info level
   });
@@ -79,16 +79,16 @@ describe('logging-client', () => {
     process.env.NODE_ENV = 'production';
     vi.resetModules();
     const { logger } = await import('./logging-client');
-    
+
     logger.error({ message: 'error' });
     expect(consoleErrorSpy).toHaveBeenCalled();
-    
+
     logger.warn({ message: 'warn' });
     expect(consoleWarnSpy).not.toHaveBeenCalled(); // warn disabled at error level
-    
+
     logger.info({ message: 'info' });
     expect(consoleInfoSpy).not.toHaveBeenCalled(); // info disabled at error level
-    
+
     logger.debug({ message: 'debug' });
     expect(consoleDebugSpy).not.toHaveBeenCalled(); // debug disabled at error level
   });
@@ -98,10 +98,10 @@ describe('logging-client', () => {
     process.env.NODE_ENV = 'production';
     vi.resetModules();
     const { logger } = await import('./logging-client');
-    
+
     logger.error({ message: 'error' });
     expect(consoleErrorSpy).toHaveBeenCalled();
-    
+
     logger.warn({ message: 'warn' });
     expect(consoleWarnSpy).not.toHaveBeenCalled();
   });
@@ -111,7 +111,7 @@ describe('logging-client', () => {
     process.env.NODE_ENV = 'production';
     vi.resetModules();
     const { logger } = await import('./logging-client');
-    
+
     logger.debug({ message: 'debug' });
     expect(consoleDebugSpy).toHaveBeenCalled();
   });
@@ -120,7 +120,7 @@ describe('logging-client', () => {
     process.env.NODE_ENV = 'development';
     vi.resetModules();
     const { logger } = await import('./logging-client');
-    
+
     logger.debug({ message: 'debug' });
     expect(consoleDebugSpy).toHaveBeenCalled();
   });
@@ -129,10 +129,10 @@ describe('logging-client', () => {
     process.env.NODE_ENV = 'production';
     vi.resetModules();
     const { logger } = await import('./logging-client');
-    
+
     logger.info({ message: 'info' });
     expect(consoleInfoSpy).toHaveBeenCalled();
-    
+
     logger.debug({ message: 'debug' });
     expect(consoleDebugSpy).not.toHaveBeenCalled(); // debug disabled at info level
   });
@@ -142,16 +142,16 @@ describe('logging-client', () => {
     process.env.NODE_ENV = 'production';
     vi.resetModules();
     const { logger } = await import('./logging-client');
-    
+
     logger.error({ message: 'error' });
     expect(consoleErrorSpy).toHaveBeenCalledWith(expect.stringContaining('"level":"error"'));
-    
+
     logger.warn({ message: 'warn' });
     expect(consoleWarnSpy).toHaveBeenCalledWith(expect.stringContaining('"level":"warn"'));
-    
+
     logger.info({ message: 'info' });
     expect(consoleInfoSpy).toHaveBeenCalledWith(expect.stringContaining('"level":"info"'));
-    
+
     logger.debug({ message: 'debug' });
     expect(consoleDebugSpy).toHaveBeenCalledWith(expect.stringContaining('"level":"debug"'));
   });
@@ -161,7 +161,7 @@ describe('logging-client', () => {
     process.env.NODE_ENV = 'production';
     vi.resetModules();
     const { logger } = await import('./logging-client');
-    
+
     logger.info({ message: 'test', userId: '123' });
     const call = consoleInfoSpy.mock.calls[0][0];
     const parsed = JSON.parse(call);
@@ -177,13 +177,12 @@ describe('logging-client', () => {
     process.env.NODE_ENV = 'production';
     vi.resetModules();
     const { logger } = await import('./logging-client');
-    
+
     // These should be no-ops
     logger.info({ message: 'info' });
     logger.debug({ message: 'debug' });
-    
+
     expect(consoleInfoSpy).not.toHaveBeenCalled();
     expect(consoleDebugSpy).not.toHaveBeenCalled();
   });
 });
-

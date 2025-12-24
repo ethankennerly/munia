@@ -26,7 +26,11 @@ export default function Page() {
           <ButtonLink href="/login" size="medium" data-activate-id="get-started">
             Get Started
           </ButtonLink>
-          <ButtonAnchor href="https://github.com/leandronorcio/munia" size="medium" mode="secondary" data-activate-id="github-link">
+          <ButtonAnchor
+            href="https://github.com/leandronorcio/munia"
+            size="medium"
+            mode="secondary"
+            data-activate-id="github-link">
             Github
           </ButtonAnchor>
         </div>
