@@ -1,3 +1,4 @@
+import React from 'react';
 import parse, { Element, domToReact } from 'html-react-parser';
 import DOMPurify from 'dompurify';
 import Link from 'next/link';
@@ -11,7 +12,10 @@ export function HighlightedMentionsAndHashTags({ text, shouldAddLinks }: { text:
    * * The third group matches the word after the `@` or `#`
    */
   const pattern = /(^|\s)(@|#)(\w+|\w+)/g;
-  const cleanText = DOMPurify.sanitize(text.replace(/</g, '&lt;').replace(/>/, '&gt;'));
+  // Convert newlines to <br> tags to preserve line breaks
+  const textWithBreaks = text.replace(/\n/g, '<br>');
+  // Sanitize with DOMPurify - it will preserve <br> tags and escape any malicious content
+  const cleanText = DOMPurify.sanitize(textWithBreaks);
 
   // Use replace() method to surround the matches' word with the <span> tag
   const html = cleanText.replace(pattern, (match, space: string, char: string, word: string) => {

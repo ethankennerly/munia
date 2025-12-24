@@ -10,6 +10,6 @@ export default defineConfig({
   test: {
     globals: true,
     include: ['src/**/*.spec.{ts,tsx}'],
-    environment: 'node',
+    environment: 'jsdom', // Use jsdom for React component tests
   },
 });
