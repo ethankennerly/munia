@@ -110,12 +110,13 @@ export const Comment = memo(
           />
 
           <div className="flex gap-2">
-            <ToggleStepper isSelected={isLiked} onChange={handleLikeToggle} Icon={SvgHeart} quantity={numberOfLikes} />
+            <ToggleStepper isSelected={isLiked} onChange={handleLikeToggle} Icon={SvgHeart} quantity={numberOfLikes} data-activate-id="like-comment" />
             <Button
               onPress={handleCreateReply}
               Icon={SvgArrowReply}
               loading={createReplyMutation.isPending}
               mode="ghost"
+              data-activate-id="reply-comment"
             />
 
             {isOwnComment && (
@@ -135,7 +136,8 @@ export const Comment = memo(
           {numberOfReplies !== 0 && (
             <ButtonNaked
               onPress={toggleReplies}
-              className="my-1 cursor-pointer text-sm font-semibold text-muted-foreground hover:text-muted-foreground/70">
+              className="my-1 cursor-pointer text-sm font-semibold text-muted-foreground hover:text-muted-foreground/70"
+              data-activate-id={repliesShown ? 'hide-replies' : 'show-replies'}>
               {!repliesShown ? `Show ${numberOfReplies} replies...` : 'Hide replies'}
             </ButtonNaked>
           )}

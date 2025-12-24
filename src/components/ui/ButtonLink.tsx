@@ -7,11 +7,12 @@ interface ButtonLinkProps extends ButtonProps {
   href: string;
 }
 
-export function ButtonLink({ href, children, size, mode, shape, expand }: ButtonLinkProps) {
+export function ButtonLink({ href, children, size, mode, shape, expand, 'data-activate-id': activateId }: ButtonLinkProps) {
   return (
     <Link
       href={href}
       prefetch
+      data-activate-id={activateId}
       className={cn(
         buttonVariants({ size, mode, shape, expand }),
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:ring-offset-2',

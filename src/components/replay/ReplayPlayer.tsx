@@ -15,7 +15,7 @@ interface ReplayPlayerProps {
 }
 
 /**
- * Replays recorded session actions (routes and clicks)
+ * Replays recorded session commands (routes and activations)
  */
 export function ReplayPlayer({ actions, onComplete }: ReplayPlayerProps) {
   const { setIsReplaying } = useReplayContext();

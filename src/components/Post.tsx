@@ -111,6 +111,7 @@ export const Post = memo(
             onChange={handleLikeToggle}
             Icon={SvgHeart}
             quantity={numberOfLikes}
+            data-activate-id="like-post"
             // noun="Like"
           />
           <ToggleStepper
@@ -119,6 +120,7 @@ export const Post = memo(
             Icon={SvgComment}
             quantity={_count.comments}
             color="blue"
+            data-activate-id="toggle-comments"
             // noun="Comment"
           />
         </div>

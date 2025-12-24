@@ -136,7 +136,8 @@ export function CreatePostDialog({
             onPress={handleClickPostButton}
             size="small"
             isDisabled={content === '' && visualMedia.length === 0}
-            loading={createPostMutation.isPending || updatePostMutation.isPending}>
+            loading={createPostMutation.isPending || updatePostMutation.isPending}
+            data-activate-id={mode === 'create' ? 'create-post' : 'update-post'}>
             Post
           </Button>
         </div>

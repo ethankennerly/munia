@@ -3,7 +3,7 @@
  */
 
 export type { Command, ExecutionContext, CommandFactory } from './command';
-export { ClickCommand, createClickCommand } from './clickCommand';
+export { ActivateCommand, createActivateCommand } from './activateCommand';
 export { RouteCommand, createRouteCommand } from './routeCommand';
 export { ScrollCommand, createScrollCommand } from './scrollCommand';
 
@@ -11,19 +11,18 @@ export { ScrollCommand, createScrollCommand } from './scrollCommand';
  * Create a command from decoded action data
  */
 import type { Action } from '@/lib/replay/encoding';
-import { createClickCommand } from './clickCommand';
+import { createActivateCommand } from './activateCommand';
 import { createRouteCommand } from './routeCommand';
 import { createScrollCommand } from './scrollCommand';
 import type { Command } from './command';
 
 export function createCommandFromAction(action: Action): Command {
   switch (action.type) {
-    case 'click':
-      return createClickCommand({
+    case 'activate':
+      return createActivateCommand({
         timestamp: action.timestamp,
         payload: {
           selector: action.data.selector as string,
-          target: action.data.target as string,
         },
       });
     case 'route':

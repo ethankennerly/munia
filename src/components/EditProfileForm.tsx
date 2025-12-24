@@ -305,10 +305,11 @@ export function EditProfileForm({ redirectTo }: { redirectTo?: string }) {
             mode="secondary"
             type="button"
             loading={updateSessionUserDataMutation.isPending === true}
-            onPress={resetForm}>
+            onPress={resetForm}
+            data-activate-id="reset-profile">
             Reset
           </Button>
-          <Button type="submit" loading={updateSessionUserDataMutation.isPending === true}>
+          <Button type="submit" loading={updateSessionUserDataMutation.isPending === true} data-activate-id="submit-profile">
             Submit
           </Button>
         </div>

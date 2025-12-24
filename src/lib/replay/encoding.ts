@@ -5,23 +5,23 @@
 
 export const TYPE_ENCODE: Record<string, string> = {
   route: 'r',
-  click: 'c',
+  activate: 'a',
   scroll: 'sc',
   input: 'i',
   submit: 's',
   component: 'm',
-  api_call: 'a',
+  api_call: 'ac',
   error: 'e',
 };
 
 export const TYPE_DECODE: Record<string, string> = {
   r: 'route',
-  c: 'click',
+  a: 'activate',
   sc: 'scroll',
   i: 'input',
   s: 'submit',
   m: 'component',
-  a: 'api_call',
+  ac: 'api_call',
   e: 'error',
 };
 

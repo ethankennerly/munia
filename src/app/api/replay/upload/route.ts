@@ -55,7 +55,7 @@ export async function POST(req: NextRequest) {
       data: actions.map((action) => ({
         sessionId,
         timestamp: BigInt(action.ts),
-        type: action.t, // Already encoded ('r', 'c', etc.)
+        type: action.t, // Already encoded ('r', 'a', 'sc', etc.)
         data: action.d as unknown as Prisma.InputJsonValue, // Already encoded (short keys)
       })),
     });

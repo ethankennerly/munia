@@ -8,10 +8,11 @@ import { AriaButtonProps, mergeProps, useButton, useFocusRing } from 'react-aria
 interface ButtonProps extends AriaButtonProps {
   children: React.ReactNode;
   className?: string;
+  'data-activate-id'?: string;
 }
 
 export const ButtonNaked = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, children, ...rest }, forwardedRef) => {
+  ({ className, children, 'data-activate-id': activateId, ...rest }, forwardedRef) => {
     const ref = useObjectRef(forwardedRef);
     const { buttonProps } = useButton({ ...rest }, ref);
     const { isFocusVisible, focusProps } = useFocusRing();
@@ -21,6 +22,7 @@ export const ButtonNaked = forwardRef<HTMLButtonElement, ButtonProps>(
         type="button"
         {...mergeProps(buttonProps, focusProps)}
         ref={ref}
+        data-activate-id={activateId}
         className={cn(
           'rounded-sm focus:outline-none',
           className,

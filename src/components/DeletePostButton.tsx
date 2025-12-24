@@ -59,7 +59,7 @@ export function DeletePostButton({ postId }: { postId: number }) {
 
   return (
     <div className="mt-6">
-      <Button onPress={openDialog} shape="pill" expand="full" mode="secondary" loading={loading}>
+      <Button onPress={openDialog} shape="pill" expand="full" mode="secondary" loading={loading} data-activate-id="delete-post">
         Delete Post
       </Button>
       <ConfirmDialog

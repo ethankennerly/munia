@@ -34,9 +34,10 @@ interface ToggleStepperProps extends VariantProps<typeof icon>, AriaToggleButton
   Icon: (props: SVGProps<SVGSVGElement>) => JSX.Element;
   quantity: number;
   noun?: string;
+  'data-activate-id'?: string;
 }
 
-export function ToggleStepper({ Icon, quantity, noun, color, ...rest }: ToggleStepperProps) {
+export function ToggleStepper({ Icon, quantity, noun, color, 'data-activate-id': activateId, ...rest }: ToggleStepperProps) {
   const ref = useRef<HTMLButtonElement>(null);
   const state = useToggleState(rest);
   const { buttonProps } = useToggleButton(rest, state, ref);
@@ -47,6 +48,7 @@ export function ToggleStepper({ Icon, quantity, noun, color, ...rest }: ToggleSt
       type="button"
       {...mergeProps(buttonProps, focusProps)}
       ref={ref}
+      data-activate-id={activateId}
       className={cn(
         'transition-transform active:scale-90',
         toggle({ color }),

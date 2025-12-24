@@ -21,7 +21,7 @@ export interface ExecutionContext {
  */
 export interface Command {
   /**
-   * Command type (e.g., 'click', 'route', 'scroll')
+   * Command type (e.g., 'activate', 'route', 'scroll')
    */
   type: string;
 

@@ -41,11 +41,17 @@ export function MenuBarItem({
     router.prefetch(route);
   }, [route, router]);
 
+  // Generate activation ID from route
+  const activateId = route === '/api/auth/signout' 
+    ? 'sign-out' 
+    : route.replace(/^\//, '').replace(/\//g, '-') || 'home';
+  
   return (
     <ButtonNaked
       aria-label={children as string}
       className="group relative flex h-14 flex-1 cursor-pointer flex-row items-center justify-center px-4 hover:bg-primary-accent/30 md:mt-2 md:flex-none md:rounded-lg md:last:mt-auto"
-      onPress={onItemClick}>
+      onPress={onItemClick}
+      data-activate-id={activateId}>
       <div
         className={cn(
           'absolute left-0 hidden h-10 w-[4px] origin-bottom scale-y-0 rounded-r-lg bg-primary transition-transform group-hover:origin-top group-hover:scale-y-100 md:block',

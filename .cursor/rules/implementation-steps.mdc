@@ -28,12 +28,12 @@ Each implementation step MUST be:
    - Use consistent log keys (e.g., `profile_update_request`, `profile_update_db_save`)
    - Log both server-side (`logger.info`) and client-side (`console.log` with `[component]` prefix)
    - Log critical fields with their types to catch serialization issues
-3. **Implement**: Build the complete feature for that step
+3. **Implement**: Build the complete feature for that step. Name code that is self-documenting. Do not add comments to code.
 4. **Test**: Manually test as an end-user would
 5. **Debug**: Fix any issues until it works perfectly (use logs to isolate the first failing step)
-6. **Verify**: Confirm it's debuggable and testable
+6. **Verify**: Confirm it's debuggable and testable. Disable diagnostic logging when diagnosing.
 7. **Document**: Create or update test documentation (see Domain Documentation Driven Development)
-8. **Commit**: Only commit when the step is complete and working
+8. **Commit**: Only commit when the step is complete and working. Delete unused files.
 9. **Prevention**: After fixing a bug, update Cursor rules to prevent similar high-risk issues in the future. Keep rules brief and actionable.
 
 ## Domain Documentation Driven Development

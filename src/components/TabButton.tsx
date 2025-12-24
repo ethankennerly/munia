@@ -3,8 +3,11 @@ import { capitalize } from 'lodash';
 import Link from 'next/link';
 
 export function TabButton({ isActive, title, href }: { isActive?: boolean; title: string; href: string }) {
+  // Generate activation ID from title (lowercase, hyphenated)
+  const activateId = `tab-${title.toLowerCase()}`;
+  
   return (
-    <Link aria-label={title} className="flex cursor-pointer flex-col items-center gap-2" href={href}>
+    <Link aria-label={title} className="flex cursor-pointer flex-col items-center gap-2" href={href} data-activate-id={activateId}>
       <h2
         className={cn(
           isActive ? 'font-bold text-foreground' : 'font-semibold text-muted-foreground hover:text-muted-foreground/70',

@@ -15,10 +15,11 @@ export type ButtonProps = VariantProps<typeof buttonVariants> &
     loading?: boolean;
     className?: string;
     iconClassName?: string;
+    'data-activate-id'?: string;
   };
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ children, size, mode, shape, expand, Icon, loading, className, iconClassName, ...rest }, forwardedRef) => {
+  ({ children, size, mode, shape, expand, Icon, loading, className, iconClassName, 'data-activate-id': activateId, ...rest }, forwardedRef) => {
     const iconOnly = children === undefined;
     // Support forwarded refs: https://github.com/adobe/react-spectrum/pull/2293#discussion_r714337674
     const ref = useObjectRef(forwardedRef);
@@ -30,6 +31,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         type="button"
         {...mergeProps(buttonProps, focusProps)}
         ref={ref}
+        data-activate-id={activateId}
         className={cn(
           [buttonVariants({ size, mode, shape, expand })],
           iconOnly && 'rounded-full p-3',

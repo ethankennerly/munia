@@ -16,23 +16,21 @@ describe('replay encoding', () => {
     expect(encoded.d).toEqual({ p: '/feed' }); // path → p
   });
 
-  it('encodes click action with selector and target', () => {
+  it('encodes activate action with selector only', () => {
     const action = {
-      type: 'click',
+      type: 'activate',
       timestamp: 1234567891,
       data: {
-        selector: '[data-testid="like-button"]',
-        target: '/profile',
+        selector: 'like-button',
       },
     };
 
     const encoded = encodeAction(action);
 
-    expect(encoded.t).toBe('c'); // click → c
+    expect(encoded.t).toBe('a'); // activate → a
     expect(encoded.ts).toBe(1234567891);
     expect(encoded.d).toEqual({
-      s: '[data-testid="like-button"]', // selector → s
-      tg: '/profile', // target → tg
+      s: 'like-button', // selector → s
     });
   });
 
@@ -70,23 +68,21 @@ describe('replay encoding', () => {
     expect(decoded.data).toEqual({ path: '/feed' });
   });
 
-  it('decodes click action correctly', () => {
+  it('decodes activate action correctly', () => {
     const encoded = {
-      t: 'c',
+      t: 'a',
       ts: 1234567891,
       d: {
-        s: '[data-testid="like-button"]',
-        tg: '/profile',
+        s: 'like-button',
       },
     };
 
     const decoded = decodeAction(encoded);
 
-    expect(decoded.type).toBe('click');
+    expect(decoded.type).toBe('activate');
     expect(decoded.timestamp).toBe(1234567891);
     expect(decoded.data).toEqual({
-      selector: '[data-testid="like-button"]',
-      target: '/profile',
+      selector: 'like-button',
     });
   });
 
@@ -123,13 +119,12 @@ describe('replay encoding', () => {
     expect(decoded).toEqual(original);
   });
 
-  it('round-trips: click action', () => {
+  it('round-trips: activate action', () => {
     const original = {
-      type: 'click',
+      type: 'activate',
       timestamp: 1234567891,
       data: {
-        selector: '[data-testid="submit"]',
-        target: 'button',
+        selector: 'submit-post',
       },
     };
 

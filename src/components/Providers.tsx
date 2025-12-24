@@ -11,7 +11,7 @@ import { SessionProvider } from 'next-auth/react';
 import type { Session } from 'next-auth';
 import React from 'react';
 import { RouteRecorder } from '@/components/replay/RouteRecorder';
-import { ClickRecorder } from '@/components/replay/ClickRecorder';
+import { ActivateRecorder } from '@/components/replay/ActivateRecorder';
 import { ScrollRecorder } from '@/components/replay/ScrollRecorder';
 import { ReplayProvider } from '@/lib/replay/replayContext';
 
@@ -23,7 +23,7 @@ export function Providers({ children, session }: { children: React.ReactNode; se
           <SessionProvider session={session}>
             <ReplayProvider>
               <RouteRecorder />
-              <ClickRecorder />
+              <ActivateRecorder />
               <ScrollRecorder />
               <DialogsContextProvider>
                 <VisualMediaModalContextProvider>

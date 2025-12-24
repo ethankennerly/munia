@@ -1,17 +1,17 @@
 'use client';
 
 import { useEffect } from 'react';
-import { recordClick } from '@/lib/replay/recordClick';
+import { recordActivate } from '@/lib/replay/recordActivate';
 import { getReplayConfig } from '@/lib/replay/config';
 import { useSession } from 'next-auth/react';
 import { useReplayContext } from '@/lib/replay/replayContext';
 
 /**
- * Records click events for session replay.
+ * Records activation events (click, tap, Enter, Space) for session replay.
  * Only records when replay is enabled and user is authenticated.
  * Does not record during active replay sessions.
  */
-export function ClickRecorder() {
+export function ActivateRecorder() {
   const { data: session } = useSession();
   const config = getReplayConfig();
   const { isReplaying } = useReplayContext();
@@ -29,12 +29,12 @@ export function ClickRecorder() {
 
     // Add click event listener
     const handleClick = (event: MouseEvent) => {
-      recordClick(event);
+      recordActivate(event);
     };
 
     // Add keyboard event listener for Enter/Space on buttons/links
     const handleKeyDown = (event: KeyboardEvent) => {
-      recordClick(event);
+      recordActivate(event);
     };
 
     document.addEventListener('click', handleClick, true); // Use capture phase
@@ -48,3 +48,4 @@ export function ClickRecorder() {
 
   return null;
 }
+

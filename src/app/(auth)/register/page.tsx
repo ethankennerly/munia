@@ -13,7 +13,7 @@ export default function Page() {
       <UserAuthForm />
       <p className="text-lg text-muted-foreground">Alreay have an account?</p>
       <p className="cursor-pointer text-lg font-semibold text-primary-accent hover:opacity-90">
-        <Link href="/login" prefetch>
+        <Link href="/login" prefetch data-activate-id="login-link">
           Login
         </Link>
       </p>

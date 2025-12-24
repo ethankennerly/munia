@@ -45,7 +45,8 @@ export function UserAuthForm() {
         mode="subtle"
         Icon={Google}
         loading={loading.google}
-        isDisabled={areButtonsDisabled}>
+        isDisabled={areButtonsDisabled}
+        data-activate-id="sign-in-google">
         Continue with Google
       </Button>
     </div>

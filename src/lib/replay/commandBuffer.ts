@@ -45,10 +45,15 @@ async function flushCommands(): Promise<void> {
 /**
  * Record a command for session replay
  * Commands are encoded before being added to the buffer
+ * 
+ * IMPORTANT: Session ID is created on first call. Ensure initCommandBuffer()
+ * is called early to guarantee all commands use the same session ID.
  */
 export function recordCommand(command: Command): void {
   if (!sessionId) {
     sessionId = uuidv4();
+    // eslint-disable-next-line no-console
+    console.log('[commandBuffer] session ID created', { sessionId });
   }
 
   // Convert command to action format for encoding
@@ -76,9 +81,22 @@ export function getSessionId(): string | null {
 
 /**
  * Initialize periodic flushing
+ * 
+ * IMPORTANT: Call this early (e.g., in RouteRecorder or ScrollRecorder)
+ * to ensure the session ID is initialized before any commands are recorded.
+ * This guarantees all commands (route, activate, scroll) use the same session ID.
  */
 export function initCommandBuffer(): void {
   if (typeof window === 'undefined') return;
+
+  // Initialize session ID if not already set
+  // This ensures all commands use the same session ID, even if scroll events
+  // fire before route changes
+  if (!sessionId) {
+    sessionId = uuidv4();
+    // eslint-disable-next-line no-console
+    console.log('[commandBuffer] initialized with session ID', { sessionId });
+  }
 
   // Flush every 5 seconds
   if (!flushTimer) {

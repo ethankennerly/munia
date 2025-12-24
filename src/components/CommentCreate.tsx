@@ -44,6 +44,7 @@ export function CommentCreate({ postId }: { postId: number }) {
             isDisabled={content === ''}
             loading={createCommentMutation.isPending}
             Icon={SvgSend}
+            data-activate-id="submit-comment"
           />
         </div>
       </div>

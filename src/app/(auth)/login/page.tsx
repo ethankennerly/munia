@@ -13,7 +13,7 @@ export default function Page() {
       <UserAuthForm />
       <p className="text-lg text-muted-foreground">No account yet?</p>
       <p className="cursor-pointer text-lg font-semibold text-primary-accent hover:opacity-90">
-        <Link href="/register" prefetch>
+        <Link href="/register" prefetch data-activate-id="register-link">
           Create an account
         </Link>
       </p>
