@@ -1,0 +1,44 @@
+'use client';
+
+import React, { useState, useMemo } from 'react';
+import { cn } from '@/lib/cn';
+import { HighlightedMentionsAndHashTags } from './HighlightedMentionsAndHashTags';
+
+interface TruncatedPostContentProps {
+  content: string;
+}
+
+export function TruncatedPostContent({ content }: TruncatedPostContentProps) {
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  // Count lines by splitting on newlines
+  const lineCount = useMemo(() => {
+    if (!content) return 0;
+    return content.split('\n').length;
+  }, [content]);
+
+  const shouldTruncate = lineCount > 3;
+
+  if (!content) return null;
+
+  return (
+    <div className="mb-4 mt-5">
+      <div
+        className={cn(
+          'text-lg text-muted-foreground',
+          !isExpanded && shouldTruncate && 'line-clamp-3',
+        )}>
+        <HighlightedMentionsAndHashTags text={content} shouldAddLinks />
+      </div>
+      {shouldTruncate && (
+        <button
+          type="button"
+          onClick={() => setIsExpanded(!isExpanded)}
+          className="mt-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
+          {isExpanded ? 'Show less' : 'Show more'}
+        </button>
+      )}
+    </div>
+  );
+}
+

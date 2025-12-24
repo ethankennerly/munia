@@ -15,7 +15,7 @@ import { ToggleStepper } from './ui/ToggleStepper';
 import { Comments } from './Comments';
 import { PostVisualMediaContainer } from './PostVisualMediaContainer';
 import ProfileBlock from './ProfileBlock';
-import { HighlightedMentionsAndHashTags } from './HighlightedMentionsAndHashTags';
+import { TruncatedPostContent } from './TruncatedPostContent';
 import { PostOptions } from './PostOptions';
 
 export const Post = memo(
@@ -91,11 +91,7 @@ export const Post = memo(
           />
           {isOwnPost && <PostOptions postId={postId} content={content} visualMedia={visualMedia} />}
         </div>
-        {content && (
-          <p className="mb-4 mt-5 text-lg text-muted-foreground">
-            <HighlightedMentionsAndHashTags text={content} shouldAddLinks />
-          </p>
-        )}
+        {content && <TruncatedPostContent content={content} />}
         {visualMedia.length > 0 && (
           <div className="mb-4 mt-5 overflow-hidden rounded-2xl">
             <PostVisualMediaContainer visualMedia={visualMedia} />
