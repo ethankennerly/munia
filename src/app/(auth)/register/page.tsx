@@ -6,12 +6,12 @@ export const metadata = {
 };
 
 export default function Page() {
-  const emailEnabled = Boolean(
-    process.env.SES_ACCESS_KEY_ID && process.env.SES_SECRET_ACCESS_KEY && process.env.SES_FROM_EMAIL,
-  );
-  const facebookEnabled = Boolean(process.env.AUTH_FACEBOOK_ID && process.env.AUTH_FACEBOOK_SECRET);
-  const githubEnabled = Boolean(process.env.AUTH_GITHUB_ID && process.env.AUTH_GITHUB_SECRET);
-  const googleEnabled = Boolean(process.env.AUTH_GOOGLE_ID && process.env.AUTH_GOOGLE_SECRET);
+  const { env } = process;
+  const hasEmail = env.SES_ACCESS_KEY_ID && env.SES_SECRET_ACCESS_KEY && env.SES_FROM_EMAIL;
+  const emailEnabled = Boolean(hasEmail);
+  const facebookEnabled = Boolean(env.AUTH_FACEBOOK_ID && env.AUTH_FACEBOOK_SECRET);
+  const githubEnabled = Boolean(env.AUTH_GITHUB_ID && env.AUTH_GITHUB_SECRET);
+  const googleEnabled = Boolean(env.AUTH_GOOGLE_ID && env.AUTH_GOOGLE_SECRET);
   return (
     <>
       <h1 className="mb-5 text-5xl font-bold">Sign Up</h1>
