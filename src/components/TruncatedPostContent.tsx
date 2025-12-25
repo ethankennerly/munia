@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { cn } from '@/lib/cn';
 import { HighlightedMentionsAndHashTags } from './HighlightedMentionsAndHashTags';
 
@@ -19,26 +19,25 @@ export function TruncatedPostContent({ content }: TruncatedPostContentProps) {
 
   const shouldTruncate = lineCount > 3;
 
+  const handleToggle = useCallback(() => {
+    setIsExpanded((prev) => !prev);
+  }, []);
+
   if (!content) return null;
 
   return (
     <div className="mb-4 mt-5">
-      <div
-        className={cn(
-          'text-lg text-muted-foreground',
-          !isExpanded && shouldTruncate && 'line-clamp-3',
-        )}>
+      <div className={cn('text-lg text-muted-foreground', !isExpanded && shouldTruncate && 'line-clamp-3')}>
         <HighlightedMentionsAndHashTags text={content} shouldAddLinks />
       </div>
       {shouldTruncate && (
         <button
           type="button"
-          onClick={() => setIsExpanded(!isExpanded)}
-          className="mt-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
+          onClick={handleToggle}
+          className="mt-2 text-sm text-muted-foreground transition-colors hover:text-foreground">
           {isExpanded ? 'Show less' : 'Show more'}
         </button>
       )}
     </div>
   );
 }
-

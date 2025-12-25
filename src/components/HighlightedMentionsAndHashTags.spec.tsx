@@ -7,7 +7,7 @@ describe('HighlightedMentionsAndHashTags', () => {
   it('preserves newlines in the middle of text', () => {
     const text = 'First line\nSecond line';
     const { container } = render(<HighlightedMentionsAndHashTags text={text} />);
-    
+
     // Check that <br> tags are present in the rendered output
     const html = container.innerHTML;
     expect(html).toContain('<br>');
@@ -16,7 +16,7 @@ describe('HighlightedMentionsAndHashTags', () => {
   it('preserves multiple newlines', () => {
     const text = 'Line 1\n\nLine 3';
     const { container } = render(<HighlightedMentionsAndHashTags text={text} />);
-    
+
     const html = container.innerHTML;
     // Should have two <br> tags for two newlines
     const brCount = (html.match(/<br>/g) || []).length;
@@ -26,7 +26,7 @@ describe('HighlightedMentionsAndHashTags', () => {
   it('preserves newlines with mentions', () => {
     const text = 'Hello @user\nHow are you?';
     const { container } = render(<HighlightedMentionsAndHashTags text={text} shouldAddLinks />);
-    
+
     const html = container.innerHTML;
     expect(html).toContain('<br>');
     // Should still highlight the mention
@@ -36,7 +36,7 @@ describe('HighlightedMentionsAndHashTags', () => {
   it('preserves newlines with hashtags', () => {
     const text = 'Check this out\n#awesome';
     const { container } = render(<HighlightedMentionsAndHashTags text={text} shouldAddLinks />);
-    
+
     const html = container.innerHTML;
     expect(html).toContain('<br>');
     // Should still highlight the hashtag
@@ -46,7 +46,7 @@ describe('HighlightedMentionsAndHashTags', () => {
   it('handles text without newlines', () => {
     const text = 'Simple text without newlines';
     const { container } = render(<HighlightedMentionsAndHashTags text={text} />);
-    
+
     const html = container.innerHTML;
     expect(html).toContain('Simple text without newlines');
     // Should not have unnecessary <br> tags
@@ -55,7 +55,7 @@ describe('HighlightedMentionsAndHashTags', () => {
 
   it('handles empty text', () => {
     const { container } = render(<HighlightedMentionsAndHashTags text="" />);
-    
+
     const html = container.innerHTML;
     // Should render something (even if empty)
     expect(html).toBeDefined();
@@ -64,7 +64,7 @@ describe('HighlightedMentionsAndHashTags', () => {
   it('preserves newlines at the start of text', () => {
     const text = '\nText after newline';
     const { container } = render(<HighlightedMentionsAndHashTags text={text} />);
-    
+
     const html = container.innerHTML;
     expect(html).toContain('<br>');
   });
@@ -72,7 +72,7 @@ describe('HighlightedMentionsAndHashTags', () => {
   it('preserves newlines at the end of text', () => {
     const text = 'Text before newline\n';
     const { container } = render(<HighlightedMentionsAndHashTags text={text} />);
-    
+
     const html = container.innerHTML;
     expect(html).toContain('<br>');
   });
@@ -80,7 +80,7 @@ describe('HighlightedMentionsAndHashTags', () => {
   it('sanitizes malicious content while preserving newlines', () => {
     const text = 'Safe text\n<script>alert("xss")</script>';
     const { container } = render(<HighlightedMentionsAndHashTags text={text} />);
-    
+
     const html = container.innerHTML;
     // Should preserve newline
     expect(html).toContain('<br>');
@@ -91,7 +91,7 @@ describe('HighlightedMentionsAndHashTags', () => {
   it('highlights mentions correctly with newlines', () => {
     const text = '@alice\n@bob';
     const { container } = render(<HighlightedMentionsAndHashTags text={text} shouldAddLinks />);
-    
+
     const html = container.innerHTML;
     // Should have newline
     expect(html).toContain('<br>');
@@ -103,7 +103,7 @@ describe('HighlightedMentionsAndHashTags', () => {
   it('highlights hashtags correctly with newlines', () => {
     const text = '#react\n#typescript';
     const { container } = render(<HighlightedMentionsAndHashTags text={text} shouldAddLinks />);
-    
+
     const html = container.innerHTML;
     // Should have newline
     expect(html).toContain('<br>');
@@ -112,4 +112,3 @@ describe('HighlightedMentionsAndHashTags', () => {
     expect(html).toContain('#typescript');
   });
 });
-

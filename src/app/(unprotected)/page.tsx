@@ -15,9 +15,32 @@ function TechStackCard({ header, children }: { header: string; children: React.R
 export default function Page() {
   return (
     <main>
-      <div className="mt-28 flex flex-col items-center sm:mt-36">
+      <div className="mt-4 flex flex-col items-center">
+        <h1 className="mt-4 text-center sm:text-5xl">What&apos;s New</h1>
+        <div className="m-6 flex justify-center gap-3">
+          <p className="w-1/2 text-muted-foreground">
+            In this{' '}
+            <a
+              className="text-primary underline hover:text-primary-accent"
+              href="https://github.com/ethankennerly/munia"
+              data-activate-id="github-kennerly">
+              fork
+            </a>
+            , Ethan Kennerly enhanced the following features:
+          </p>
+          <ol className="w-1/2 list-disc rounded-lg bg-card px-6 py-2 text-muted-foreground">
+            <li> Patched DoS vulnerability (2025-12-11) </li>
+            <li> Delete an account </li>
+            <li> Remove a post </li>
+            <li> Collapse a long post </li>
+            <li> Fixed birth date editing </li>
+            <li> Terms of Service </li>
+            <li> Privacy Policy </li>
+            <li> Admin replays clicks and scrolling </li>
+          </ol>
+        </div>
         <a href="https://twitter.com/norciodotdev" data-activate-id="follow-x">
-          <p className="inline-block rounded-lg bg-card px-3 py-2 text-card-foreground">Follow me on X</p>
+          <p className="inline-block rounded-lg bg-card px-3 py-2 text-card-foreground">Follow Leandro Norcio on X</p>
         </a>
         <h1 className="mt-4 px-5 text-center text-2xl sm:text-5xl">
           A responsive and accessible full stack social media web app.
@@ -30,7 +53,7 @@ export default function Page() {
             href="https://github.com/leandronorcio/munia"
             size="medium"
             mode="secondary"
-            data-activate-id="github-link">
+            data-activate-id="github-norcio">
             Github
           </ButtonAnchor>
         </div>

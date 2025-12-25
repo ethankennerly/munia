@@ -1,6 +1,19 @@
 # Munia 
 
-A responsive and accessible full stack social media web app.
+A responsive and accessible full stack social media web app by Leandro Norcio.
+
+## What's New
+
+In this fork, Ethan Kennerly added the following enhancements:
+
+- Delete an account
+- Remove a post
+- Collapse a long post
+- Patched DoS vulnerability (2025-12-11)
+- Fix birth date editing
+- Admin replays clicks and scrolling
+- Terms of Service
+- Privacy Policy
 
 ## Preview 🎬
 
@@ -87,4 +100,3 @@ Follow these steps to deploy Munia on an EC2 instance.
 ## Docs
 
 - [docs](docs/overview.md)
-- [Testing Documentation](docs/testing/)

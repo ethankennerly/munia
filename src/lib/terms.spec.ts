@@ -1,39 +1,43 @@
+// @vitest-environment node
+/* eslint-disable import/first, @typescript-eslint/no-explicit-any */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
-vi.mock('fs/promises', async () => {
-  const mod = await vi.importActual<typeof import('fs/promises')>('fs/promises');
+vi.mock('fs', async (orig) => {
+  const actual = await (orig() as any);
   return {
-    ...mod,
-    readFile: vi.fn(),
+    ...actual,
+    promises: {
+      readFile: vi.fn(),
+    },
   };
 });
 
-/* eslint-disable import/first, @typescript-eslint/no-explicit-any */
-import { readFile } from 'fs/promises';
+import { promises as fs } from 'fs';
 import { getTermsText, TERMS_FILE_PATH } from './terms';
 
 describe('getTermsText', () => {
+  const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
   beforeEach(() => {
     vi.resetAllMocks();
   });
 
   afterEach(() => {
-    vi.restoreAllMocks();
+    warnSpy.mockClear();
   });
 
   it('returns text when file can be read', async () => {
-    (readFile as unknown as ReturnType<typeof vi.fn>).mockResolvedValueOnce(Buffer.from('hello terms', 'utf-8'));
+    (fs.readFile as unknown as ReturnType<typeof vi.fn>).mockResolvedValueOnce(Buffer.from('hello terms', 'utf-8'));
     const text = await getTermsText();
     expect(text).toBe('hello terms');
-    expect(readFile).toHaveBeenCalledWith(TERMS_FILE_PATH);
+    expect(fs.readFile).toHaveBeenCalledWith(TERMS_FILE_PATH);
+    expect(warnSpy).not.toHaveBeenCalled();
   });
 
   it('returns null and logs a warning when file read fails', async () => {
-    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
-    (readFile as unknown as ReturnType<typeof vi.fn>).mockRejectedValueOnce(new Error('ENOENT'));
+    (fs.readFile as unknown as ReturnType<typeof vi.fn>).mockRejectedValueOnce(new Error('ENOENT'));
     const text = await getTermsText();
     expect(text).toBeNull();
-    expect(warnSpy).toHaveBeenCalled();
-    warnSpy.mockRestore();
+    expect(warnSpy).toHaveBeenCalledTimes(1);
   });
 });

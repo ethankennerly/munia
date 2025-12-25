@@ -1,4 +1,4 @@
-import { readFile } from 'fs/promises';
+import { promises as fs } from 'fs';
 import path from 'path';
 import { logger } from '@/lib/logging';
 
@@ -7,7 +7,7 @@ export const TERMS_PLACEHOLDER = 'Terms are not available at the moment.';
 
 export async function getTermsText(): Promise<string | null> {
   try {
-    const buf = await readFile(TERMS_FILE_PATH);
+    const buf = await fs.readFile(TERMS_FILE_PATH);
     return buf.toString('utf-8');
   } catch (e) {
     // Non-PII warning, matches privacy policy behavior
