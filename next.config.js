@@ -4,6 +4,8 @@ const nextConfig = {
     scrollRestoration: true,
   },
   images: {
+    // 30 days in seconds (60 * 60 * 24 * 30)
+    minimumCacheTTL: 2592000,
     remotePatterns: [
       {
         protocol: 'https',
