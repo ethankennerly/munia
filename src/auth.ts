@@ -29,14 +29,14 @@ export const {
       id: 'email',
       type: 'email',
       name: 'Email',
-      from: 'noreply@norcio.dev',
+      from: process.env.SES_FROM_EMAIL,
       server: {},
       maxAge: 24 * 60 * 60,
       options: {},
       async sendVerificationRequest({ identifier: email, url }) {
         const sendEmailCommand = createSendEmailCommand(
           email,
-          'noreply@norcio.dev',
+          process.env.SES_FROM_EMAIL,
           'Login To Munia',
           `<body>
   <table width="100%" border="0" cellspacing="20" cellpadding="0"
