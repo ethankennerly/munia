@@ -11,9 +11,14 @@ In this fork, Ethan Kennerly added the following enhancements:
 - Collapse a long post
 - Patched DoS vulnerability (2025-12-11)
 - Fix birth date editing
+- Configure Email, Facebook, GitHub, or Google.
 - Admin replays clicks and scrolling
 - Terms of Service
 - Privacy Policy
+
+## Docs
+
+- [docs](docs/README.md)
 
 ## Preview 🎬
 
@@ -92,11 +97,3 @@ Follow these steps to deploy Munia on an EC2 instance.
 4. Run `npm run prisma:deploy`
 5. Run `npm run prisma:seed`
 6. Run `npm run pm2` (or `npm run build` and then `npm run start` if you're not using PM2). You can modify the port specified in the `pm2` script depending on your server configuration.
-
-## Running Locally
-
-    npm run dev --loglevel verbose
-
-## Docs
-
-- [docs](docs/overview.md)
