@@ -7,10 +7,15 @@ import { logger } from '@/lib/logging';
 
 export default {
   providers: [
-    GitHub({ allowDangerousEmailAccountLinking: true }),
-    Google({ allowDangerousEmailAccountLinking: true }),
+    GitHub({ allowDangerousEmailAccountLinking: true, checks: ['state', 'pkce'] }),
+    Google({
+      allowDangerousEmailAccountLinking: true,
+      checks: ['state', 'pkce'],
+      authorization: { params: { scope: 'openid profile email' } },
+    }),
     // In 2016, Facebook allowed a bad actor to impersonate an email address.
     // https://www.bitdefender.com/en-us/blog/labs/attackers-pose-as-account-owners-via-facebook-login-flaw
+    // Also, Facebook does not check PKCE/state in the same way.
     Facebook,
   ],
   pages: {
