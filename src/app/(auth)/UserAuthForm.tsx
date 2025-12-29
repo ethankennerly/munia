@@ -85,6 +85,15 @@ export function UserAuthForm({
         showToast({ type: 'error', title: 'Something went wrong' });
         return;
       }
+      if (signInResult?.error) {
+        showToast({
+          type: 'error',
+          title: 'Failed to Send Email',
+          message: `Try another provider to sign in.
+(Error: ${signInResult.error})`,
+        });
+        return;
+      }
       showToast({
         type: 'success',
         title: 'Email Sent',

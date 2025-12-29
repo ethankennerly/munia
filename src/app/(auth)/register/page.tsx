@@ -7,8 +7,7 @@ export const metadata = {
 
 export default function Page() {
   const { env } = process;
-  const hasEmail = env.SES_ACCESS_KEY_ID && env.SES_SECRET_ACCESS_KEY && env.SES_FROM_EMAIL;
-  const emailEnabled = Boolean(hasEmail);
+  const emailEnabled = Boolean(env.SES_ACCESS_KEY_ID && env.SES_SECRET_ACCESS_KEY);
   const facebookEnabled = Boolean(env.AUTH_FACEBOOK_ID && env.AUTH_FACEBOOK_SECRET);
   const githubEnabled = Boolean(env.AUTH_GITHUB_ID && env.AUTH_GITHUB_SECRET);
   const googleEnabled = Boolean(env.AUTH_GOOGLE_ID && env.AUTH_GOOGLE_SECRET);
