@@ -6,7 +6,7 @@ import { useToast } from '@/hooks/useToast';
 import { AtSign, Facebook, Github, Google, LogInSquare } from '@/svg_components';
 import { signIn } from 'next-auth/react';
 import { useSearchParams } from 'next/navigation';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { z } from 'zod';
 
 const emailSchema = z.string().trim().email();
@@ -37,6 +37,27 @@ export function UserAuthForm({
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get('from') || '/feed';
   const { showToast } = useToast();
+  const oauthErrorShownRef = useRef(false);
+
+  // Intercept NextAuth OAuth error from redirect (?error=OAuthAccountNotLinked)
+  useEffect(() => {
+    // Avoid duplicate toasts on re-render
+    if (oauthErrorShownRef.current) return;
+    const error = searchParams.get('error');
+    if (error === 'OAuthAccountNotLinked') {
+      oauthErrorShownRef.current = true;
+      showToast({
+        type: 'error',
+        title: 'Sign in error',
+        message: 'That Facebook email already signed in. Try GitHub or Google.',
+      });
+      // Clean URL to prevent showing again on navigations
+      if (typeof window !== 'undefined') {
+        const cleanUrl = window.location.pathname + (window.location.hash || '');
+        window.history.replaceState(null, '', cleanUrl);
+      }
+    }
+  }, [searchParams, showToast]);
 
   const onEmailChange = useCallback((text: string) => {
     setEmail(text);

@@ -12,6 +12,7 @@ In this fork, Ethan Kennerly added the following enhancements:
 - Patched DoS vulnerability (2025-12-11)
 - Fix birth date editing
 - Configure Email, Facebook, GitHub, or Google.
+- Link verified email
 - Admin replays clicks and scrolling
 - Terms of Service
 - Privacy Policy
