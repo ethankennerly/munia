@@ -1,43 +1,97 @@
 #!/bin/sh
 
-# Pre-push hook to validate build configuration
-# This ensures Prisma is correctly configured and code passes linting before pushing
 
-if [ -d tmp ]; then
-  rm -rf tmp
+set -u
+
+BASE_LOGDIR=tmp
+mkdir -p "$BASE_LOGDIR"
+
+# Acquire a lock to prevent concurrent pre-push runs
+LOCKDIR="$BASE_LOGDIR/.prepush-lock"
+PIDFILE="$LOCKDIR/pid"
+if mkdir "$LOCKDIR" 2>/dev/null; then
+  echo $$ > "$PIDFILE"
+  RUN_OWNED=1
+else
+  echo "Another pre-push is running; waiting for it to finish..."
+  while [ -d "$LOCKDIR" ]; do
+    sleep 1
+  done
+  if mkdir "$LOCKDIR" 2>/dev/null; then
+    echo $$ > "$PIDFILE"
+    RUN_OWNED=1
+  else
+    echo "Failed to acquire pre-push lock" >&2
+    exit 1
+  fi
 fi
-mkdir tmp
 
-npm test --silent > tmp/test.log 2> tmp/test.error.log
-if [ $? -ne 0 ]; then
-  cat tmp/test.error.log
-  echo "❌ Tests failed!"
-  echo "Please fix failing tests before pushing."
+cleanup() {
+  rc=$?
+  if [ "${RUN_OWNED:-0}" -eq 1 ] && [ -d "$LOCKDIR" ]; then
+    rm -rf "$LOCKDIR"
+  fi
+  exit "$rc"
+}
+trap cleanup EXIT
+
+TIMESTAMP=$(date -u +"%Y%m%dT%H%M%SZ")
+LOGDIR="$BASE_LOGDIR/prepush-$TIMESTAMP"
+mkdir -p "$LOGDIR"
+FULL="$LOGDIR/prepush.full.log"
+ln -snf "$LOGDIR" "$BASE_LOGDIR/latest"
+
+echo "Pre-push run: $(date -u)" >"$FULL"
+echo "Git: $(git rev-parse --short HEAD 2>/dev/null || echo unknown)" >>"$FULL"
+echo "Node: $(node --version 2>/dev/null || echo unknown)" >>"$FULL"
+echo "NPM: $(npm --version 2>/dev/null || echo unknown)" >>"$FULL"
+
+echo "Pre-push run: $(date -u)" >"$FULL"
+echo "Git: $(git rev-parse --short HEAD 2>/dev/null || echo unknown)" >>"$FULL"
+echo "Node: $(node --version 2>/dev/null || echo unknown)" >>"$FULL"
+echo "NPM: $(npm --version 2>/dev/null || echo unknown)" >>"$FULL"
+
+after_step() {
+  name="$1"
+  rc="$2"
+  echo "--- $name exit: $rc ---" >>"$FULL"
+}
+
+failures=0
+failed_steps=""
+
+run_step() {
+  name="$1"; shift
+  echo "=== START: $name ===" | tee -a "$FULL"
+
+  "$@" >>"$FULL" 2>"$FULL"
+
+  if [ "$?" -eq 0 ]; then
+    echo "=== OK: $name ===" | tee -a "$FULL"
+    after_step "$name" 0
+  else
+    failures=$((failures+1))
+    failed_steps="${failed_steps}${name} (exit ${rc})\n"
+    echo "=== FAIL: $name (exit ${rc}) ===" | tee -a "$FULL"
+    after_step "$name" "$rc"
+  fi
+}
+
+# Run the steps (in order)
+run_step "test" npm test --silent
+run_step "lint" npm run --silent lint -- --quiet
+run_step "build" npm run --silent build
+run_step "validate_build" npm run --silent validate:build
+
+# Summary
+echo "=== SUMMARY ===" | tee -a "$FULL"
+if [ "$failures" -ne 0 ]; then
+  echo "Failed steps:" | tee -a "$FULL"
+  printf "%b" "$failed_steps" | tee -a "$FULL"
+  echo "Full log: $FULL" | tee -a "$FULL"
+  echo "❌ Pre-push checks failed. Inspect the logs above and in $FULL" >&2
   exit 1
+else
+  echo "All steps passed" | tee -a "$FULL"
+  exit 0
 fi
-
-npm run --silent lint -- --quiet > tmp/lint.log 2> tmp/lint.error.log
-if [ $? -ne 0 ]; then
-  npm run --silent lint -- --quiet --fix
-  echo "❌ Linting failed!"
-  echo "Please fix linting errors before pushing."
-  exit 1
-fi
-
-npm run --silent build > tmp/build.log 2> tmp/build.error.log
-if [ $? -ne 0 ]; then
-  cat tmp/build.error.log
-  echo "❌ Build failed!"
-  echo "Please fix the errors above before pushing."
-  exit 1
-fi
-
-npm run --silent validate:build > tmp/validate_build.log 2> tmp/validate_build.error.log
-if [ $? -ne 0 ]; then
-  cat tmp/validate_build.error.log
-  echo "❌ Build validation failed!"
-  echo "Please fix the errors above before pushing."
-  exit 1
-fi
-
-exit 0
