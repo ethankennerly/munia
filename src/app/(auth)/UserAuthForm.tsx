@@ -61,7 +61,7 @@ export function UserAuthForm({
 
   const onEmailChange = useCallback((text: string) => {
     setEmail(text);
-    const validateEmail = emailSchema.safeParse(email);
+    const validateEmail = emailSchema.safeParse(text);
     if (validateEmail.success) {
       setInputError('');
     }

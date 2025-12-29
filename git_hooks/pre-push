@@ -3,9 +3,10 @@
 # Pre-push hook to validate build configuration
 # This ensures Prisma is correctly configured and code passes linting before pushing
 
-if [ ! -d tmp ]; then
-  mkdir tmp
+if [ -d tmp ]; then
+  rm -rf tmp
 fi
+mkdir tmp
 
 npm test --silent > tmp/test.log 2> tmp/test.error.log
 if [ $? -ne 0 ]; then

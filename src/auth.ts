@@ -5,6 +5,8 @@ import type { Adapter } from '@auth/core/adapters';
 import prisma from '@/lib/prisma/prisma';
 import { createSendEmailCommand } from '@/lib/ses/createSendEmailCommand';
 import { sesClient } from '@/lib/ses/sesClient';
+import type { CreateUserParams } from '@/lib/auth/handleCreateUser';
+import type { SignInParams } from '@/lib/auth/handleSignIn';
 
 declare module 'next-auth' {
   interface Session {
@@ -75,6 +77,18 @@ export const {
   adapter: PrismaAdapter(prisma) as unknown as Adapter,
   session: {
     strategy: 'jwt',
+  },
+  events: {
+    async createUser(params) {
+      // Delegate to testable helper which logs and performs import if applicable
+      const { handleCreateUser } = await import('@/lib/auth/handleCreateUser');
+      await handleCreateUser(params as CreateUserParams);
+    },
+    async signIn(params) {
+      // On sign in, attempt one-time import if user has no profile photo yet
+      const { handleSignIn } = await import('@/lib/auth/handleSignIn');
+      await handleSignIn(params as SignInParams);
+    },
   },
   callbacks: {
     // Store reference to authConfig JWT callback before spreading

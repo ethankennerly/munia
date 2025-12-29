@@ -1,6 +1,4 @@
 # Tech Specs
 
-- [Session Replay](spec-session-replay.md)
-- [Client-Server Logging Integration](spec-logging-client-server.md)
-- [Automated Testing](spec-automated-testing.md)
-- [Archive](archive/README.md)
+- [Importing Google Profile Pic](spec-importing-google-profile-pic.md)
+- [Archived Specs](archive/README.md)

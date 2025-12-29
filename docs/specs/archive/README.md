@@ -1,5 +1,7 @@
 This folder contains reviews that are unnecessary understand the implementation. Generally, this folder should be excluded from indexing by Cursor or other AI agents.
 
+- [Session Replay](spec-session-replay.md)
+- [Client-Server Logging Integration](spec-logging-client-server.md)
 - [Authentication](spec-authentication.md)
 - [User Deletion](spec-user-deletion.md)
 - [Session Replay - Day 1 MVP](spec-session-replay-mvp-day1.md) - Minimal viable replay in one day
