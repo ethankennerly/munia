@@ -14,15 +14,15 @@ export function DiscoverFilters() {
   const pathname = usePathname();
 
   const filters = {
-    gender: searchParams.get('gender') || undefined,
-    relationshipStatus: searchParams.get('relationship-status') || undefined,
+    gender: searchParams?.get('gender') || undefined,
+    relationshipStatus: searchParams?.get('relationship-status') || undefined,
   };
   const genderFilters: Gender[] = ['MALE', 'FEMALE', 'NONBINARY'];
   const relationshipStatusFilters: RelationshipStatus[] = ['SINGLE', 'IN_A_RELATIONSHIP', 'ENGAGED', 'MARRIED'];
 
   const updateParams = useCallback(
     <T extends DiscoverFilterKeys>({ key, value }: { key: T; value: TDiscoverFilters[T] }) => {
-      const newSearchParams = new URLSearchParams(searchParams);
+      const newSearchParams = new URLSearchParams(searchParams ?? undefined);
 
       if (value === undefined) {
         newSearchParams.delete(key);

@@ -46,7 +46,7 @@ export const Comment = memo(
 
     const searchParams = useSearchParams();
     // Highlight comment if the `commentId` is equal to the `comment-id` search param
-    const shouldHighlight = searchParams.get('comment-id') === commentId.toString();
+    const shouldHighlight = searchParams?.get('comment-id') === commentId.toString();
 
     const toggleReplies = useCallback(
       () => setRepliesVisibility({ commentId, shown: !repliesShown }),
@@ -88,7 +88,7 @@ export const Comment = memo(
     // Show the replies if the comment to be highlighted is a reply to this comment
     useEffect(() => {
       setTimeout(() => {
-        const shouldOpenRepliesOnMount = searchParams.get('comment-parent-id') === commentId.toString();
+        const shouldOpenRepliesOnMount = searchParams?.get('comment-parent-id') === commentId.toString();
         if (shouldOpenRepliesOnMount) setRepliesVisibility({ commentId, shown: true });
       }, 1000);
       // eslint-disable-next-line react-hooks/exhaustive-deps

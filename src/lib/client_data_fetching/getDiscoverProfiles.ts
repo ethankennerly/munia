@@ -11,9 +11,9 @@ export async function getDiscoverProfiles({
   offset: number;
   followersOf?: string;
   followingOf?: string;
-  searchParams: ReadonlyURLSearchParams;
+  searchParams?: ReadonlyURLSearchParams | URLSearchParams;
 }) {
-  const params = new URLSearchParams(searchParams);
+  const params = new URLSearchParams(searchParams ?? undefined);
   params.set('limit', DISCOVER_PROFILES_PER_PAGE.toString());
   params.set('offset', offset.toString());
 

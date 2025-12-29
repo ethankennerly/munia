@@ -32,9 +32,9 @@ export function DiscoverProfiles({ followersOf, followingOf }: { followersOf?: s
     queryKey: [
       'discover',
       {
-        search: searchParams.get('search'),
-        gender: searchParams.get('gender'),
-        relationshipStatus: searchParams.get('relationship-status'),
+        search: searchParams?.get('search'),
+        gender: searchParams?.get('gender'),
+        relationshipStatus: searchParams?.get('relationship-status'),
         followersOf,
         followingOf,
       },
@@ -44,7 +44,7 @@ export function DiscoverProfiles({ followersOf, followingOf }: { followersOf?: s
         offset,
         followersOf,
         followingOf,
-        searchParams,
+        searchParams: searchParams ?? new URLSearchParams(),
       });
 
       // Update/create a query cache for each of the fetched user data

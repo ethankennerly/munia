@@ -35,7 +35,7 @@ export function UserAuthForm({
   // Disable buttons when loading
   const areButtonsDisabled = loading.email || loading.github || loading.facebook || loading.google;
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get('from') || '/feed';
+  const callbackUrl = (searchParams?.get('from') as string | null) ?? '/feed';
   const { showToast } = useToast();
   const oauthErrorShownRef = useRef(false);
 
@@ -43,7 +43,7 @@ export function UserAuthForm({
   useEffect(() => {
     // Avoid duplicate toasts on re-render
     if (oauthErrorShownRef.current) return;
-    const error = searchParams.get('error');
+    const error = searchParams?.get('error');
     if (error === 'OAuthAccountNotLinked') {
       oauthErrorShownRef.current = true;
       showToast({

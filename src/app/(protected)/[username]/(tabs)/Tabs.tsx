@@ -5,7 +5,8 @@ import { usePathname, useSelectedLayoutSegment } from 'next/navigation';
 
 export default function Tabs({ isOwnProfile }: { isOwnProfile: boolean }) {
   const selectedSegment = useSelectedLayoutSegment();
-  const parentLayoutSegment = `/${usePathname().split('/')[1]}`;
+  const pathname = usePathname() ?? '';
+  const parentLayoutSegment = `/${pathname.split('/')[1] ?? ''}`;
 
   return (
     <div className="mt-4 inline-flex flex-row gap-6 overflow-x-auto border-b-[1px] border-muted">

@@ -14,7 +14,7 @@ import { useReplayContext } from '@/lib/replay/replayContext';
  * Does not record during active replay sessions.
  */
 export function RouteRecorder() {
-  const pathname = usePathname();
+  const pathname: string = usePathname() ?? '';
   const { data: session } = useSession();
   const config = getReplayConfig();
   const { isReplaying } = useReplayContext();

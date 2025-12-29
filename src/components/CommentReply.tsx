@@ -49,7 +49,7 @@ export const CommentReply = memo(
 
     const searchParams = useSearchParams();
     // Highlight comment if the `commentId` is equal to the `comment-id` search param
-    const shouldHighlight = searchParams.get('comment-id') === commentId.toString();
+    const shouldHighlight = searchParams?.get('comment-id') === commentId.toString();
 
     return (
       <div className="mt-2 flex gap-4">

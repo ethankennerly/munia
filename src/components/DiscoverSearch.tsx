@@ -12,7 +12,7 @@ export function DiscoverSearch({ label = 'Search People' }: { label?: string }) 
 
   const handleChange = useCallback(
     (search: string) => {
-      const params = new URLSearchParams(searchParams);
+      const params = new URLSearchParams(searchParams ?? undefined);
       if (search === '') {
         params.delete('search');
       } else {
