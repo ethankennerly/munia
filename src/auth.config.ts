@@ -6,7 +6,13 @@ import { NextResponse } from 'next/server';
 import { logger } from '@/lib/logging';
 
 export default {
-  providers: [GitHub, Facebook, Google],
+  providers: [
+    GitHub({ allowDangerousEmailAccountLinking: true }),
+    Google({ allowDangerousEmailAccountLinking: true }),
+    // In 2016, Facebook allowed a bad actor to impersonate an email address.
+    // https://www.bitdefender.com/en-us/blog/labs/attackers-pose-as-account-owners-via-facebook-login-flaw
+    Facebook,
+  ],
   pages: {
     signIn: '/login',
   },

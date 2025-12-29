@@ -22,16 +22,57 @@ export default function Page() {
             In this{' '}
             <a
               className="text-primary underline hover:text-primary-accent"
+              target="_blank"
               href="https://github.com/ethankennerly/munia"
-              data-activate-id="github-kennerly">
+              data-activate-id="github-kennerly"
+              rel="noreferrer">
               fork
             </a>
             , Ethan Kennerly enhanced the following features:
           </p>
           <ol className="w-1/2 list-disc rounded-lg bg-card px-6 py-2 text-muted-foreground">
-            <li> Patched DoS vulnerability (2025-12-11) </li>
-            <li> Delete an account </li>
-            <li> Remove a post </li>
+            <li>
+              Patched DoS vulnerability (
+              <a
+                className="text-primary underline hover:text-primary-accent"
+                target="_blank"
+                href="https://react.dev/blog/2025/12/11/denial-of-service-and-source-code-exposure-in-react-server-components"
+                rel="noreferrer">
+                2025-12-11
+              </a>
+              )
+            </li>
+            <li>
+              <a
+                className="text-primary underline hover:text-primary-accent"
+                target="_blank"
+                href="https://www.lexology.com/library/detail.aspx?g=a20bdb6d-dffa-4936-8507-3201876b891b"
+                rel="noreferrer">
+                Delete
+              </a>{' '}
+              an account
+            </li>
+            <li>
+              Link Google or GitHub by email (
+              <a
+                className="text-primary underline hover:text-primary-accent"
+                target="_blank"
+                href="https://www.bitdefender.com/en-us/blog/labs/attackers-pose-as-account-owners-via-facebook-login-flaw"
+                rel="noreferrer">
+                Facebook
+              </a>{' '}
+              linking is unsafe)
+            </li>
+            <li>
+              <a
+                className="text-primary underline hover:text-primary-accent"
+                target="_blank"
+                href="https://github.com/leandronorcio/munia/issues/1"
+                rel="noreferrer">
+                Remove
+              </a>{' '}
+              a post
+            </li>
             <li> Collapse a long post </li>
             <li> Fixed birth date editing </li>
             <li> Terms of Service </li>
