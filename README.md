@@ -4,15 +4,17 @@ A responsive and accessible full stack social media web app by Leandro Norcio.
 
 ## What's New
 
-In this fork, Ethan Kennerly added the following enhancements:
+In this [demo](https://munia-rho.vercel.app), Ethan Kennerly enhanced the following features:
 
-- Delete an account
-- Remove a post
+- Patch DoS vulnerability ([2025-12-11](https://react.dev/blog/2025/12/11/denial-of-service-and-source-code-exposure-in-react-server-components))
+- [Delete](https://www.lexology.com/library/detail.aspx?g=a20bdb6d-dffa-4936-8507-3201876b891b) an account
+- [Remove](https://github.com/leandronorcio/munia/issues/1) a post
+- Speed up reloading an [image](https://developer.chrome.com/docs/performance/insights/cache)
 - Collapse a long post
-- Patched DoS vulnerability (2025-12-11)
 - Fix birth date editing
 - Configure Email, Facebook, GitHub, or Google.
-- Link verified email
+- Import profile picture from Google
+- Link Google or GitHub by email ([Facebook](https://www.bitdefender.com/en-us/blog/labs/attackers-pose-as-account-owners-via-facebook-login-flaw) linking is unsafe)
 - Admin replays clicks and scrolling
 - Terms of Service
 - Privacy Policy

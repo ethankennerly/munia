@@ -53,6 +53,18 @@ export default function Page() {
               an account
             </li>
             <li>
+              <a
+                className="text-primary underline hover:text-primary-accent"
+                target="_blank"
+                href="https://github.com/leandronorcio/munia/issues/1"
+                rel="noreferrer">
+                Remove
+              </a>{' '}
+              a post
+            </li>
+            <li> Configure Email, Facebook, GitHub, or Google </li>
+            <li> Import profile picture from Google </li>
+            <li>
               Link Google or GitHub by email (
               <a
                 className="text-primary underline hover:text-primary-accent"
@@ -64,14 +76,15 @@ export default function Page() {
               linking is unsafe)
             </li>
             <li>
+              {' '}
+              Speed up reloading an{' '}
               <a
                 className="text-primary underline hover:text-primary-accent"
                 target="_blank"
-                href="https://github.com/leandronorcio/munia/issues/1"
+                href="https://developer.chrome.com/docs/performance/insights/cache"
                 rel="noreferrer">
-                Remove
-              </a>{' '}
-              a post
+                image
+              </a>
             </li>
             <li> Collapse a long post </li>
             <li> Fixed birth date editing </li>
