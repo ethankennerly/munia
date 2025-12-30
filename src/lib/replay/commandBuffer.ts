@@ -2,24 +2,18 @@
 
 import { v4 as uuidv4 } from 'uuid';
 import { logger } from '@/lib/logging-client';
+import { getSession } from 'next-auth/react';
 import { encodeAction, type Action, type EncodedAction } from './encoding';
 import type { Command } from './commands';
 
-/**
- * Command Buffer - stores commands and uploads them to the server
- *
- * This replaces actionBuffer.ts and uses the command pattern.
- * Commands are encoded before storage/transmission.
- */
 let commandBuffer: EncodedAction[] = [];
 let sessionId: string | null = null;
 let flushTimer: ReturnType<typeof setInterval> | null = null;
 
-/**
- * Flush commands to server
- */
 async function flushCommands(): Promise<void> {
   if (commandBuffer.length === 0 || !sessionId) return;
+  const session = await getSession();
+  if (!session) return;
 
   const commands = commandBuffer.splice(0);
 
