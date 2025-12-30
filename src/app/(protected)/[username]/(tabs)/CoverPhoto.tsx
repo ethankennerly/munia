@@ -44,6 +44,7 @@ export default function CoverPhoto({ isOwnProfile, photoUrl }: { isOwnProfile: b
               accept="image/png, image/jpg, image/jpeg"
             />
             <Button
+              aria-label="Change cover photo"
               Icon={SvgImage}
               iconClassName="text-primary-foreground"
               onPress={openInput}

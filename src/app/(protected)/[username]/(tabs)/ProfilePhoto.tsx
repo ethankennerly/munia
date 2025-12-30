@@ -56,7 +56,13 @@ export default function ProfilePhoto({
               className="hidden"
               accept="image/png, image/jpg, image/jpeg"
             />
-            <Button Icon={Camera} onPress={openInput} size="small" loading={isPending} />
+            <Button
+              aria-label="Change profile photo"
+              Icon={Camera}
+              onPress={openInput}
+              size="small"
+              loading={isPending}
+            />
           </div>
         </label>
       )}
