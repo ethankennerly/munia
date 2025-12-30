@@ -62,6 +62,7 @@ export default function Page() {
               </a>{' '}
               a post
             </li>
+            <li> Resolve 15 accessibility issues. </li>
             <li> Configure Email, Facebook, GitHub, or Google </li>
             <li> Import profile picture from Google </li>
             <li>

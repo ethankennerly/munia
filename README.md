@@ -12,6 +12,7 @@ In this [demo](https://munia-rho.vercel.app), Ethan Kennerly enhanced the follow
 - Speed up reloading an [image](https://developer.chrome.com/docs/performance/insights/cache)
 - Collapse a long post
 - Fix birth date editing
+- Resolve 15 accessibility issues.
 - Configure Email, Facebook, GitHub, or Google.
 - Import profile picture from Google
 - Link Google or GitHub by email ([Facebook](https://www.bitdefender.com/en-us/blog/labs/attackers-pose-as-account-owners-via-facebook-login-flaw) linking is unsafe)
