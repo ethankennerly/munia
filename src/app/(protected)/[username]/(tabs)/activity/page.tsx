@@ -11,14 +11,26 @@ export async function generateMetadata({ params }: { params: { username: string 
 
 export default async function Page({ params }: { params: { username: string } }) {
   const [user] = await getServerUser();
-  if (!user) return <p>This is a protected page.</p>;
+  if (!user)
+    return (
+      <main>
+        <p>This is a protected page.</p>
+      </main>
+    );
   const profile = await getProfile(params.username);
   const isOwn = user?.id === profile?.id;
 
-  if (!isOwn) return <p>You have no access to this page.</p>;
+  if (!isOwn)
+    return (
+      <main>
+        <p>You have no access to this page.</p>
+      </main>
+    );
   return (
-    <div className="mt-4">
-      <Activities userId={user.id} />
-    </div>
+    <main>
+      <div className="mt-4">
+        <Activities userId={user.id} />
+      </div>
+    </main>
   );
 }

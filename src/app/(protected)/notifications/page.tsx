@@ -10,8 +10,10 @@ export default async function Page() {
 
   if (!user) return null;
   return (
-    <div className="px-4 pt-4">
-      <Notifications userId={user.id} />
-    </div>
+    <main>
+      <div className="px-4 pt-4">
+        <Notifications userId={user.id} />
+      </div>
+    </main>
   );
 }

@@ -134,66 +134,68 @@ export function UserAuthForm({
   );
 
   return (
-    <div className="mb-4 flex flex-col gap-3">
-      {emailEnabled ? (
-        <>
-          <TextInput
-            value={email}
-            onChange={onEmailChange}
-            label="Email"
-            errorMessage={inputError || undefined}
-            Icon={AtSign}
-          />
+    <main>
+      <div className="mb-4 flex flex-col gap-3">
+        {emailEnabled ? (
+          <>
+            <TextInput
+              value={email}
+              onChange={onEmailChange}
+              label="Email"
+              errorMessage={inputError || undefined}
+              Icon={AtSign}
+            />
+            <Button
+              onPress={submitEmail}
+              shape="pill"
+              expand="full"
+              Icon={LogInSquare}
+              loading={loading.email}
+              isDisabled={areButtonsDisabled}>
+              Email
+            </Button>
+          </>
+        ) : null}
+        {facebookEnabled ? (
           <Button
-            onPress={submitEmail}
+            onPress={signInWithProvider('facebook')}
             shape="pill"
             expand="full"
-            Icon={LogInSquare}
-            loading={loading.email}
-            isDisabled={areButtonsDisabled}>
-            Email
+            mode="subtle"
+            Icon={Facebook}
+            loading={loading.facebook}
+            isDisabled={areButtonsDisabled}
+            data-activate-id="sign-in-facebook">
+            Facebook
           </Button>
-        </>
-      ) : null}
-      {facebookEnabled ? (
-        <Button
-          onPress={signInWithProvider('facebook')}
-          shape="pill"
-          expand="full"
-          mode="subtle"
-          Icon={Facebook}
-          loading={loading.facebook}
-          isDisabled={areButtonsDisabled}
-          data-activate-id="sign-in-facebook">
-          Facebook
-        </Button>
-      ) : null}
-      {githubEnabled ? (
-        <Button
-          onPress={signInWithProvider('github')}
-          shape="pill"
-          expand="full"
-          mode="subtle"
-          Icon={Github}
-          loading={loading.github}
-          isDisabled={areButtonsDisabled}
-          data-activate-id="sign-in-github">
-          Github
-        </Button>
-      ) : null}
-      {googleEnabled ? (
-        <Button
-          onPress={signInWithProvider('google')}
-          shape="pill"
-          expand="full"
-          mode="subtle"
-          Icon={Google}
-          loading={loading.google}
-          isDisabled={areButtonsDisabled}
-          data-activate-id="sign-in-google">
-          Google
-        </Button>
-      ) : null}
-    </div>
+        ) : null}
+        {githubEnabled ? (
+          <Button
+            onPress={signInWithProvider('github')}
+            shape="pill"
+            expand="full"
+            mode="subtle"
+            Icon={Github}
+            loading={loading.github}
+            isDisabled={areButtonsDisabled}
+            data-activate-id="sign-in-github">
+            Github
+          </Button>
+        ) : null}
+        {googleEnabled ? (
+          <Button
+            onPress={signInWithProvider('google')}
+            shape="pill"
+            expand="full"
+            mode="subtle"
+            Icon={Google}
+            loading={loading.google}
+            isDisabled={areButtonsDisabled}
+            data-activate-id="sign-in-google">
+            Google
+          </Button>
+        ) : null}
+      </div>
+    </main>
   );
 }

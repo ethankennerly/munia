@@ -16,13 +16,15 @@ export default async function Page({ params }: { params: { username: string } })
   const shouldShowCreatePost = user?.id === profile?.id;
 
   return (
-    <div>
-      {shouldShowCreatePost && (
-        <div className="mt-4">
-          <CreatePostModalLauncher />
-        </div>
-      )}
-      {profile && <Posts type="profile" userId={profile.id} />}
-    </div>
+    <main>
+      <div>
+        {shouldShowCreatePost && (
+          <div className="mt-4">
+            <CreatePostModalLauncher />
+          </div>
+        )}
+        {profile && <Posts type="profile" userId={profile.id} />}
+      </div>
+    </main>
   );
 }

@@ -19,9 +19,11 @@ export default async function Page({ params }: { params: { username: string } })
   const isOwnProfile = sessionUser?.id === profile.id;
 
   return (
-    <div className="mt-4">
-      <About profile={profile} />
-      {isOwnProfile && <DeleteAccountButton />}
-    </div>
+    <main>
+      <div className="mt-4">
+        <About profile={profile} />
+        {isOwnProfile && <DeleteAccountButton />}
+      </div>
+    </main>
   );
 }

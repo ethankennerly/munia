@@ -11,9 +11,11 @@ export default function Page({ params }: { params: { postId: string } }) {
   const toggleComments = useCallback(() => setCommentsShown((prev) => !prev), []);
 
   return (
-    <div className="m-4">
-      <Post id={postId} commentsShown={commentsShown} toggleComments={toggleComments} />
-      <DeletePostButton postId={postId} />
-    </div>
+    <main>
+      <div className="m-4">
+        <Post id={postId} commentsShown={commentsShown} toggleComments={toggleComments} />
+        <DeletePostButton postId={postId} />
+      </div>
+    </main>
   );
 }
