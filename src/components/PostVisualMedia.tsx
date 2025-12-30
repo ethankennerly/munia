@@ -25,6 +25,7 @@ export function PostVisualMedia({
   return (
     <div
       {...mergeProps(pressProps, focusProps)}
+      aria-label={type === 'PHOTO' ? 'Image in post' : 'Video in post'}
       role="button"
       tabIndex={0}
       className={cn(
