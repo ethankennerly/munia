@@ -5,7 +5,7 @@ import React from 'react';
 function TechStackCard({ header, children }: { header: string; children: React.ReactNode }) {
   return (
     <div className="rounded-xl border-2 border-border bg-card p-5">
-      <h4 className="text-lg font-semibold text-card-foreground">{header}</h4>
+      <h3 className="text-lg font-semibold text-card-foreground">{header}</h3>
 
       <p className="text-muted-foreground">{children}</p>
     </div>
