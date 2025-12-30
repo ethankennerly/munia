@@ -25,7 +25,7 @@ export function CreatePostModalLauncher() {
           onPress={launcCreatePostFinderClosed}
           className="flex flex-grow flex-col justify-center"
           data-activate-id="create-post-text">
-          <p className="text-muted-foreground/70">What&apos;s on your mind?</p>
+          <p className="text-muted-foreground">What&apos;s on your mind?</p>
         </ButtonNaked>
       </div>
       <div className="flex flex-row gap-4">
