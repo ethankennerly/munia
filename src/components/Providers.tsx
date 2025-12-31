@@ -9,15 +9,17 @@ import { ToastContextProvider } from '@/contexts/ToastContext';
 import { VisualMediaModalContextProvider } from '@/contexts/VisualMediaModalContext';
 import { SessionProvider } from 'next-auth/react';
 import type { Session } from 'next-auth';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { RouteRecorder } from '@/components/replay/RouteRecorder';
 import { ActivateRecorder } from '@/components/replay/ActivateRecorder';
 import { ScrollRecorder } from '@/components/replay/ScrollRecorder';
 import { ReplayProvider } from '@/lib/replay/replayContext';
-import { useDeploymentSync } from '@/hooks/useDeploymentSync';
+import { setupDeploymentSync } from '@/lib/utils/deploymentSync';
 
 export function Providers({ children, session }: { children: React.ReactNode; session: Session | null }) {
-  useDeploymentSync();
+  useEffect(() => {
+    return setupDeploymentSync(window);
+  }, []);
 
   return (
     <ThemeContextProvider>
