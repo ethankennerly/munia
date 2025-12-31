@@ -10,7 +10,7 @@ export async function uploadObject(file: Buffer, fileName: string, type: string)
     ContentType: type,
     // Set 30-day cache (30 * 24 * 60 * 60)
     // https://developer.chrome.com/docs/performance/insights/cache
-    CacheControl: "public, max-age=2592000"
+    CacheControl: 'public, max-age=2592000',
   });
 
   await s3Client.send(command);

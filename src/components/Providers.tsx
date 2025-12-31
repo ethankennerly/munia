@@ -14,8 +14,11 @@ import { RouteRecorder } from '@/components/replay/RouteRecorder';
 import { ActivateRecorder } from '@/components/replay/ActivateRecorder';
 import { ScrollRecorder } from '@/components/replay/ScrollRecorder';
 import { ReplayProvider } from '@/lib/replay/replayContext';
+import { useDeploymentSync } from '@/hooks/useDeploymentSync';
 
 export function Providers({ children, session }: { children: React.ReactNode; session: Session | null }) {
+  useDeploymentSync();
+
   return (
     <ThemeContextProvider>
       <ToastContextProvider>
