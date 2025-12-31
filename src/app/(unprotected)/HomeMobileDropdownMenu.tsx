@@ -15,7 +15,7 @@ export function HomeMobileDropdownMenu() {
         <Item key="/terms">Terms</Item>
         <Item key="/privacy-policy">Privacy Policy</Item>
         <Item key="/login">Login</Item>
-        <Item key="/sign-up">Sign Up</Item>
+        <Item key="/register">Sign Up</Item>
       </Section>
     </DropdownMenuButton>
   );
