@@ -1,4 +1,4 @@
 # Tech Specs
 
-- [Importing Google Profile Pic](spec-importing-google-profile-pic.md)
+- [Bidirectional Scroll](spec-bidirectional-scroll.md)
 - [Archived Specs](archive/README.md)

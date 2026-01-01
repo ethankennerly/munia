@@ -53,35 +53,11 @@ Each implementation step MUST be:
 - **Format**: Markdown only with Mermaid diagrams (GitHub/GitLab compatible)
 - **Completion**: When a step is complete, mention the documentation file path
 
-### Documentation Structure
+### Tech Spec Documentation Structure
 
-Each feature test document should include:
-1. **Quick Start** (30 seconds): Fastest path to verify
-2. **Prerequisites**: Required setup/environment
-3. **Test Steps**: Step-by-step manual testing instructions
-4. **Expected Results**: What should happen
-5. **Architecture Diagram**: Mermaid diagram showing the feature flow
-6. **Troubleshooting**: Common issues and solutions
-
-## Examples
-
-### ✅ Good: End-User-Testable Step
-- "User can see their session appear in admin sessions list after navigating"
-- Testable: Navigate → Check admin page → See session
-- Debuggable: Check browser console, server logs, database
-- Time: ~1 hour
-- Documentation: `docs/testing/session-replay-route-recording.md`
-
-### ❌ Bad: Not End-User-Testable
-- "Add encoding utilities" (no user-visible change)
-- "Create database schema" (no user-visible change)
-- "Set up test infrastructure" (no user-visible change)
-
-## Benefits
-
-- **Fast Feedback**: See results immediately
-- **Early Validation**: Confirm approach works before building more
-- **Easier Debugging**: Smaller scope = easier to debug
-- **User Value**: Each step delivers visible value
-- **Momentum**: Quick wins keep development moving
-- **Documentation**: Living documentation that stays current with implementation
+Each feature tech spec document should include:
+1. **Acceptance Criteria**: Brief checklist
+1. **Preconditions**: Required setup/environment
+1. **Steps to Reproduce**: Manual instructions to verify in less than 60 seconds
+1. **Expected Results**: What should happen
+1. **Architecture Diagram**: Mermaid sequence diagram showing the feature flow

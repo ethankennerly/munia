@@ -2,20 +2,13 @@
 
 import { InfiniteData, QueryKey, useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
 import { GetPost, PostIds } from '@/types/definitions';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import useOnScreen from '@/hooks/useOnScreen';
-import { AnimatePresence, motion } from 'framer-motion';
+import { useCallback, useEffect, useMemo } from 'react';
 import { NO_PREV_DATA_LOADED, POSTS_PER_PAGE } from '@/constants';
 import { chunk } from 'lodash';
 import { useShouldAnimate } from '@/hooks/useShouldAnimate';
-import { deductLowerMultiple } from '@/lib/deductLowerMultiple';
-import SvgForwardArrow from '@/svg_components/ForwardArrow';
-import { postFramerVariants } from '@/lib/framerVariants';
-import { SomethingWentWrong } from './SometingWentWrong';
-import { ButtonNaked } from './ui/ButtonNaked';
-import { AllCaughtUp } from './AllCaughtUp';
+import { logger } from '@/lib/logging-client';
+import BidirectionalScroll from './ui/BidirectionalScroll';
 import { Post } from './Post';
-import { GenericLoading } from './GenericLoading';
 
 // If the `type` is 'profile' or 'feed', the `userId` property is required
 // If the `type` is 'hashtag', the `hashtag` property is required
@@ -38,92 +31,251 @@ export function Posts({ type, hashtag, userId }: PostsProps) {
     () => (type === 'hashtag' ? ['posts', { hashtag }] : ['users', userId, 'posts', { type }]),
     [type, userId, hashtag],
   );
-  const topElRef = useRef<HTMLDivElement>(null);
-  const isTopOnScreen = useOnScreen(topElRef);
-  const bottomElRef = useRef<HTMLDivElement>(null);
-  const isBottomOnScreen = useOnScreen(bottomElRef);
-  // `shouldAnimate` is `false` when the browser's back button is pressed
-  // `true` when the page is pushed
   const { shouldAnimate } = useShouldAnimate();
-  // This keeps track of the number of pages loaded by the `fetchPreviousPage()`
-  const [numberOfNewPostsLoaded, setNumberOfNewPostsLoaded] = useState(0);
 
-  const {
-    data,
-    error,
-    isPending,
-    isError,
-    fetchNextPage, // Fetches (older) posts in 'descending' order, starting from the last page's last item (bottom of page)
-    hasNextPage,
-    fetchPreviousPage, // Fetches (newer) posts in 'ascending' order, starting from the latest page's latest item (top of page)
-    isFetchingNextPage,
-  } = useInfiniteQuery<PostIds, Error, InfiniteData<PostIds>, QueryKey, number>({
+  const queryResult = useInfiniteQuery<PostIds, Error, InfiniteData<PostIds>, QueryKey>({
     queryKey,
-    initialPageParam: 0,
-    queryFn: async ({ pageParam: cursor, direction }): Promise<PostIds> => {
-      const isForwards = direction === 'forward';
-      const isBackwards = !isForwards;
-      const params = new URLSearchParams('');
+    initialPageParam: { cursor: 0, direction: 'forward' },
+    queryFn: async ({ pageParam, signal: tanstackSignal }) => {
+      const fetchAsync = async (combinedSignal?: AbortSignal) => {
+        // Handle both object format and legacy number format for backward compatibility
+        let cursor: number;
+        let direction: string;
+        if (typeof pageParam === 'object' && pageParam !== null && 'cursor' in pageParam) {
+          cursor = (pageParam as { cursor: number; direction: string }).cursor;
+          direction = (pageParam as { cursor: number; direction: string }).direction;
+        } else if (typeof pageParam === 'number') {
+          // Legacy format: just a number (post ID) - default to forward direction
+          cursor = pageParam;
+          direction = 'forward';
+          logger.info(
+            {
+              message: 'Legacy pageParam format detected (number) - this should not happen',
+              pageParam,
+              inferredCursor: cursor,
+              inferredDirection: direction,
+              type,
+              userId,
+              hashtag,
+            },
+            'SCROLL',
+          );
+        } else {
+          // Fallback for initial load or invalid format
+          cursor = 0;
+          direction = 'forward';
+          logger.info(
+            {
+              message: 'Invalid or missing pageParam format, using defaults',
+              pageParam,
+              pageParamType: typeof pageParam,
+              inferredCursor: cursor,
+              inferredDirection: direction,
+              type,
+              userId,
+              hashtag,
+            },
+            'SCROLL',
+          );
+        }
+        const isForwards = direction === 'forward';
+        const isBackwards = !isForwards;
+        const params = new URLSearchParams('');
 
-      // If the direction is 'backwards', load all new posts by setting a high `limit`
-      params.set('limit', isForwards ? POSTS_PER_PAGE.toString() : '100');
-      params.set('cursor', cursor.toString());
-      params.set('sort-direction', isForwards ? 'desc' : 'asc');
+        // If the direction is 'backwards', load all new posts by setting a high `limit`
+        params.set('limit', isForwards ? POSTS_PER_PAGE.toString() : '100');
+        params.set('cursor', cursor.toString());
+        params.set('sort-direction', isForwards ? 'desc' : 'asc');
 
-      const fetchUrl =
-        type === 'hashtag'
-          ? `/api/posts/hashtag/${hashtag}`
-          : `/api/users/${userId}/${type === 'profile' ? 'posts' : 'feed'}`;
-      const res = await fetch(`${fetchUrl}?${params.toString()}`);
+        const fetchUrl =
+          type === 'hashtag'
+            ? `/api/posts/hashtag/${hashtag}`
+            : `/api/users/${userId}/${type === 'profile' ? 'posts' : 'feed'}`;
 
-      if (!res.ok) throw Error('Failed to load posts.');
-      const posts = (await res.json()) as GetPost[];
+        const fetchQuery = `${fetchUrl}?${params.toString()}`;
 
-      if (!posts.length && isBackwards) {
-        // Prevent React Query from 'prepending' the data with an empty array
-        throw new Error(NO_PREV_DATA_LOADED);
+        logger.info(
+          {
+            message: 'Starting fetch',
+            fetchUrl,
+            fetchQuery,
+            cursor,
+            direction,
+            isForwards,
+            isBackwards,
+            type,
+            hashtag,
+            userId,
+            signalAborted: combinedSignal?.aborted,
+          },
+          'SCROLL',
+        );
+
+        const res = await fetch(fetchQuery, { signal: combinedSignal });
+
+        logger.info(
+          {
+            message: 'Fetch response received',
+            status: res.status,
+            statusText: res.statusText,
+            ok: res.ok,
+            fetchUrl,
+          },
+          'SCROLL',
+        );
+
+        if (!res.ok) {
+          const errorText = await res.text().catch(() => 'Unable to read error response');
+          logger.info(
+            {
+              message: 'Fetch failed',
+              status: res.status,
+              statusText: res.statusText,
+              errorText,
+              fetchUrl,
+            },
+            'SCROLL',
+          );
+          throw new Error(`Failed to load posts: ${res.status} ${res.statusText}`);
+        }
+
+        const posts = (await res.json()) as GetPost[];
+
+        logger.info(
+          {
+            message: 'Posts parsed',
+            postCount: posts.length,
+            fetchUrl,
+          },
+          'SCROLL',
+        );
+
+        if (!posts.length && isBackwards) {
+          // Prevent React Query from 'prepending' the data with an empty array
+          throw new Error(NO_PREV_DATA_LOADED);
+        }
+
+        const postIds = posts.map((post) => {
+          // Set query data for each `post`, these queries will be used by the <Post> component
+          qc.setQueryData(['posts', post.id], post);
+
+          // Check if post exists in current query data from cache
+          const currentData = qc.getQueryData<InfiniteData<PostIds>>(queryKey);
+          const currentPostId = currentData?.pages.flat().find(({ id }) => id === post.id);
+
+          return {
+            id: post.id,
+            commentsShown: currentPostId?.commentsShown || false,
+          };
+        });
+        // When the direction is 'backwards', the `postIds` are in ascending order
+        // Reverse it so that the latest post comes first in the array
+        return isForwards ? postIds : postIds.reverse();
+      };
+
+      // 1. Create a hard deadline for the WHOLE operation (headers + body)
+      // const totalTimeoutSignal = AbortSignal.timeout(4000);
+
+      // 2. Combine with TanStack's signal to prevent memory leaks
+      // const combinedSignal = (AbortSignal as any).any([tanstackSignal, totalTimeoutSignal]);
+
+      try {
+        return await fetchAsync(tanstackSignal);
+      } catch (err: unknown) {
+        // AbortError is a normal cancellation from React Query - don't treat as error
+        if (err instanceof Error && err.name === 'AbortError') {
+          // Re-throw as AbortError so React Query knows it's a cancellation, not a real error
+          throw err;
+        }
+        // NO_PREV_DATA_LOADED means there's no more data in backward direction - not an error
+        if (err instanceof Error && err.message === NO_PREV_DATA_LOADED) {
+          // Re-throw so React Query knows there's no more data, but don't log as error
+          throw err;
+        }
+        // TimeoutError should be treated as an error
+        if (err instanceof Error && err.name === 'TimeoutError') {
+          logger.error(
+            {
+              message: 'TimeoutError in Posts queryFn',
+              errorName: err.name,
+              errorMessage: err.message,
+              stack: err.stack,
+              pageParam,
+              type,
+              hashtag,
+              userId,
+            },
+            'SCROLL',
+          );
+          throw new Error('Request timed out. Please try again.');
+        }
+        // Log all other errors with detailed diagnostics
+        logger.error(
+          {
+            message: 'Error in Posts queryFn',
+            errorName: err instanceof Error ? err.name : 'Unknown',
+            errorMessage: err instanceof Error ? err.message : String(err),
+            errorType: typeof err,
+            errorConstructor: err instanceof Error ? err.constructor.name : undefined,
+            stack: err instanceof Error ? err.stack : undefined,
+            pageParam,
+            type,
+            hashtag,
+            userId,
+            queryKey: queryKey.toString(),
+          },
+          'SCROLL',
+        );
+        throw err;
       }
-
-      if (isBackwards) {
-        setNumberOfNewPostsLoaded((prev) => prev + posts.length);
-      }
-
-      const postIds = posts.map((post) => {
-        // Set query data for each `post`, these queries will be used by the <Post> component
-        qc.setQueryData(['posts', post.id], post);
-
-        // If the `post` already exists in `data`, make sure to use its current `commentsShown`
-        // value to prevent the post's comment section from closing if it is already shown
-        const currentPostId = data?.pages.flat().find(({ id }) => id === post.id);
-        return {
-          id: post.id,
-          commentsShown: currentPostId?.commentsShown || false,
-        };
-      });
-
-      // When the direction is 'backwards', the `postIds` are in ascending order
-      // Reverse it so that the latest post comes first in the array
-      return isForwards ? postIds : postIds.reverse();
     },
-    getNextPageParam: (lastPage, pages) => {
-      // If there are no pages, there is nothing to paginate
-      if (!Array.isArray(pages) || pages.length === 0) return undefined;
-
+    getNextPageParam: (lastPage) => {
       // Guard: lastPage might be undefined or non-array in edge cases (e.g., optimistic updates)
       if (!Array.isArray(lastPage) || lastPage.length === 0) return undefined;
 
-      // Return the id of the last post, this will serve as the cursor
-      // that will be passed to `queryFn` as `pageParam` property
-      return lastPage[lastPage.length - 1]?.id;
+      // Return object with cursor and direction for forward pagination (older items)
+      const lastPostId = lastPage[lastPage.length - 1]?.id;
+      if (!lastPostId) {
+        logger.info(
+          {
+            message: 'getNextPageParam: No valid post ID found in lastPage',
+            lastPageLength: lastPage.length,
+            type,
+            userId,
+            hashtag,
+          },
+          'SCROLL',
+        );
+        return undefined;
+      }
+      return { cursor: lastPostId, direction: 'forward' };
     },
     getPreviousPageParam: (firstPage) => {
       // Guard against undefined/non-array firstPage
-      if (Array.isArray(firstPage) && firstPage.length > 0) return firstPage[0].id;
-      return 0;
+      if (!Array.isArray(firstPage) || firstPage.length === 0) return undefined;
+
+      // Return object with cursor and direction for backward pagination (newer items)
+      const firstPostId = firstPage[0]?.id;
+      if (!firstPostId) {
+        logger.info(
+          {
+            message: 'getPreviousPageParam: No valid post ID found in firstPage',
+            firstPageLength: firstPage.length,
+            type,
+            userId,
+            hashtag,
+          },
+          'SCROLL',
+        );
+        return undefined;
+      }
+      return { cursor: firstPostId, direction: 'backward' };
     },
+    refetchInterval: 30000,
+    refetchIntervalInBackground: false,
     refetchOnWindowFocus: false,
-    staleTime: Infinity,
-    retry: false,
+    staleTime: 60000 * 10,
+    retry: 2,
   });
 
   useEffect(() => {
@@ -135,28 +287,6 @@ export function Posts({ type, hashtag, userId }: PostsProps) {
       qc.resetQueries({ queryKey, exact: true });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    // Check for new posts every 5 seconds, this allows for bidirectional infinite queries
-    const interval = setInterval(fetchPreviousPage, 5000);
-    return () => clearInterval(interval);
-  }, [fetchPreviousPage]);
-
-  useEffect(() => {
-    if (isBottomOnScreen && hasNextPage) fetchNextPage();
-  }, [isBottomOnScreen, hasNextPage, fetchNextPage]);
-
-  useEffect(() => {
-    // If top of <Posts> is on screen and the `numberOfNewPostsLoaded` is more than 0,
-    // reset the `numberOfNewPostsLoaded`
-    if (isTopOnScreen && numberOfNewPostsLoaded) {
-      setTimeout(() => setNumberOfNewPostsLoaded(0), 1000);
-    }
-  }, [isTopOnScreen, numberOfNewPostsLoaded]);
-
-  const viewNewlyLoadedPosts = useCallback(() => {
-    topElRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, []);
 
   const toggleComments = useCallback(
@@ -188,80 +318,19 @@ export function Posts({ type, hashtag, userId }: PostsProps) {
     [qc, queryKey],
   );
 
-  const newPostsLoadedButtonVariants = useMemo(
-    () => ({
-      hidden: { height: 0 },
-      visible: { height: 'auto' },
-    }),
-    [],
+  const renderPost = useCallback(
+    (post: PostIds[number]) => (
+      <Post key={post.id} id={post.id} commentsShown={post.commentsShown} toggleComments={toggleComments} />
+    ),
+    [toggleComments],
   );
-  const postTransition = useCallback(
-    (i: number) => ({
-      delay: deductLowerMultiple(i, POSTS_PER_PAGE) * 0.115,
-    }),
-    [],
-  );
-  const bottomLoaderStyle = useMemo(() => ({ display: data ? 'block' : 'none' }), [data]);
 
   return (
-    <>
-      <div ref={topElRef} />
-      <div className="flex flex-col">
-        <AnimatePresence>
-          {numberOfNewPostsLoaded !== 0 && (
-            <motion.div
-              // eslint-disable-next-line @typescript-eslint/no-use-before-define
-              variants={newPostsLoadedButtonVariants}
-              initial="hidden"
-              animate="visible"
-              exit="hidden"
-              className="sticky top-5 z-10 mx-auto overflow-hidden">
-              <ButtonNaked
-                onPress={viewNewlyLoadedPosts}
-                className="mt-4 inline-flex cursor-pointer select-none items-center gap-3 rounded-full bg-primary px-4 py-2 hover:bg-primary-accent">
-                <div className="-rotate-90 rounded-full border-2 border-border bg-muted/70 p-[6px]">
-                  <SvgForwardArrow className="h-5 w-5" />
-                </div>
-                <p className="text-primary-foreground">
-                  <b>{numberOfNewPostsLoaded}</b> new {numberOfNewPostsLoaded > 1 ? 'posts' : 'post'} loaded
-                </p>
-              </ButtonNaked>
-            </motion.div>
-          )}
-        </AnimatePresence>
-        {isPending ? (
-          <GenericLoading>Loading posts</GenericLoading>
-        ) : (
-          <AnimatePresence>
-            {data?.pages.map((page) =>
-              page.map((post, i) => (
-                <motion.div
-                  variants={postFramerVariants}
-                  initial={shouldAnimate ? 'start' : false}
-                  animate="animate"
-                  exit="exit"
-                  transition={postTransition(i)}
-                  key={post.id}>
-                  <Post id={post.id} commentsShown={post.commentsShown} toggleComments={toggleComments} />
-                </motion.div>
-              )),
-            )}
-          </AnimatePresence>
-        )}
-      </div>
-
-      <div
-        className="min-h-[16px]"
-        ref={bottomElRef}
-        /**
-         * The first page will be initially loaded by React Query
-         * so the bottom loader has to be hidden first
-         */
-        style={bottomLoaderStyle}>
-        {isFetchingNextPage && <GenericLoading>Loading more posts...</GenericLoading>}
-      </div>
-      {isError && error.message !== NO_PREV_DATA_LOADED && <SomethingWentWrong />}
-      {!isPending && !isFetchingNextPage && !hasNextPage && <AllCaughtUp />}
-    </>
+    <BidirectionalScroll<PostIds[number]>
+      queryResult={queryResult}
+      renderItem={renderPost}
+      estimateSize={400}
+      itemSpacing={16}
+    />
   );
 }

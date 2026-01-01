@@ -7,7 +7,7 @@ globs: **/*.{ts,tsx}
 
 ## 1. TDD Workflow (Red-Green-Refactor)
 
-- **Rule**: You SHOULD create or update a test file (`*.test.tsx` or `*.test.ts`) before modifying implementation logic.
+- **Rule**: You SHOULD create or update a test file (`*.spec.tsx` or `*.spec.ts`) before modifying implementation logic.
 - **Exceptions**:
   - Exploratory/spike work (mark with `// TODO: Add tests`)
   - Refactoring existing code (tests should already exist)
@@ -17,7 +17,7 @@ globs: **/*.{ts,tsx}
   2. **Green**: Write the MINIMAL code necessary to pass the test.
   3. **Refactor**: Clean up the code (dryness, naming) while ensuring tests stay green.
   4. **Optimize**: After manual testing has confirmed and all prior steps pass only then optimize the web browser experience.
-- **Colocation**: Keep test files in the same directory as the source file (e.g., `components/Button.tsx` and `components/Button.test.tsx`).
+- **Colocation**: Keep test files in the same directory as the source file (e.g., `components/Button.tsx` and `components/Button.spec.tsx`).
 
 ## 2. Test Performance Requirements
 
@@ -103,6 +103,11 @@ globs: **/*.{ts,tsx}
 
 ## 7. Component Architecture for Testability
 
+- **Principles**:
+  - Architect a SOLID class.
+  - Unit tests minimize mocks.
+  - Class minimizes context to debug.
+  - Each class minimizes integration API.
 - **Server vs Client**: Favor React Server Components (RSC) for data fetching. Only use `'use client'` for interactivity.
 - **Atomic Design**: Structure UI hierarchically for granular testing:
   - **Atoms**: Basic building blocks (Button, Input) - test in isolation
@@ -178,6 +183,8 @@ globs: **/*.{ts,tsx}
 
 ## 10. Observability & Logging
 
+- **Transparent User Feedback**: A user can recognize the internal state of the application by looking at the UI. 
+  - When failures occur, a user can see a brief audit of the failure.
 - **Diagnostic Logging for Bug Isolation**: When implementing features that involve data flow (API → DB → Cache → UI), add logging at each step:
   - API routes: Log incoming request data, DB operations, and response data
   - Mutations: Log data sent, received, and cache updates
@@ -218,6 +225,13 @@ globs: **/*.{ts,tsx}
   - PII (passwords, tokens, credit cards)
   - Full request/response bodies (log summaries only)
   - Sensitive user data (emails, addresses - use hashed IDs)
+- **Log Channel**: Logs should only show when relevant to current bug.
+  - Set a log channel for a system.
+  - Channel name is ALL CAPS. Example: `SCROLL`
+  - Channel name is abridged 2 to 6 characters long.
+  - If that channel is not enabled, do not log and do not allocate garbage for the log message formatting.
+  - Prefix `[{channel}]` to each log message. Example `[SCROLL] {message}`.
+  - Note that logging may be on [server](../../src/lib/logging.ts) or on [client](../../src/lib/logging-client.ts)
 - **Log Format**: JSON Lines (JSONL) format for easy database import:
   - Each line is a valid JSON object
   - Easy to import into PostgreSQL JSONB column
@@ -250,6 +264,7 @@ globs: **/*.{ts,tsx}
   - Linting (with autofix)
   - Testing (must pass, < 10 seconds)
   - Build (TypeScript validation and production build)
+  - Run `git_hooks/pre-push`. This script verifies all of the above.
 - **Fast Feedback**: Keep test suite fast for developer productivity:
   - Unit tests: < 100ms each
   - Integration tests: < 500ms each

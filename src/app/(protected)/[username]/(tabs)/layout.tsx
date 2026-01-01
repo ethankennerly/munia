@@ -1,8 +1,8 @@
 import { getServerUser } from '@/lib/getServerUser';
 import React from 'react';
+import { notFound } from 'next/navigation';
 import { ProfileHeader } from './ProfileHeader';
 import { getProfile } from '../getProfile';
-import { notFound } from 'next/navigation';
 
 export default async function Layout({
   children,
