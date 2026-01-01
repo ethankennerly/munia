@@ -49,7 +49,14 @@ const ENABLED_CHANNELS = resolveChannels();
 // Debug: Log resolved log level in development (only once at module load)
 if (process.env.NODE_ENV === 'development' && typeof window !== 'undefined') {
   // eslint-disable-next-line no-console
-  console.log('[logging-client] LOG_LEVEL:', LOG_LEVEL, 'ENABLE_DEBUG:', LOG_LEVEL === 'debug', 'ENABLE_INFO:', LOG_LEVEL === 'info' || LOG_LEVEL === 'debug');
+  console.log(
+    '[logging-client] LOG_LEVEL:',
+    LOG_LEVEL,
+    'ENABLE_DEBUG:',
+    LOG_LEVEL === 'debug',
+    'ENABLE_INFO:',
+    LOG_LEVEL === 'info' || LOG_LEVEL === 'debug',
+  );
 }
 
 // Build-time constants (enables tree-shaking)

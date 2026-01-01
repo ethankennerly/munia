@@ -137,15 +137,16 @@ describe('BidirectionalScroll', () => {
     });
   });
 
-  it('calls fetchPreviousPage when scrolling near bottom (index >= totalCount - 5)', async () => {
-    const mockFetchPreviousPage = vi.fn();
+  it('calls fetchNextPage when scrolling near bottom (index >= totalCount - 5)', async () => {
+    const mockFetchNextPage = vi.fn();
     const items = Array.from({ length: 20 }, (_, i) => ({ id: i, content: `Item ${i}` }));
     mockQueryResult = createMockQueryResult({
       data: {
         pages: [items],
         pageParams: [undefined],
       } as InfiniteData<unknown[]>,
-      fetchPreviousPage: mockFetchPreviousPage,
+      fetchNextPage: mockFetchNextPage,
+      hasNextPage: true,
     });
 
     const totalCount = 20;
@@ -156,7 +157,7 @@ describe('BidirectionalScroll', () => {
     renderComponent(mockQueryResult);
 
     await waitFor(() => {
-      expect(mockFetchPreviousPage).toHaveBeenCalled();
+      expect(mockFetchNextPage).toHaveBeenCalled();
     });
   });
 
@@ -267,15 +268,19 @@ describe('BidirectionalScroll', () => {
     expect(spinner).toHaveClass('animate-spin');
   });
 
-  it('shows "All caught up" when no more pages and not fetching', () => {
+  it('shows "No older posts to load" when no more pages and not fetching', () => {
     mockQueryResult = createMockQueryResult({
       hasNextPage: false,
       hasPreviousPage: false,
       isFetchingNextPage: false,
       isFetchingPreviousPage: false,
+      data: {
+        pages: [[{ id: 1, content: 'Item 1' }]],
+        pageParams: [undefined],
+      } as InfiniteData<unknown[]>,
     });
     renderComponent(mockQueryResult);
 
-    expect(screen.getByText(/all caught up/i)).toBeInTheDocument();
+    expect(screen.getByText(/no older posts to load/i)).toBeInTheDocument();
   });
 });

@@ -26,6 +26,7 @@ const OVERSCAN = 10;
 const DEFAULT_ESTIMATE_SIZE = 400;
 const DEFAULT_ITEM_SPACING = 16;
 const DEFAULT_CONTAINER_SPACING = 16;
+const DEBUG_STYLE = { fontFamily: 'monospace' };
 
 export default function BidirectionalScroll<TItem = unknown>({
   queryResult,
@@ -137,7 +138,10 @@ export default function BidirectionalScroll<TItem = unknown>({
         isError: queryResult.isError,
         // Calculate if we should fetch older items
         shouldFetchOlderByIndex: lastIndex >= allItems.length - PREFETCH_THRESHOLD,
-        shouldFetchOlderCalc: lastIndex >= allItems.length - PREFETCH_THRESHOLD && queryResult.hasNextPage && !queryResult.isFetchingNextPage,
+        shouldFetchOlderCalc:
+          lastIndex >= allItems.length - PREFETCH_THRESHOLD &&
+          queryResult.hasNextPage &&
+          !queryResult.isFetchingNextPage,
       },
       'SCROLL',
     );
@@ -222,8 +226,14 @@ export default function BidirectionalScroll<TItem = unknown>({
           allItemsVisible: firstIndex === 0 && lastIndex === totalCount - 1 && totalCount > 0,
           hasNextPage: queryResult.hasNextPage,
           notFetching: !queryResult.isFetchingNextPage,
-          indexChanged: (firstIndex === 0 && lastIndex === totalCount - 1 && totalCount > 0) ? true : lastFetchedRef.current.last !== lastIndex,
-          timeElapsed: (firstIndex === 0 && lastIndex === totalCount - 1 && totalCount > 0) ? true : now - lastFetchedRef.current.lastTimestamp > 500,
+          indexChanged:
+            firstIndex === 0 && lastIndex === totalCount - 1 && totalCount > 0
+              ? true
+              : lastFetchedRef.current.last !== lastIndex,
+          timeElapsed:
+            firstIndex === 0 && lastIndex === totalCount - 1 && totalCount > 0
+              ? true
+              : now - lastFetchedRef.current.lastTimestamp > 500,
           timeSinceLastFetch: now - lastFetchedRef.current.lastTimestamp,
         },
       },
@@ -341,11 +351,13 @@ export default function BidirectionalScroll<TItem = unknown>({
       // Also check virtualizer indices if available (read current value from virtualizer)
       const currentVirtualItems = virtualizer.getVirtualItems();
       const currentFirstIndex = currentVirtualItems.length > 0 ? currentVirtualItems[0]?.index ?? -1 : -1;
-      const currentLastIndex = currentVirtualItems.length > 0 ? currentVirtualItems[currentVirtualItems.length - 1]?.index ?? -1 : -1;
+      const currentLastIndex =
+        currentVirtualItems.length > 0 ? currentVirtualItems[currentVirtualItems.length - 1]?.index ?? -1 : -1;
       const totalCount = allItems.length;
       // Special case: If all items are visible, we should fetch immediately
       const allItemsVisible = currentFirstIndex === 0 && currentLastIndex === totalCount - 1 && totalCount > 0;
-      const isNearBottomByIndex = currentLastIndex !== -1 && (currentLastIndex >= totalCount - PREFETCH_THRESHOLD || allItemsVisible);
+      const isNearBottomByIndex =
+        currentLastIndex !== -1 && (currentLastIndex >= totalCount - PREFETCH_THRESHOLD || allItemsVisible);
       const isNearBottomByScroll = distanceFromBottom <= SCROLL_THRESHOLD_PX;
 
       logger.info(
@@ -364,8 +376,12 @@ export default function BidirectionalScroll<TItem = unknown>({
           conditionDetails: {
             allItemsVisible,
             currentFirstIndex,
-            indexCheck: `${currentLastIndex} >= ${totalCount} - ${PREFETCH_THRESHOLD} = ${currentLastIndex >= totalCount - PREFETCH_THRESHOLD}`,
-            scrollCheck: `${distanceFromBottom} <= ${SCROLL_THRESHOLD_PX} = ${distanceFromBottom <= SCROLL_THRESHOLD_PX}`,
+            indexCheck: `${currentLastIndex} >= ${totalCount} - ${PREFETCH_THRESHOLD} = ${
+              currentLastIndex >= totalCount - PREFETCH_THRESHOLD
+            }`,
+            scrollCheck: `${distanceFromBottom} <= ${SCROLL_THRESHOLD_PX} = ${
+              distanceFromBottom <= SCROLL_THRESHOLD_PX
+            }`,
           },
         },
         'SCROLL',
@@ -390,7 +406,11 @@ export default function BidirectionalScroll<TItem = unknown>({
         }
 
         // Check if virtualizer trigger already handled this (but bypass if all items visible)
-        if (!allItemsVisible && lastFetchedRef.current.last !== null && now - lastFetchedRef.current.lastTimestamp <= MIN_FETCH_INTERVAL) {
+        if (
+          !allItemsVisible &&
+          lastFetchedRef.current.last !== null &&
+          now - lastFetchedRef.current.lastTimestamp <= MIN_FETCH_INTERVAL
+        ) {
           logger.info(
             {
               message: 'Automatic check - rate limited (virtualizer)',
@@ -443,7 +463,13 @@ export default function BidirectionalScroll<TItem = unknown>({
       });
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [queryResult.data, allItems.length, queryResult.hasNextPage, queryResult.isFetchingNextPage, queryResult.fetchNextPage]);
+  }, [
+    queryResult.data,
+    allItems.length,
+    queryResult.hasNextPage,
+    queryResult.isFetchingNextPage,
+    queryResult.fetchNextPage,
+  ]);
 
   // Fallback: Direct scroll listener to ensure prefetch triggers when scrolling to bottom
   // This ensures older posts load even if virtualizer doesn't detect scroll changes
@@ -527,6 +553,7 @@ export default function BidirectionalScroll<TItem = unknown>({
     // Check immediately in case already at bottom
     handleScroll();
 
+    // eslint-disable-next-line consistent-return
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
@@ -597,29 +624,34 @@ export default function BidirectionalScroll<TItem = unknown>({
               <GenericLoading>Loading newer items...</GenericLoading>
             </div>
           )}
-          {!queryResult.isFetchingNextPage &&
-            !queryResult.hasNextPage && (
-              <div className="p-4" data-scroll-state="all-caught-up">
-                <AllCaughtUp showOlderPostsMessage={false} />
-              </div>
-            )}
+          {!queryResult.isFetchingNextPage && !queryResult.hasNextPage && (
+            <div className="p-4" data-scroll-state="all-caught-up">
+              <AllCaughtUp showOlderPostsMessage={false} />
+            </div>
+          )}
           {/* Debug indicator - only in development, shows current state */}
           {process.env.NODE_ENV === 'development' && logger.isDebugChannelEnabled('SCROLL') && (
             <div
               className="fixed bottom-4 right-4 z-50 rounded-lg bg-black/80 px-3 py-2 text-xs text-white opacity-75"
               data-scroll-debug
-              style={{ fontFamily: 'monospace' }}>
+              style={DEBUG_STYLE}>
               <div>Items: {allItems.length}</div>
-              <div>Visible: {virtualItems.length} ({firstIndex}..{lastIndex})</div>
               <div>
-                {queryResult.isFetchingNextPage ? '⬇️ Fetching older' : queryResult.hasNextPage ? '⬇️ Has more' : '⬇️ End'}
+                Visible: {virtualItems.length} ({firstIndex}..{lastIndex})
+              </div>
+              <div>
+                {queryResult.isFetchingNextPage
+                  ? '⬇️ Fetching older'
+                  : queryResult.hasNextPage
+                  ? '⬇️ Has more'
+                  : '⬇️ End'}
               </div>
               <div>
                 {queryResult.isFetchingPreviousPage
                   ? '⬆️ Fetching newer'
                   : queryResult.hasPreviousPage
-                    ? '⬆️ Has more'
-                    : '⬆️ End'}
+                  ? '⬆️ Has more'
+                  : '⬆️ End'}
               </div>
             </div>
           )}
@@ -693,20 +725,21 @@ export default function BidirectionalScroll<TItem = unknown>({
           <GenericLoading>Loading newer items...</GenericLoading>
         </div>
       )}
-      {!queryResult.isFetchingNextPage &&
-        !queryResult.hasNextPage && (
-          <div className="p-4" data-scroll-state="all-caught-up">
-            <AllCaughtUp showOlderPostsMessage />
-          </div>
-        )}
+      {!queryResult.isFetchingNextPage && !queryResult.hasNextPage && (
+        <div className="p-4" data-scroll-state="all-caught-up">
+          <AllCaughtUp showOlderPostsMessage />
+        </div>
+      )}
       {/* Debug indicator - only in development, shows current state */}
       {process.env.NODE_ENV === 'development' && (
         <div
           className="fixed bottom-4 right-4 z-50 rounded-lg bg-black/80 px-3 py-2 text-xs text-white opacity-75"
           data-scroll-debug
-          style={{ fontFamily: 'monospace' }}>
+          style={DEBUG_STYLE}>
           <div>Items: {allItems.length}</div>
-          <div>Visible: {virtualItems.length} ({firstIndex}..{lastIndex})</div>
+          <div>
+            Visible: {virtualItems.length} ({firstIndex}..{lastIndex})
+          </div>
           <div>
             {queryResult.isFetchingNextPage ? '⬇️ Fetching older' : queryResult.hasNextPage ? '⬇️ Has more' : '⬇️ End'}
           </div>
@@ -714,8 +747,8 @@ export default function BidirectionalScroll<TItem = unknown>({
             {queryResult.isFetchingPreviousPage
               ? '⬆️ Fetching newer'
               : queryResult.hasPreviousPage
-                ? '⬆️ Has more'
-                : '⬆️ End'}
+              ? '⬆️ Has more'
+              : '⬆️ End'}
           </div>
         </div>
       )}

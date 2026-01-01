@@ -22,12 +22,12 @@ Virtualized bidirectional scrolling for dynamic feeds with prefetching and layou
 - [x] Some items have different heights.
 - [x] Consistent margin between scroll and other items. Example: Create Post is above the fetched posts. The spacing should be equal between Create Post and the top post. Ideally, the format appears as equal spacing and equal margins.
 - [x] After the oldest post in the database is loaded, and the user scrolls to the bottom, at the bottom of the page display the pre-existing UI that has text like "All Caught Up."
+- [x] Do not render the "Feed" header, ThemeSwitch, and CreatePostModalLauncher until their JavaScript has fully loaded and they are interactive. This prevents layout shift and flicker during slow network conditions (Slow 4G or Fast 4G).
 - [x] Virtualize list (render only visible items + overscan)
 - [x] Prevent layout shift (fixed height estimation or skeleton loading)
 
 ## Out of Scope
 - [ ] Prefetch 10 items ahead/behind viewport (overscan: 10)
-- [ ] At Network Throttling Slow 4G or Fast 4G, the "Feed" and Create Post appeared at the top of the page. This should persist as loading continues. There should not be any flicker or removal of those items while loading posts.
 - [ ] Do not block the main thread while fetching posts.
 - [ ] Delay network requests of images or videos in post to speed up loading of the post.
 - [ ] Restore the pre-existing function of post `AnimatePresence` with `framer-motion`. Yet implement simply and professionally.
