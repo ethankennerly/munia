@@ -48,7 +48,7 @@ export function Posts({ type, hashtag, userId }: PostsProps) {
           // Legacy format: just a number (post ID) - default to forward direction
           cursor = pageParam;
           direction = 'forward';
-          logger.info(
+          logger.warn(
             {
               message: 'Legacy pageParam format detected (number) - this should not happen',
               pageParam,
@@ -64,7 +64,7 @@ export function Posts({ type, hashtag, userId }: PostsProps) {
           // Fallback for initial load or invalid format
           cursor = 0;
           direction = 'forward';
-          logger.info(
+          logger.warn(
             {
               message: 'Invalid or missing pageParam format, using defaults',
               pageParam,
@@ -233,6 +233,24 @@ export function Posts({ type, hashtag, userId }: PostsProps) {
       // Guard: lastPage might be undefined or non-array in edge cases (e.g., optimistic updates)
       if (!Array.isArray(lastPage) || lastPage.length === 0) return undefined;
 
+      // If the API returned fewer posts than requested, we've reached the end
+      // This is a heuristic for cursor-based pagination - if we asked for POSTS_PER_PAGE
+      // but got fewer, there are no more posts to load
+      if (lastPage.length < POSTS_PER_PAGE) {
+        logger.info(
+          {
+            message: 'getNextPageParam: Reached end (fewer posts than requested)',
+            lastPageLength: lastPage.length,
+            postsPerPage: POSTS_PER_PAGE,
+            type,
+            userId,
+            hashtag,
+          },
+          'SCROLL',
+        );
+        return undefined;
+      }
+
       // Return object with cursor and direction for forward pagination (older items)
       const lastPostId = lastPage[lastPage.length - 1]?.id;
       if (!lastPostId) {
@@ -325,12 +343,19 @@ export function Posts({ type, hashtag, userId }: PostsProps) {
     [toggleComments],
   );
 
+  // Sort items to ensure newer posts (higher IDs) are at the top
+  const sortPosts = useCallback((items: PostIds) => {
+    // Sort by ID in descending order (higher IDs = newer posts = top)
+    return [...items].sort((a, b) => b.id - a.id);
+  }, []);
+
   return (
     <BidirectionalScroll<PostIds[number]>
       queryResult={queryResult}
       renderItem={renderPost}
       estimateSize={400}
       itemSpacing={16}
+      sortItems={sortPosts}
     />
   );
 }

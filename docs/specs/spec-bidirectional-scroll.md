@@ -4,21 +4,33 @@ Virtualized bidirectional scrolling for dynamic feeds with prefetching and layou
 
 ## Acceptance Criteria
 
-- [x] Load older items when scrolling up (within 5 items of top)
-- [x] Load newer items when scrolling down (within 5 items of bottom)
-- [x] Prefetch 10 items ahead/behind viewport (overscan: 10)
-- [x] Virtualize list (render only visible items + overscan)
-- [x] Prevent layout shift (fixed height estimation or skeleton loading)
+- [x] Newer posts are sorted from top to bottom. The bottom is the older posts. 
+- [x] At the bottom of a toast should mention "older posts."
+- [x] Load newer items when scrolling up (within 5 items of top)
+- [x] Load older items when scrolling down (within 5 items of bottom)
+- [x] Four or more new posts just created appear.
+- [x] When the browser does a hard reload, and the browser keeps scrolling to the bottom eventually all the old posts may load. Generic Loading spinner appears at the bottom while loading. Example: 30 posts in database. Scroll to bottom of feed. Being near the bottom of the feed should trigger loading the next page of posts.
+- [x] When more posts are pending, animate the Generic Loading spinner.
+- [x] At Network Throtting Fast 4G, being near the bottom of the page of 6 or 12 posts should fetch the next page of posts. During this loading, the loading spinner should appear. 
+  - [x] This should happen immediately and automatically. There should not be a need for the user to resize the browser window until the sidebar collapses into the mobile menu or vice versa. 
+  - [x] The visual rendering of the browser window should be displaying the loading spinner or the newly loaded posts. The user should not need to revise the window layout to see the loading or new items.
 - [x] Handle loading states (show indicators during fetch)
 - [x] Handle error states (show error UI, allow retry)
 - [x] Handle empty states (no more items to load)
 - [x] Consistent spacing between item.
-- [x] Some items have different heights.
 - [x] No extra scroll bar. There is already a vertical scroll bar for the whole page.
-- [ ] Consistent margin between scroll and other items. Example: Create Post is above the fetched posts. The spacing should be equal between Create Post and the top post. Ideally, the format appears as equal spacing and equal margins.
+- [x] Some items have different heights.
+- [x] Consistent margin between scroll and other items. Example: Create Post is above the fetched posts. The spacing should be equal between Create Post and the top post. Ideally, the format appears as equal spacing and equal margins.
+- [x] After the oldest post in the database is loaded, and the user scrolls to the bottom, at the bottom of the page display the pre-existing UI that has text like "All Caught Up."
+- [x] Virtualize list (render only visible items + overscan)
+- [x] Prevent layout shift (fixed height estimation or skeleton loading)
 
 ## Out of Scope
-- `AnimatePresence` with `framer-motion`.
+- [ ] Prefetch 10 items ahead/behind viewport (overscan: 10)
+- [ ] At Network Throttling Slow 4G or Fast 4G, the "Feed" and Create Post appeared at the top of the page. This should persist as loading continues. There should not be any flicker or removal of those items while loading posts.
+- [ ] Do not block the main thread while fetching posts.
+- [ ] Delay network requests of images or videos in post to speed up loading of the post.
+- [ ] Restore the pre-existing function of post `AnimatePresence` with `framer-motion`. Yet implement simply and professionally.
 
 ## Implementation
 

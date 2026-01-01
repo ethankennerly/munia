@@ -23,18 +23,34 @@ function resolveLogLevel(): Level {
 }
 
 // Build-time: Reads NEXT_PUBLIC_LOG_CHANNELS (comma-separated channel names)
-// Next.js replaces NEXT_PUBLIC_* variables at build time
+// Next.js replaces NEXT_PUBLIC_* variables at build time, but in dev mode it's available at runtime
 function resolveChannels(): Set<string> {
+  // Access env var directly - Next.js will replace NEXT_PUBLIC_* at build time
+  // In development, this is also available at runtime from .env.local
+  // Note: If you change .env.local, you need to restart the dev server for changes to take effect
   const fromEnv = process.env.NEXT_PUBLIC_LOG_CHANNELS || '';
   if (!fromEnv) return new Set();
   // Special case: "NONE" means disable all channels
   if (fromEnv.toUpperCase() === 'NONE') return new Set(['__NONE__']);
   // Parse comma-separated channel names (e.g., "SCROLL,API,DB")
-  return new Set(fromEnv.split(',').map((ch) => ch.trim().toUpperCase()));
+  const channels = new Set(fromEnv.split(',').map((ch) => ch.trim().toUpperCase()));
+  // Debug: Log resolved channels in development (only once at module load)
+  // This helps verify that the env var is being read correctly
+  if (process.env.NODE_ENV === 'development' && typeof window !== 'undefined') {
+    // eslint-disable-next-line no-console
+    console.log('[logging-client] NEXT_PUBLIC_LOG_CHANNELS:', fromEnv, '→ Resolved channels:', Array.from(channels));
+  }
+  return channels;
 }
 
 const LOG_LEVEL = resolveLogLevel();
 const ENABLED_CHANNELS = resolveChannels();
+
+// Debug: Log resolved log level in development (only once at module load)
+if (process.env.NODE_ENV === 'development' && typeof window !== 'undefined') {
+  // eslint-disable-next-line no-console
+  console.log('[logging-client] LOG_LEVEL:', LOG_LEVEL, 'ENABLE_DEBUG:', LOG_LEVEL === 'debug', 'ENABLE_INFO:', LOG_LEVEL === 'info' || LOG_LEVEL === 'debug');
+}
 
 // Build-time constants (enables tree-shaking)
 const ENABLE_ERROR = true; // Always enabled
@@ -95,4 +111,5 @@ export const logger = {
         console.debug(JSON.stringify({ level: 'debug', ...obj, message: prefixedMessage }));
       }
     : () => {},
+  isDebugChannelEnabled: ENABLE_DEBUG ? (channel: string) => isChannelEnabled(channel) : () => false,
 };

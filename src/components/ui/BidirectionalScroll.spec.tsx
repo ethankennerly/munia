@@ -243,6 +243,30 @@ describe('BidirectionalScroll', () => {
     expect(screen.getByText(/loading newer items/i)).toBeInTheDocument();
   });
 
+  it('animates spinner when fetching next page (posts pending)', () => {
+    mockQueryResult = createMockQueryResult({
+      isFetchingNextPage: true,
+    });
+    const { container } = renderComponent(mockQueryResult);
+
+    // Find the spinner SVG element (it should have animate-spin class)
+    const spinner = container.querySelector('.animate-spin');
+    expect(spinner).toBeInTheDocument();
+    expect(spinner).toHaveClass('animate-spin');
+  });
+
+  it('animates spinner when fetching previous page (posts pending)', () => {
+    mockQueryResult = createMockQueryResult({
+      isFetchingPreviousPage: true,
+    });
+    const { container } = renderComponent(mockQueryResult);
+
+    // Find the spinner SVG element (it should have animate-spin class)
+    const spinner = container.querySelector('.animate-spin');
+    expect(spinner).toBeInTheDocument();
+    expect(spinner).toHaveClass('animate-spin');
+  });
+
   it('shows "All caught up" when no more pages and not fetching', () => {
     mockQueryResult = createMockQueryResult({
       hasNextPage: false,
