@@ -1,9 +1,12 @@
+'use client';
+
 import { RefCallback, useCallback, useRef } from 'react';
 import { useDatePickerState } from 'react-stately';
 import { AriaDatePickerProps, DateValue, useDatePicker } from 'react-aria';
 import SvgCalendar from '@/svg_components/Calendar';
 import { cn } from '@/lib/cn';
 import SvgClose from '@/svg_components/Close';
+import { useTranslations } from 'next-intl';
 import { Calendar } from './Calendar';
 import { DateField } from './DateField';
 import { Popover } from './Popover';
@@ -21,6 +24,7 @@ interface DatePickerProps extends AriaDatePickerProps<DateValue> {
 }
 
 export function DatePicker({ triggerRef, ...props }: DatePickerProps) {
+  const t = useTranslations();
   const state = useDatePickerState(props);
   const ref = useRef(null);
   const { groupProps, labelProps, fieldProps, buttonProps, dialogProps, calendarProps, errorMessageProps } =
@@ -76,7 +80,7 @@ export function DatePicker({ triggerRef, ...props }: DatePickerProps) {
           size="small"
           onPress={clear}
           className={cn('absolute right-5 top-[50%] z-[1] hidden translate-y-[-50%]', state.value !== null && 'block')}
-          aria-label="Clear"
+          aria-label={t('components_ui_select_clear')}
         />
       </div>
       {isError && (

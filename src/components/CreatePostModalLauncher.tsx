@@ -3,10 +3,12 @@
 import { useCreatePostModal } from '@/hooks/useCreatePostModal';
 import SvgImage from '@/svg_components/Image';
 import { useCallback } from 'react';
+import { useTranslations } from 'next-intl';
 import { ProfilePhotoOwn } from './ui/ProfilePhotoOwn';
 import { ButtonNaked } from './ui/ButtonNaked';
 
 export function CreatePostModalLauncher() {
+  const t = useTranslations();
   const { launchCreatePost } = useCreatePostModal();
   const launcCreatePostFinderClosed = useCallback(() => launchCreatePost({}), [launchCreatePost]);
   const launchCreatePostFinderOpened = useCallback(() => {
@@ -25,7 +27,7 @@ export function CreatePostModalLauncher() {
           onPress={launcCreatePostFinderClosed}
           className="flex flex-grow flex-col justify-center"
           data-activate-id="create-post-text">
-          <p className="text-muted-foreground">What&apos;s on your mind?</p>
+          <p className="text-muted-foreground">{t('components_what_apos_your')}</p>
         </ButtonNaked>
       </div>
       <div className="flex flex-row gap-4">
@@ -35,7 +37,7 @@ export function CreatePostModalLauncher() {
           data-activate-id="create-post-media">
           <SvgImage className="h-6 w-6 text-muted-foreground" />
           <p className="text-base font-semibold text-muted-foreground group-hover:text-muted-foreground/80">
-            Image / Video
+            {t('image_video')}
           </p>
         </ButtonNaked>
         {/* <ButtonNaked className="group flex cursor-pointer flex-row items-center gap-4">

@@ -1,4 +1,7 @@
+'use client';
+
 import { CircleActionsAlertInfo } from '@/svg_components';
+import { useTranslations } from 'next-intl';
 
 interface SomethingWentWrongProps {
   error?: Error | string | null;
@@ -6,11 +9,12 @@ interface SomethingWentWrongProps {
 }
 
 export function SomethingWentWrong({ error, details }: SomethingWentWrongProps = {}) {
+  const t = useTranslations();
   const errorMessage = error instanceof Error ? error.message : typeof error === 'string' ? error : null;
   const errorName = error instanceof Error ? error.name : null;
 
   // Create user-friendly error message
-  let displayMessage = 'Something went wrong.';
+  let displayMessage = t('components_something_went_wrong');
   if (errorMessage) {
     // Show the actual error message if available
     displayMessage = errorMessage;

@@ -3,7 +3,6 @@
 import { memo, useCallback, useMemo } from 'react';
 import { useSession } from 'next-auth/react';
 import { cn } from '@/lib/cn';
-import formatDistanceStrict from 'date-fns/formatDistanceStrict';
 import SvgComment from '@/svg_components/Comment';
 import { AnimatePresence, motion } from 'framer-motion';
 import { GetPost, PostId } from '@/types/definitions';
@@ -11,6 +10,8 @@ import { isEqual } from 'lodash';
 import SvgHeart from '@/svg_components/Heart';
 import { useQuery } from '@tanstack/react-query';
 import { usePostLikesMutations } from '@/hooks/mutations/usePostLikesMutations';
+import { useTranslations } from 'next-intl';
+import { useTimeAgo } from '@/hooks/useTimeAgo';
 import { ToggleStepper } from './ui/ToggleStepper';
 import { Comments } from './Comments';
 import { PostVisualMediaContainer } from './PostVisualMediaContainer';
@@ -26,6 +27,8 @@ export const Post = memo(
   }: PostId & {
     toggleComments: (postId: number) => void;
   }) => {
+    const t = useTranslations();
+    const { formatTimeAgo } = useTimeAgo();
     const { data: session } = useSession();
     const userId = session?.user?.id;
     const { likeMutation, unLikeMutation } = usePostLikesMutations({ postId });
@@ -35,7 +38,7 @@ export const Post = memo(
       queryFn: async () => {
         const res = await fetch(`/api/posts/${postId}`);
         if (!res.ok) {
-          throw new Error('Error getting post');
+          throw new Error(t('error_getting_post'));
         }
         return (await res.json()) as GetPost;
       },
@@ -72,8 +75,8 @@ export const Post = memo(
     );
 
     if (isPending) return <p>Loading...</p>;
-    if (isError) return <p>Error loading post.</p>;
-    if (!data) return <p>This post no longer exists.</p>;
+    if (isError) return <p>{t('components_post_error')}</p>;
+    if (!data) return <p>{t('components_post_this')}</p>;
 
     // eslint-disable-next-line @typescript-eslint/naming-convention
     const { content, createdAt, user: author, visualMedia, isLiked, _count } = data;
@@ -86,7 +89,7 @@ export const Post = memo(
           <ProfileBlock
             name={author.name!}
             username={author.username!}
-            time={formatDistanceStrict(new Date(createdAt), new Date())}
+            time={formatTimeAgo(new Date(createdAt))}
             photoUrl={author.profilePhoto!}
           />
           {isOwnPost && <PostOptions postId={postId} content={content} visualMedia={visualMedia} />}

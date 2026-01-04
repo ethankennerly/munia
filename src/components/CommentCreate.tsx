@@ -3,11 +3,13 @@
 import SvgSend from '@/svg_components/Send';
 import { useCallback, useState } from 'react';
 import { useCreateCommentMutations } from '@/hooks/mutations/useCreateCommentMutations';
+import { useTranslations } from 'next-intl';
 import Button from './ui/Button';
 import { ProfilePhotoOwn } from './ui/ProfilePhotoOwn';
 import { TextAreaWithMentionsAndHashTags } from './TextAreaWithMentionsAndHashTags';
 
 export function CommentCreate({ postId }: { postId: number }) {
+  const t = useTranslations();
   const [content, setContent] = useState('');
   const { createCommentMutation } = useCreateCommentMutations();
 
@@ -32,7 +34,7 @@ export function CommentCreate({ postId }: { postId: number }) {
           <TextAreaWithMentionsAndHashTags
             content={content}
             setContent={setContent}
-            placeholder="Write your comment here..."
+            placeholder={t('components_commentcreate')}
             shouldFocusOnMount={false}
           />
         </div>

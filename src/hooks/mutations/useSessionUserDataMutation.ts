@@ -1,7 +1,10 @@
+'use client';
+
 import { UserAboutSchema } from '@/lib/validations/userAbout';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useSession } from 'next-auth/react';
 import { GetUser } from '@/types/definitions';
+import { useTranslations } from 'next-intl';
 import { useToast } from '../useToast';
 
 /**
@@ -9,6 +12,7 @@ import { useToast } from '../useToast';
  * and the profile's About page.
  */
 export function useSessionUserDataMutation() {
+  const t = useTranslations();
   const { data: session } = useSession();
   const userId = session?.user.id;
   const qc = useQueryClient();
@@ -36,8 +40,8 @@ export function useSessionUserDataMutation() {
 
       showToast({
         type: 'success',
-        title: 'Success',
-        message: 'Your profile information has been updated.',
+        title: t('hooks_mutations_success'),
+        message: t('hooks_mutations_your_profile_information'),
       });
     },
   });
@@ -50,11 +54,13 @@ export function useSessionUserDataMutation() {
       });
 
       if (!res.ok) {
-        throw new Error(`Error updating ${toUpdate} photo.`);
+        const message = toUpdate === 'profile' ? t('error_updating_profile_photo') : t('error_updating_cover_photo');
+        throw new Error(message);
       }
 
       const { uploadedTo } = (await res.json()) as { uploadedTo: string };
       return {
+        // i18n-ally-ignore
         type: `${toUpdate}Photo`,
         uploadedTo,
       };

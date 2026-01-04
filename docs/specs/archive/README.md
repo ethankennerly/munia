@@ -1,5 +1,6 @@
 This folder contains reviews that are unnecessary understand the implementation. Generally, this folder should be excluded from indexing by Cursor or other AI agents.
 
+- [Bidirectional Scroll](spec-bidirectional-scroll.md)
 - [Importing Google Profile Pic](spec-importing-google-profile-pic.md)
 - [Session Replay](spec-session-replay.md)
 - [Client-Server Logging Integration](spec-logging-client-server.md)

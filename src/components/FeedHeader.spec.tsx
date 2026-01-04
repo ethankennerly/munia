@@ -21,7 +21,7 @@ describe('FeedHeader', () => {
   it('renders Feed title, ThemeSwitch, and CreatePostModalLauncher after mount', () => {
     render(<FeedHeader />);
 
-    expect(screen.getByText('Feed')).toBeInTheDocument();
+    expect(screen.getByText('components_feedheader')).toBeInTheDocument();
     expect(screen.getByTestId('theme-switch')).toBeInTheDocument();
     expect(screen.getByTestId('create-post')).toBeInTheDocument();
   });
@@ -30,7 +30,7 @@ describe('FeedHeader', () => {
     const { rerender } = render(<FeedHeader />);
 
     // Initial render
-    expect(screen.getByText('Feed')).toBeInTheDocument();
+    expect(screen.getByText('components_feedheader')).toBeInTheDocument();
     expect(screen.getByTestId('theme-switch')).toBeInTheDocument();
     expect(screen.getByTestId('create-post')).toBeInTheDocument();
 
@@ -38,7 +38,7 @@ describe('FeedHeader', () => {
     rerender(<FeedHeader />);
 
     // Components should still be present
-    expect(screen.getByText('Feed')).toBeInTheDocument();
+    expect(screen.getByText('components_feedheader')).toBeInTheDocument();
     expect(screen.getByTestId('theme-switch')).toBeInTheDocument();
     expect(screen.getByTestId('create-post')).toBeInTheDocument();
   });

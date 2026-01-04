@@ -1,3 +1,5 @@
+'use client';
+
 import { getReplies } from '@/lib/client_data_fetching/getReplies';
 import { useQuery } from '@tanstack/react-query';
 import { useSession } from 'next-auth/react';
@@ -6,9 +8,11 @@ import { useLikeUnlikeComments } from '@/hooks/useLikeUnlikeComments';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useShouldAnimate } from '@/hooks/useShouldAnimate';
 import { commentFramerVariants } from '@/lib/framerVariants';
+import { useTranslations } from 'next-intl';
 import { CommentReply } from './CommentReply';
 
 export function CommentReplies({ parentId }: { parentId: number }) {
+  const t = useTranslations();
   const { data: session } = useSession();
   const queryKey = ['comments', parentId, 'replies'];
   const {
@@ -24,8 +28,8 @@ export function CommentReplies({ parentId }: { parentId: number }) {
   const { likeComment, unLikeComment } = useLikeUnlikeComments({ queryKey });
   const { shouldAnimate } = useShouldAnimate();
 
-  if (isPending) return <p className="text-sm font-semibold text-gray-500">Loading replies...</p>;
-  if (isError) return <p className="text-sm font-semibold text-gray-500">Error loading replies.</p>;
+  if (isPending) return <p className="text-sm font-semibold text-gray-500">{t('components')}</p>;
+  if (isError) return <p className="text-sm font-semibold text-gray-500">{t('components_error_loading_replies')}</p>;
 
   return (
     <div>

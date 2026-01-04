@@ -4,8 +4,10 @@ import { useTheme } from '@/hooks/useTheme';
 import { DeviceLaptop, WeatherMoon, WeatherSun } from '@/svg_components';
 import { motion } from 'framer-motion';
 import { useMemo } from 'react';
+import { useTranslations } from 'next-intl';
 
 export function ThemeSwitch() {
+  const t = useTranslations();
   const { theme, switchTheme } = useTheme();
 
   const systemThemeAnimation = useMemo(
@@ -35,7 +37,7 @@ export function ThemeSwitch() {
     <button
       type="button"
       className="relative h-[48px] w-[48px] overflow-hidden rounded-full border-2 border-secondary hover:border-muted sm:h-[56px] sm:w-[56px]"
-      aria-label="Switch theme"
+      aria-label={t('switch_theme')}
       onClick={switchTheme}>
       <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
         <motion.div animate={systemThemeAnimation}>

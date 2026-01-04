@@ -100,7 +100,7 @@ describe('BidirectionalScroll', () => {
     });
     renderComponent(mockQueryResult);
 
-    expect(screen.getByText(/all caught up/i)).toBeInTheDocument();
+    expect(screen.getByText(/all_caught_up/i)).toBeInTheDocument();
   });
 
   it('renders virtualized items from query data', () => {
@@ -268,7 +268,7 @@ describe('BidirectionalScroll', () => {
     expect(spinner).toHaveClass('animate-spin');
   });
 
-  it('shows "No older posts to load" when no more pages and not fetching', () => {
+  it('shows "components_allcaughtup" when no more pages and not fetching', () => {
     mockQueryResult = createMockQueryResult({
       hasNextPage: false,
       hasPreviousPage: false,
@@ -281,6 +281,6 @@ describe('BidirectionalScroll', () => {
     });
     renderComponent(mockQueryResult);
 
-    expect(screen.getByText(/no older posts to load/i)).toBeInTheDocument();
+    expect(screen.getByText(/components_allcaughtup/i)).toBeInTheDocument();
   });
 });

@@ -2,6 +2,7 @@
 
 import React, { forwardRef, useCallback, useRef } from 'react';
 import SvgImage from '@/svg_components/Image';
+import { useTranslations } from 'next-intl';
 import { ButtonNaked } from './ui/ButtonNaked';
 
 export const CreatePostOptions = forwardRef<
@@ -10,6 +11,7 @@ export const CreatePostOptions = forwardRef<
     handleVisualMediaChange: React.ChangeEventHandler<HTMLInputElement>;
   }
 >(({ handleVisualMediaChange }, forwardedRef) => {
+  const t = useTranslations();
   const localRef = useRef<HTMLInputElement | null>(null);
   const assignRef = useCallback(
     (node: HTMLInputElement) => {
@@ -28,10 +30,13 @@ export const CreatePostOptions = forwardRef<
 
   return (
     <div className="flex flex-row justify-center gap-6 px-4 pb-5 sm:justify-start">
-      <ButtonNaked aria-label="Upload an image or video" className="flex gap-4" onPress={onUploadImageOrVideoPress}>
+      <ButtonNaked
+        aria-label={t('upload_an_image_or_video')}
+        className="flex gap-4"
+        onPress={onUploadImageOrVideoPress}>
         <SvgImage className="h-6 w-6 text-muted-foreground" />
         <p className="text-base font-semibold text-muted-foreground group-hover:text-muted-foreground/80">
-          Image / Video
+          {t('image_video')}
         </p>
       </ButtonNaked>
       <input

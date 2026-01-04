@@ -2,6 +2,7 @@
 
 import React, { useState, useMemo, useCallback } from 'react';
 import { cn } from '@/lib/cn';
+import { useTranslations } from 'next-intl';
 import { HighlightedMentionsAndHashTags } from './HighlightedMentionsAndHashTags';
 
 interface TruncatedPostContentProps {
@@ -9,6 +10,7 @@ interface TruncatedPostContentProps {
 }
 
 export function TruncatedPostContent({ content }: TruncatedPostContentProps) {
+  const t = useTranslations();
   const [isExpanded, setIsExpanded] = useState(false);
 
   // Count lines by splitting on newlines
@@ -35,7 +37,7 @@ export function TruncatedPostContent({ content }: TruncatedPostContentProps) {
           type="button"
           onClick={handleToggle}
           className="mt-2 text-sm text-muted-foreground transition-colors hover:text-foreground">
-          {isExpanded ? 'Show less' : 'Show more'}
+          {isExpanded ? t('components_show_less') : t('components_show_more')}
         </button>
       )}
     </div>

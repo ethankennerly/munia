@@ -9,6 +9,8 @@ In this [demo](https://munia-rho.vercel.app), Ethan Kennerly enhanced the follow
 - Patch DoS vulnerability ([2025-12-11](https://react.dev/blog/2025/12/11/denial-of-service-and-source-code-exposure-in-react-server-components))
 - [Delete](https://www.lexology.com/library/detail.aspx?g=a20bdb6d-dffa-4936-8507-3201876b891b) an account
 - [Remove](https://github.com/leandronorcio/munia/issues/1) a post
+- Polish infinite scroll of posts.
+- Translate into [Spanish](https://munia-rho.vercel.app/es).
 - Speed up reloading an [image](https://developer.chrome.com/docs/performance/insights/cache)
 - Collapse a long post
 - Fix birth date editing

@@ -1,3 +1,5 @@
+'use client';
+
 import type { AriaSelectProps } from '@react-types/select';
 import { useSelectState } from 'react-stately';
 import { useSelect, HiddenSelect, useButton } from 'react-aria';
@@ -6,6 +8,7 @@ import { cn } from '@/lib/cn';
 import { useObjectRef } from '@react-aria/utils';
 import SvgClose from '@/svg_components/Close';
 import SvgArrowChevronDown from '@/svg_components/ArrowChevronDown';
+import { useTranslations } from 'next-intl';
 import Button from './Button';
 import { Popover } from './Popover';
 import { ListBox } from './SelectListBox';
@@ -16,6 +19,7 @@ interface SelectProps<T> extends AriaSelectProps<T> {
 
 export const Select = forwardRef(
   ({ Icon, ...props }: SelectProps<object>, forwardedRef: ForwardedRef<HTMLButtonElement>) => {
+    const t = useTranslations();
     // Create state based on the incoming props
     const state = useSelectState(props);
 
@@ -96,7 +100,7 @@ export const Select = forwardRef(
                 mode="ghost"
                 size="small"
                 onPress={clear}
-                aria-label="Clear"
+                aria-label={t('components_ui_select_clear')}
               />
             )}
           </div>

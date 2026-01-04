@@ -5,6 +5,7 @@ import { useObjectRef } from '@react-aria/utils';
 import { SVGProps, forwardRef, useCallback } from 'react';
 import { AriaTextFieldProps, useTextField } from 'react-aria';
 import SvgClose from '@/svg_components/Close';
+import { useTranslations } from 'next-intl';
 import Button from './Button';
 
 interface TextInputProps extends AriaTextFieldProps {
@@ -13,6 +14,7 @@ interface TextInputProps extends AriaTextFieldProps {
 }
 
 export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(({ className, Icon, ...props }, forwardedRef) => {
+  const t = useTranslations();
   // Support forwarded refs: https://github.com/adobe/react-spectrum/pull/2293#discussion_r714337674
   const ref = useObjectRef(forwardedRef);
   const { labelProps, inputProps, errorMessageProps } = useTextField(props, ref);
@@ -69,7 +71,7 @@ export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(({ classNa
           size="small"
           onPress={clear}
           className="absolute right-5 top-[50%] z-[1] block translate-y-[-50%] peer-placeholder-shown:hidden"
-          aria-label="Clear"
+          aria-label={t('components_ui_select_clear')}
         />
       </div>
       {isError && (

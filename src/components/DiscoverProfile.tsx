@@ -1,3 +1,5 @@
+'use client';
+
 import { ProfileActionButtons } from '@/components/ProfileActionButtons';
 import { ProfilePhoto } from '@/components/ui/ProfilePhoto';
 import { memo } from 'react';
@@ -5,9 +7,11 @@ import { useUserQuery } from '@/hooks/queries/useUserQuery';
 import { useSession } from 'next-auth/react';
 import { cn } from '@/lib/cn';
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 
 export const DiscoverProfile = memo(
   ({ userId }: { userId: string }) => {
+    const t = useTranslations();
     /**
      * Since the query function of <DiscoverProfiles> already created a query
      * cache for the user data, we can just access it here using the `useUserQuery()`
@@ -16,7 +20,7 @@ export const DiscoverProfile = memo(
     const { data: session } = useSession();
 
     if (isPending) return <div>Loading...</div>;
-    if (isError) return <div>Error loading profile.</div>;
+    if (isError) return <div>{t('components_error_loading_profile')}</div>;
     if (!user) return null;
 
     return (
@@ -47,13 +51,14 @@ export const DiscoverProfile = memo(
               {user.name}
             </Link>
           </h2>
-          <p className="mb-4 px-2 text-center text-muted-foreground">{user.bio || 'No bio yet'}</p>
+          <p className="mb-4 px-2 text-center text-muted-foreground">{user.bio || t('components_bio_yet')}</p>
           <div className="flex gap-6">
             <p className="flex justify-center gap-1 text-lg font-semibold">
-              <span>{user.followerCount}</span> <span className="text-muted-foreground">Followers</span>
+              <span>{user.followerCount}</span> <span className="text-muted-foreground">{t('protected_username')}</span>
             </p>
             <p className="flex justify-center gap-1 text-lg font-semibold">
-              <span>{user.followingCount}</span> <span className="text-muted-foreground">Following</span>
+              <span>{user.followingCount}</span>{' '}
+              <span className="text-muted-foreground">{t('protected_username_following')}</span>
             </p>
           </div>
         </div>

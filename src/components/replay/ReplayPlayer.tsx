@@ -5,6 +5,7 @@ import type { Action } from '@/lib/replay/encoding';
 import { createCommandFromAction } from '@/lib/replay/commands';
 import { defaultCommandPlayer } from '@/lib/replay/commandPlayer';
 import { useReplayContext } from '@/lib/replay/replayContext';
+import { useTranslations } from 'next-intl';
 
 type ReplayState = 'idle' | 'playing' | 'paused' | 'completed';
 
@@ -17,6 +18,7 @@ interface ReplayPlayerProps {
  * Replays recorded session commands (routes and activations)
  */
 export function ReplayPlayer({ actions, onComplete }: ReplayPlayerProps) {
+  const t = useTranslations();
   const { setIsReplaying } = useReplayContext();
   const [state, setState] = useState<ReplayState>('idle');
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -113,7 +115,7 @@ export function ReplayPlayer({ actions, onComplete }: ReplayPlayerProps) {
       const newWindow = window.open('/', '_blank', 'width=1200,height=800');
       if (!newWindow) {
         // eslint-disable-next-line no-alert
-        alert('Please allow popups to replay sessions');
+        alert(t('components_replay'));
         return;
       }
       replayWindowRef.current = newWindow;
@@ -122,8 +124,8 @@ export function ReplayPlayer({ actions, onComplete }: ReplayPlayerProps) {
       const updateTitle = () => {
         if (newWindow.document && newWindow.document.title) {
           const currentTitle = newWindow.document.title;
-          if (!currentTitle.includes('Replay')) {
-            newWindow.document.title = `${currentTitle} - Replay`;
+          if (!currentTitle.includes(t('components_replay_replay'))) {
+            newWindow.document.title = t('currenttitle_-_replay');
           }
         }
       };
@@ -195,7 +197,7 @@ export function ReplayPlayer({ actions, onComplete }: ReplayPlayerProps) {
       checkWindowReady();
       return 'playing';
     });
-  }, [actions, currentIndex, executeAction, scheduleNextAction, setIsReplaying]);
+  }, [actions, currentIndex, executeAction, scheduleNextAction, setIsReplaying, t]);
 
   const pause = useCallback(() => {
     if (timeoutRef.current) {
@@ -256,14 +258,14 @@ export function ReplayPlayer({ actions, onComplete }: ReplayPlayerProps) {
   return (
     <div className="mt-4 rounded border border-gray-300 bg-white p-4 dark:border-gray-700 dark:bg-gray-800">
       <div className="mb-2 flex items-center justify-between">
-        <h3 className="text-lg font-semibold">Replay Controls</h3>
+        <h3 className="text-lg font-semibold">{t('components_replay_replay_controls')}</h3>
         <div className="flex gap-2">
           {state === 'idle' && (
             <button
               type="button"
               onClick={handlePlay}
               className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600">
-              Play
+              {t('play')}
             </button>
           )}
           {state === 'playing' && (
@@ -271,7 +273,7 @@ export function ReplayPlayer({ actions, onComplete }: ReplayPlayerProps) {
               type="button"
               onClick={handlePause}
               className="rounded bg-yellow-600 px-4 py-2 text-white hover:bg-yellow-700 dark:bg-yellow-500 dark:hover:bg-yellow-600">
-              Pause
+              {t('pause')}
             </button>
           )}
           {state === 'paused' && (
@@ -280,13 +282,13 @@ export function ReplayPlayer({ actions, onComplete }: ReplayPlayerProps) {
                 type="button"
                 onClick={handleResume}
                 className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600">
-                Resume
+                {t('resume')}
               </button>
               <button
                 type="button"
                 onClick={handleStop}
                 className="rounded bg-gray-600 px-4 py-2 text-white hover:bg-gray-700 dark:bg-gray-500 dark:hover:bg-gray-600">
-                Stop
+                {t('stop')}
               </button>
             </>
           )}
@@ -295,7 +297,7 @@ export function ReplayPlayer({ actions, onComplete }: ReplayPlayerProps) {
               type="button"
               onClick={handleStop}
               className="rounded bg-gray-600 px-4 py-2 text-white hover:bg-gray-700 dark:bg-gray-500 dark:hover:bg-gray-600">
-              Reset
+              {t('reset')}
             </button>
           )}
         </div>

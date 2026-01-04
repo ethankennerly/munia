@@ -5,8 +5,10 @@ import { useSession } from 'next-auth/react';
 import { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
+import { useTranslations } from 'next-intl';
 
 export function DeletePostButton({ postId }: { postId: number }) {
+  const t = useTranslations();
   const router = useRouter();
   const { data: session } = useSession();
   const [ownerId, setOwnerId] = useState<string | null>(null);
@@ -41,7 +43,7 @@ export function DeletePostButton({ postId }: { postId: number }) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ confirm: true, recentAuthTimestamp: Date.now() }),
       });
-      if (!res.ok) throw new Error('Failed to delete post');
+      if (!res.ok) throw new Error(t('failed_to_delete_post'));
       // Navigate to feed after deletion
       router.push('/feed');
     } catch (_e) {
@@ -50,7 +52,7 @@ export function DeletePostButton({ postId }: { postId: number }) {
       setLoading(false);
       setOpen(false);
     }
-  }, [postId, router]);
+  }, [postId, router, t]);
 
   const openDialog = useCallback(() => setOpen(true), []);
   const closeDialog = useCallback(() => setOpen(false), []);
@@ -66,14 +68,14 @@ export function DeletePostButton({ postId }: { postId: number }) {
         mode="secondary"
         loading={loading}
         data-activate-id="delete-post">
-        Delete Post
+        {t('components_postoptions')}
       </Button>
       <ConfirmDialog
         open={open}
-        title="Delete post"
-        message="This will permanently delete the post and its media. This action cannot be undone. Continue?"
-        confirmText="Delete"
-        cancelText="Cancel"
+        title={t('components_delete_post')}
+        message={t('components_amd')}
+        confirmText={t('components_delete')}
+        cancelText={t('components_confirmdialog_cancel')}
         onCancel={closeDialog}
         onConfirm={confirmAndDelete}
       />

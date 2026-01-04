@@ -1,8 +1,11 @@
+'use client';
+
 import { cn } from '@/lib/cn';
 import { Play } from '@/svg_components';
 import { VisualMediaType } from '@prisma/client';
 import { useMemo } from 'react';
 import { mergeProps, useFocusRing, usePress } from 'react-aria';
+import { useTranslations } from 'next-intl';
 
 export function PostVisualMedia({
   type,
@@ -17,6 +20,7 @@ export function PostVisualMedia({
   height: string;
   colSpan: number;
 }) {
+  const t = useTranslations();
   const { pressProps, isPressed } = usePress({
     onPress: onClick,
   });
@@ -25,7 +29,7 @@ export function PostVisualMedia({
   return (
     <div
       {...mergeProps(pressProps, focusProps)}
-      aria-label={type === 'PHOTO' ? 'Image in post' : 'Video in post'}
+      aria-label={type === 'PHOTO' ? t('components_image_post') : t('components_video_post')}
       role="button"
       tabIndex={0}
       className={cn(
@@ -46,7 +50,7 @@ export function PostVisualMedia({
           {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
           <video className="h-full w-full object-cover">
             <source src={url} type="video/mp4" />
-            Your browser does not support the video tag.
+            {t('your_browser_does_not_support_the_video_')}
           </video>
         </>
       )}

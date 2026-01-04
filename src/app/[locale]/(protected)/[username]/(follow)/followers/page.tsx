@@ -1,0 +1,32 @@
+import { DiscoverProfiles } from '@/components/DiscoverProfiles';
+import { DiscoverSearch } from '@/components/DiscoverSearch';
+import { DiscoverFilters } from '@/components/DiscoverFilters';
+import { getTranslations } from 'next-intl/server';
+import { useTranslations } from 'next-intl';
+import { getProfile } from '../../getProfile';
+
+export async function generateMetadata({ params }: { params: { username: string } }) {
+  const t = await getTranslations();
+  const profile = await getProfile(params.username);
+  return {
+    title: profile ? t('followers_or_profile_name', { name: profile.name }) : t('followers'),
+  };
+}
+
+export default async function Page({ params }: { params: { username: string } }) {
+  const t = useTranslations();
+  const profile = await getProfile(params.username);
+
+  return (
+    <main>
+      <div className="p-4">
+        <h1 className="mb-6 text-4xl font-bold">
+          {profile ? t('and_apos_s_followers', { name: profile.name }) : t('followers')}
+        </h1>
+        <DiscoverSearch label={t('search_followers')} />
+        <DiscoverFilters />
+        <DiscoverProfiles followersOf={profile?.id} />
+      </div>
+    </main>
+  );
+}

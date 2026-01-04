@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { CreatePostModalLauncher } from '@/components/CreatePostModalLauncher';
 import { ThemeSwitch } from '@/components/ui/ThemeSwitch';
+import { useTranslations } from 'next-intl';
 
 // Module-level flag that persists across all component instances
 // This ensures components never disappear once they've been mounted, even if
@@ -18,6 +19,7 @@ let hasEverMounted = false;
  * the component instance is recreated.
  */
 export function FeedHeader() {
+  const t = useTranslations();
   const [hasMounted, setHasMounted] = useState(hasEverMounted);
 
   useEffect(() => {
@@ -34,7 +36,7 @@ export function FeedHeader() {
   return (
     <>
       <div className="mb-4 flex items-center justify-between">
-        <h1 className="text-4xl font-bold">Feed</h1>
+        <h1 className="text-4xl font-bold">{t('components_feedheader')}</h1>
         <div>
           <ThemeSwitch />
         </div>

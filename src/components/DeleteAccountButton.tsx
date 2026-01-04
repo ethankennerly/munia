@@ -4,8 +4,10 @@ import Button from '@/components/ui/Button';
 import { useCallback, useState } from 'react';
 import { signOut } from 'next-auth/react';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
+import { useTranslations } from 'next-intl';
 
 export function DeleteAccountButton() {
+  const t = useTranslations();
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
 
@@ -17,7 +19,7 @@ export function DeleteAccountButton() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ confirm: true, recentAuthTimestamp: Date.now() }),
       });
-      if (!res.ok) throw new Error('Deletion failed');
+      if (!res.ok) throw new Error(t('api_account_delete_deletion_failed'));
       await signOut({ callbackUrl: '/register' });
     } catch (_e) {
       // optional toast here
@@ -25,7 +27,7 @@ export function DeleteAccountButton() {
       setLoading(false);
       setOpen(false);
     }
-  }, []);
+  }, [t]);
 
   const openDialog = useCallback(() => setOpen(true), []);
   const closeDialog = useCallback(() => setOpen(false), []);
@@ -39,14 +41,14 @@ export function DeleteAccountButton() {
         mode="secondary"
         loading={loading}
         data-activate-id="delete-account">
-        Delete Account
+        {t('delete_account')}
       </Button>
       <ConfirmDialog
         open={open}
-        title="Delete account"
-        message="This will permanently delete your account and all data. This action cannot be undone. Continue?"
-        confirmText="Delete"
-        cancelText="Cancel"
+        title={t('components_delete_account')}
+        message={t('components_this_will_permanently')}
+        confirmText={t('components_delete')}
+        cancelText={t('components_confirmdialog_cancel')}
         onCancel={closeDialog}
         onConfirm={confirmAndDelete}
       />

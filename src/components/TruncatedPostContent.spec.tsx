@@ -11,7 +11,7 @@ describe('TruncatedPostContent', () => {
     render(<TruncatedPostContent content={shortText} />);
 
     expect(screen.getByText('Short post content')).toBeInTheDocument();
-    expect(screen.queryByText(/show more|show less/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/components_show_more|components_show_less/i)).not.toBeInTheDocument();
   });
 
   it('truncates long content to 3 lines', () => {
@@ -21,43 +21,43 @@ describe('TruncatedPostContent', () => {
     // Content should be displayed
     expect(screen.getByText(/Line 1/i)).toBeInTheDocument();
     // Should have expand button
-    expect(screen.getByText(/show more/i)).toBeInTheDocument();
+    expect(screen.getByText(/components_show_more/i)).toBeInTheDocument();
   });
 
   it('shows expand button for content with more than 3 lines', () => {
     const longText = 'A long\nlong\nlong\nlong\nlong\npost';
     render(<TruncatedPostContent content={longText} />);
 
-    expect(screen.getByText(/show more/i)).toBeInTheDocument();
+    expect(screen.getByText(/components_show_more/i)).toBeInTheDocument();
   });
 
-  it('expands content when "Show more" is clicked', async () => {
+  it('expands content when "components_show_more" is clicked', async () => {
     const user = userEvent.setup();
     const longText = 'Line 1\nLine 2\nLine 3\nLine 4\nLine 5';
     render(<TruncatedPostContent content={longText} />);
 
-    const expandButton = screen.getByText(/show more/i);
+    const expandButton = screen.getByText(/components_show_more/i);
     await user.click(expandButton);
 
-    expect(screen.getByText(/show less/i)).toBeInTheDocument();
-    expect(screen.queryByText(/show more/i)).not.toBeInTheDocument();
+    expect(screen.getByText(/components_show_less/i)).toBeInTheDocument();
+    expect(screen.queryByText(/components_show_more/i)).not.toBeInTheDocument();
   });
 
-  it('collapses content when "Show less" is clicked', async () => {
+  it('collapses content when "components_show_less" is clicked', async () => {
     const user = userEvent.setup();
     const longText = 'Line 1\nLine 2\nLine 3\nLine 4\nLine 5';
     render(<TruncatedPostContent content={longText} />);
 
     // First expand
-    const expandButton = screen.getByText(/show more/i);
+    const expandButton = screen.getByText(/components_show_more/i);
     await user.click(expandButton);
 
     // Then collapse
-    const collapseButton = screen.getByText(/show less/i);
+    const collapseButton = screen.getByText(/components_show_less/i);
     await user.click(collapseButton);
 
-    expect(screen.getByText(/show more/i)).toBeInTheDocument();
-    expect(screen.queryByText(/show less/i)).not.toBeInTheDocument();
+    expect(screen.getByText(/components_show_more/i)).toBeInTheDocument();
+    expect(screen.queryByText(/components_show_less/i)).not.toBeInTheDocument();
   });
 
   it('preserves newlines in content', () => {
@@ -72,7 +72,7 @@ describe('TruncatedPostContent', () => {
     render(<TruncatedPostContent content="" />);
 
     // Should not crash and should not show expand button
-    expect(screen.queryByText(/show more|show less/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/components_show_more|components_show_less/i)).not.toBeInTheDocument();
   });
 
   it('handles content with exactly 3 lines', () => {
@@ -80,6 +80,6 @@ describe('TruncatedPostContent', () => {
     render(<TruncatedPostContent content={threeLines} />);
 
     // Should not show expand button for exactly 3 lines
-    expect(screen.queryByText(/show more/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/components_show_more/i)).not.toBeInTheDocument();
   });
 });

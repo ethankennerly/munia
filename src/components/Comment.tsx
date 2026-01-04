@@ -12,6 +12,7 @@ import { useCreateCommentMutations } from '@/hooks/mutations/useCreateCommentMut
 import { useUpdateDeleteComments } from '@/hooks/useUpdateDeleteComments';
 import { useLikeUnlikeComments } from '@/hooks/useLikeUnlikeComments';
 import { QueryKey } from '@tanstack/react-query';
+import { useTranslations } from 'next-intl';
 import { ProfilePhoto } from './ui/ProfilePhoto';
 import { ButtonNaked } from './ui/ButtonNaked';
 import { DropdownMenuButton } from './ui/DropdownMenuButton';
@@ -37,6 +38,7 @@ export const Comment = memo(
     setRepliesVisibility: (params: { commentId: number; shown: boolean }) => void;
     queryKey: QueryKey;
   }) => {
+    const t = useTranslations();
     const numberOfLikes = _count.commentLikes;
     const numberOfReplies = _count.replies;
     const { prompt } = useDialogs();
@@ -54,8 +56,8 @@ export const Comment = memo(
     );
     const handleCreateReply = useCallback(() => {
       prompt({
-        title: 'Reply',
-        message: `You are replying to ${author.name}'s comment.`,
+        title: t('components_comment_reply'),
+        message: t('you_are_replying_to_author_name_s_commen', { name: author.name }),
         promptType: 'textarea',
         onSubmit: (value) => {
           createReplyMutation.mutate(
@@ -69,7 +71,7 @@ export const Comment = memo(
           );
         },
       });
-    }, [author.name, commentId, createReplyMutation, prompt, repliesShown, toggleReplies]);
+    }, [author.name, commentId, createReplyMutation, prompt, repliesShown, toggleReplies, t]);
     const handleLikeToggle = useCallback(
       (isSelected: boolean) => (isSelected ? likeComment({ commentId }) : unLikeComment({ commentId })),
       [commentId, likeComment, unLikeComment],
@@ -128,11 +130,11 @@ export const Comment = memo(
             {isOwnComment && (
               <DropdownMenuButton
                 key={`comments-${commentId}-options`}
-                label="Comment options"
+                label={t('components_comment')}
                 onAction={onDropdownAction}>
                 <Section>
-                  <Item key="edit">Edit comment</Item>
-                  <Item key="delete">Delete comment</Item>
+                  <Item key="edit">{t('components_comment_edit_edit_comment')}</Item>
+                  <Item key="delete">{t('components_comment_delete_comment')}</Item>
                 </Section>
               </DropdownMenuButton>
             )}
@@ -144,7 +146,7 @@ export const Comment = memo(
               onPress={toggleReplies}
               className="my-1 cursor-pointer text-sm font-semibold text-muted-foreground hover:text-muted-foreground/70"
               data-activate-id={repliesShown ? 'hide-replies' : 'show-replies'}>
-              {!repliesShown ? `Show ${numberOfReplies} replies...` : 'Hide replies'}
+              {!repliesShown ? t('show_numberofreplies_replies', { numberOfReplies }) : t('components_comment_hide')}
             </ButtonNaked>
           )}
         </div>

@@ -1,9 +1,12 @@
+'use client';
+
 import { cn } from '@/lib/cn';
 import { resizeTextAreaHeight } from '@/lib/resizeTextAreaHeight';
 import { mergeProps, useObjectRef } from '@react-aria/utils';
 import { FormEvent, SVGProps, forwardRef, useCallback } from 'react';
 import { AriaTextFieldProps, useTextField } from 'react-aria';
 import SvgClose from '@/svg_components/Close';
+import { useTranslations } from 'next-intl';
 import Button from './Button';
 
 interface TextareaProps extends AriaTextFieldProps<'textarea'> {
@@ -13,6 +16,7 @@ interface TextareaProps extends AriaTextFieldProps<'textarea'> {
 
 export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
   ({ className, Icon, ...props }, forwardedRef) => {
+    const t = useTranslations();
     // Support forwarded refs: https://github.com/adobe/react-spectrum/pull/2293#discussion_r714337674
     const ref = useObjectRef(forwardedRef);
     const { labelProps, inputProps, errorMessageProps } = useTextField(
@@ -81,7 +85,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
             size="small"
             onPress={clear}
             className="absolute right-5 top-[50%] z-[1] block translate-y-[-50%] peer-placeholder-shown:hidden"
-            aria-label="Clear"
+            aria-label={t('components_ui_select_clear')}
           />
         </div>
         {isError && (

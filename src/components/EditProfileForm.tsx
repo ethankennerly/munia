@@ -14,6 +14,7 @@ import { useSessionUserDataMutation } from '@/hooks/mutations/useSessionUserData
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useMemo } from 'react';
 import { logger } from '@/lib/logging';
+import { useTranslations } from 'next-intl';
 import { GenericLoading } from './GenericLoading';
 import { DatePicker } from './ui/DatePicker';
 import { Textarea } from './ui/Textarea';
@@ -22,6 +23,7 @@ import Button from './ui/Button';
 import { TextInput } from './ui/TextInput';
 
 export function EditProfileForm({ redirectTo }: { redirectTo?: string }) {
+  const t = useTranslations();
   const [userData] = useSessionUserData();
 
   const defaultValues = useMemo(() => {
@@ -79,7 +81,7 @@ export function EditProfileForm({ redirectTo }: { redirectTo?: string }) {
     reset(defaultValues);
   }, [reset, defaultValues]);
 
-  if (!userData) return <GenericLoading>Loading form</GenericLoading>;
+  if (!userData) return <GenericLoading>{t('components_loading_form')}</GenericLoading>;
   return (
     <div>
       <form onSubmit={handleSubmit(onValid, onInvalid)} className="flex flex-col gap-4">
@@ -89,7 +91,7 @@ export function EditProfileForm({ redirectTo }: { redirectTo?: string }) {
           render={({ field: { onChange, ref, value }, fieldState: { error } }) => (
             <div>
               <TextInput
-                label="Username *"
+                label={t('username_0')}
                 value={value}
                 onChange={(v) => onChange(v)}
                 errorMessage={error?.message}
@@ -126,7 +128,7 @@ export function EditProfileForm({ redirectTo }: { redirectTo?: string }) {
           render={({ field: { onChange, ref, value }, fieldState: { error } }) => (
             <div>
               <TextInput
-                label="Name *"
+                label={t('name_0')}
                 value={value}
                 onChange={(v) => onChange(v)}
                 errorMessage={error?.message}
@@ -143,7 +145,7 @@ export function EditProfileForm({ redirectTo }: { redirectTo?: string }) {
           render={({ field: { onChange, ref, value }, fieldState: { error } }) => (
             <div>
               <TextInput
-                label="Phone Number"
+                label={t('protected_username_tabs_phone_number')}
                 value={value || ''}
                 onChange={(v) => onChange(v || null)}
                 errorMessage={error?.message}
@@ -160,7 +162,7 @@ export function EditProfileForm({ redirectTo }: { redirectTo?: string }) {
           render={({ field: { onChange, ref, value }, fieldState: { error } }) => (
             <div>
               <Textarea
-                label="Bio"
+                label={t('bio')}
                 value={value || ''}
                 onChange={(v) => onChange(v || null)}
                 errorMessage={error?.message}
@@ -176,7 +178,7 @@ export function EditProfileForm({ redirectTo }: { redirectTo?: string }) {
           render={({ field: { onChange, ref, value }, fieldState: { error } }) => (
             <div>
               <TextInput
-                label="Website"
+                label={t('protected_username_tabs_website')}
                 value={value || ''}
                 onChange={(v) => onChange(v || null)}
                 errorMessage={error?.message}
@@ -193,7 +195,7 @@ export function EditProfileForm({ redirectTo }: { redirectTo?: string }) {
           render={({ field: { onChange, ref, value }, fieldState: { error } }) => (
             <div>
               <TextInput
-                label="Address"
+                label={t('protected_username_tabs_address')}
                 value={value || ''}
                 onChange={(v) => onChange(v || null)}
                 errorMessage={error?.message}
@@ -210,16 +212,16 @@ export function EditProfileForm({ redirectTo }: { redirectTo?: string }) {
           render={({ field: { onChange, ref, value }, fieldState: { error } }) => (
             <div>
               <Select
-                label="Gender"
+                label={t('protected_username_tabs_gender')}
                 name="gender"
                 selectedKey={value || null}
                 onSelectionChange={(key) => onChange(key || null)}
                 errorMessage={error?.message}
                 ref={ref}
                 Icon={Other}>
-                <Item key="MALE">Male</Item>
-                <Item key="FEMALE">Female</Item>
-                <Item key="NONBINARY">Nonbinary</Item>
+                <Item key="MALE">{t('components_male')}</Item>
+                <Item key="FEMALE">{t('components_female')}</Item>
+                <Item key="NONBINARY">{t('components_nonbinary')}</Item>
               </Select>
             </div>
           )}
@@ -231,17 +233,17 @@ export function EditProfileForm({ redirectTo }: { redirectTo?: string }) {
           render={({ field: { onChange, ref, value }, fieldState: { error } }) => (
             <div>
               <Select
-                label="Relationship Status"
+                label={t('protected_username_tabs_relationship_status')}
                 name="relationshipStatus"
                 selectedKey={value || null}
                 onSelectionChange={(key) => onChange(key || null)}
                 errorMessage={error?.message}
                 Icon={Heart}
                 ref={ref}>
-                <Item key="SINGLE">Single</Item>
-                <Item key="IN_A_RELATIONSHIP">In a relationship</Item>
-                <Item key="ENGAGED">Enganged</Item>
-                <Item key="MARRIED">Married</Item>
+                <Item key="SINGLE">{t('components_single')}</Item>
+                <Item key="IN_A_RELATIONSHIP">{t('components_relationship')}</Item>
+                <Item key="ENGAGED">{t('components_enganged')}</Item>
+                <Item key="MARRIED">{t('components_married')}</Item>
               </Select>
             </div>
           )}
@@ -262,7 +264,7 @@ export function EditProfileForm({ redirectTo }: { redirectTo?: string }) {
             return (
               <div>
                 <DatePicker
-                  label="Birth Date"
+                  label={t('protected_username_tabs_birth_date')}
                   defaultValue={getDateValue()}
                   onChange={(value) => {
                     onChange(value?.toString() ?? null);
@@ -282,13 +284,13 @@ export function EditProfileForm({ redirectTo }: { redirectTo?: string }) {
             loading={updateSessionUserDataMutation.isPending === true}
             onPress={resetForm}
             data-activate-id="reset-profile">
-            Reset
+            {t('reset')}
           </Button>
           <Button
             type="submit"
             loading={updateSessionUserDataMutation.isPending === true}
             data-activate-id="submit-profile">
-            Submit
+            {t('contexts_dialogscontext_submit')}
           </Button>
         </div>
       </form>

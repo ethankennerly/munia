@@ -1,7 +1,7 @@
-import { formatDistanceToNowStrict } from 'date-fns';
 import { cn } from '@/lib/cn';
 import { useEffect, useRef } from 'react';
 import Link from 'next/link';
+import { useTimeAgo } from '@/hooks/useTimeAgo';
 import { HighlightedMentionsAndHashTags } from './HighlightedMentionsAndHashTags';
 
 export function CommentContent({
@@ -17,6 +17,7 @@ export function CommentContent({
   createdAt: string | Date;
   shouldHighlight?: boolean;
 }) {
+  const { formatTimeAgo } = useTimeAgo();
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (!shouldHighlight) return;
@@ -39,7 +40,7 @@ export function CommentContent({
         <p className="mb-1 text-foreground">
           <HighlightedMentionsAndHashTags text={content} shouldAddLinks />
         </p>
-        <p className="ml-auto text-sm text-muted-foreground">{formatDistanceToNowStrict(new Date(createdAt))} ago</p>
+        <p className="ml-auto text-sm text-muted-foreground">{formatTimeAgo(new Date(createdAt))}</p>
       </div>
     </div>
   );

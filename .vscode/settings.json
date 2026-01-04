@@ -22,10 +22,55 @@
     "titleBar.activeForeground": "#FCF8FD"
   },
   "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "editor.formatOnSave": true,
-  // Runs Prettier, then ESLint
+    // Disable general format on save for JS/TS to prevent conflicts
+  "editor.formatOnSave": false,
+  "[javascript]": { "editor.formatOnSave": false },
+  "[typescript]": { "editor.formatOnSave": false },
+
+  // Enable ESLint to fix all auto-fixable problems (including Prettier rules) on save
   "editor.codeActionsOnSave": {
-    "source.fixAll": "explicit"
+    "source.fixAll.eslint": "always"
   },
-  "tailwindCSS.classAttributes": ["class", "className", "iconClassName"]
+  "tailwindCSS.classAttributes": [
+    "class",
+    "className",
+    "iconClassName"
+  ],
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "vscode.typescript-language-features",
+    "editor.formatOnSave": false 
+  },
+  "i18n-ally.keystyle": "nested",
+  "i18n-ally.localesPaths": ["src/i18n"],
+  "i18n-ally.sourceLanguage": "en",
+  "i18n-ally.displayLanguage": "en",
+  "i18n-ally.refactor.templates": [
+    {
+      "source": "jsx-text",
+      "template": "{t('{key}')}",
+      "description": "Use for text inside JSX tags (e.g., <div>text</div>)"
+    },
+    {
+      "source": "js-string",
+      "template": "t('{key}')",
+      "description": "Use for JS objects and variables (e.g., title: 'text')"
+    },
+    {
+      "source": "html-attribute",
+      "template": "{t('{key}')}",
+      "description": "Use for JSX props (e.g., placeholder='text')"
+    }
+  ],
+  "i18n-ally.usage.scanningIgnore": [
+    "**/*.spec.{ts,tsx,js,jsx}",
+    "**/*.test.{ts,tsx,js,jsx}",
+    "**/__tests__/**"
+  ],
+  "i18n-ally.extract.autoDetect": true,
+  "i18n-ally.extract.parsers.html": {
+    "ignorePattern": ".*\\.spec\\..*" 
+  },
+  "i18n-ally.extract.ignored": [
+    "${toUpdate}Photo"
+  ]
 }

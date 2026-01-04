@@ -14,8 +14,10 @@ import { GenericLoading } from '@/components/GenericLoading';
 import { getDiscoverProfiles } from '@/lib/client_data_fetching/getDiscoverProfiles';
 import { DISCOVER_PROFILES_PER_PAGE } from '@/constants';
 import { cn } from '@/lib/cn';
+import { useTranslations } from 'next-intl';
 
 export function DiscoverProfiles({ followersOf, followingOf }: { followersOf?: string; followingOf?: string }) {
+  const t = useTranslations();
   const searchParams = useSearchParams();
   const bottomElRef = useRef<HTMLDivElement>(null);
   const isBottomOnScreen = useOnScreen(bottomElRef);
@@ -96,7 +98,7 @@ export function DiscoverProfiles({ followersOf, followingOf }: { followersOf?: s
   return (
     <>
       {isPending ? (
-        <GenericLoading>Loading profiles</GenericLoading>
+        <GenericLoading>{t('components_loading_profiles')}</GenericLoading>
       ) : isError ? (
         <SomethingWentWrong />
       ) : (

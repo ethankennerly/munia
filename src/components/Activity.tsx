@@ -1,9 +1,17 @@
+'use client';
+
 import { GetActivity } from '@/types/definitions';
 import { SemiBold } from '@/components/ui/SemiBold';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useNotificationsReadStatusMutations } from '@/hooks/mutations/useNotificationsReadStatusMutations';
+import { useTranslations } from 'next-intl';
+import { ReactNode } from 'react';
 import { ActivityCard } from './ActivityCard';
+
+const SHARED_FORMATS = {
+  sb: (chunks: ReactNode) => <SemiBold>{chunks}</SemiBold>,
+};
 
 /** Use this component to render individual activities or notifications. */
 export function Activity({
@@ -17,6 +25,7 @@ export function Activity({
   isNotificationRead,
   content,
 }: GetActivity) {
+  const t = useTranslations();
   const { data: session } = useSession();
   const userId = session?.user.id;
   const router = useRouter();
@@ -27,17 +36,36 @@ export function Activity({
   const isNotification = targetUser.id === userId;
   const userToDisplay = isActivity ? targetUser : sourceUser;
 
-  const sourceProperNoun = isActivity ? 'You' : sourceUser.name;
-  const sourcePossessiveNoun = isActivity
-    ? 'your'
-    : sourceUser.gender === 'MALE'
-    ? 'his'
-    : sourceUser.gender === 'FEMALE'
-    ? 'her'
-    : 'their';
+  let actionKey = 'activity_unknown_action';
+  if (type === 'CREATE_FOLLOW') {
+    actionKey = 'activity_create_follow';
+  } else if (type === 'POST_LIKE') {
+    actionKey = 'activity_post_like';
+  } else if (type === 'POST_MENTION') {
+    actionKey = 'activity_post_mention';
+  } else if (type === 'CREATE_COMMENT') {
+    actionKey = 'activity_create_comment';
+  } else if (type === 'COMMENT_LIKE') {
+    actionKey = 'activity_comment_like';
+  } else if (type === 'COMMENT_MENTION') {
+    actionKey = 'activity_comment_mention';
+  } else if (type === 'CREATE_REPLY') {
+    actionKey = 'activity_create_reply';
+  } else if (type === 'REPLY_LIKE') {
+    actionKey = 'activity_reply_like';
+  } else if (type === 'REPLY_MENTION') {
+    actionKey = 'activity_reply_mention';
+  }
 
-  const targetProperNoun = isNotification ? 'you' : targetUser.name;
-  const targetPossessiveNoun = isNotification ? 'your' : `${targetUser.name}'s`;
+  const actionText = t.rich(actionKey, {
+    isSourceSelf: isActivity ? 'true' : 'false',
+    sourceName: sourceUser.name,
+    isTargetSelf: isNotification ? 'true' : 'false',
+    targetName: targetUser.name,
+    // If gender-specific pronouns like 'his' or 'her' are needed in other languages:
+    sourceGender: sourceUser.gender?.toLowerCase() ?? '',
+    ...SHARED_FORMATS,
+  });
 
   const isRead = isActivity || isNotificationRead;
   const navigate = (href: string) => () => {
@@ -56,7 +84,7 @@ export function Activity({
         date={new Date(createdAt)}
         isRead={isRead}
         onClick={navigate(`/${isActivity ? targetUser.username : sourceUser.username}`)}>
-        <SemiBold>{sourceProperNoun}</SemiBold> started following <SemiBold>{targetProperNoun}</SemiBold>!
+        {actionText}
       </ActivityCard>
     );
   }
@@ -69,7 +97,7 @@ export function Activity({
         date={new Date(createdAt)}
         isRead={isRead}
         onClick={navigate(`/posts/${targetId}`)}>
-        <SemiBold>{sourceProperNoun}</SemiBold> liked <SemiBold>{targetPossessiveNoun}</SemiBold> post: &quot;{content}
+        {actionText}: &quot;{content}
         &quot;
       </ActivityCard>
     );
@@ -82,8 +110,8 @@ export function Activity({
         date={new Date(createdAt)}
         isRead={isRead}
         onClick={navigate(`/posts/${sourceId}`)}>
-        <SemiBold>{sourceProperNoun}</SemiBold> mentioned <SemiBold>{targetProperNoun}</SemiBold> in{' '}
-        {sourcePossessiveNoun} post: &quot;{content}&quot;
+        {actionText}: &quot;{content}
+        &quot;
       </ActivityCard>
     );
   }
@@ -96,7 +124,7 @@ export function Activity({
         date={new Date(createdAt)}
         isRead={isRead}
         onClick={navigate(`/comments/${sourceId}`)}>
-        <SemiBold>{sourceProperNoun}</SemiBold> commented on <SemiBold>{targetPossessiveNoun}</SemiBold> post: &quot;
+        {actionText}: &quot;
         {content}&quot;
       </ActivityCard>
     );
@@ -109,8 +137,7 @@ export function Activity({
         date={new Date(createdAt)}
         isRead={isRead}
         onClick={navigate(`/comments/${targetId}`)}>
-        <SemiBold>{sourceProperNoun}</SemiBold> liked <SemiBold>{targetPossessiveNoun}</SemiBold> comment: &quot;
-        {content}
+        {actionText}: &quot;{content}
         &quot;
       </ActivityCard>
     );
@@ -123,8 +150,8 @@ export function Activity({
         date={new Date(createdAt)}
         isRead={isRead}
         onClick={navigate(`/comments/${sourceId}`)}>
-        <SemiBold>{sourceProperNoun}</SemiBold> mentioned <SemiBold>{targetProperNoun}</SemiBold> in{' '}
-        {sourcePossessiveNoun} comment: &quot;{content}&quot;
+        {actionText}: &quot;{content}
+        &quot;
       </ActivityCard>
     );
   }
@@ -137,8 +164,7 @@ export function Activity({
         date={new Date(createdAt)}
         isRead={isRead}
         onClick={navigate(`/comments/${sourceId}`)}>
-        <SemiBold>{sourceProperNoun}</SemiBold> replied to <SemiBold>{targetPossessiveNoun}</SemiBold> comment: &quot;
-        {content}
+        {actionText}: &quot;{content}
         &quot;
       </ActivityCard>
     );
@@ -151,7 +177,7 @@ export function Activity({
         date={new Date(createdAt)}
         isRead={isRead}
         onClick={navigate(`/comments/${targetId}`)}>
-        <SemiBold>{sourceProperNoun}</SemiBold> liked <SemiBold>{targetPossessiveNoun}</SemiBold> reply: &quot;{content}
+        {actionText}: &quot;{content}
         &quot;
       </ActivityCard>
     );
@@ -164,8 +190,7 @@ export function Activity({
         date={new Date(createdAt)}
         isRead={isRead}
         onClick={navigate(`/comments/${sourceId}`)}>
-        <SemiBold>{sourceProperNoun}</SemiBold> mentioned <SemiBold>{targetProperNoun}</SemiBold> in{' '}
-        {sourcePossessiveNoun} reply: &quot;{content}&quot;
+        {actionText}: &quot;{content}&quot;
       </ActivityCard>
     );
   }

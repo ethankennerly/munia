@@ -1,3 +1,5 @@
+'use client';
+
 /* eslint-disable react-perf/jsx-no-new-object-as-prop */
 import { Swiper, SwiperSlide, SwiperClass } from 'swiper/react';
 import { Zoom, Navigation, Pagination, Keyboard } from 'swiper';
@@ -7,6 +9,7 @@ import { motion } from 'framer-motion';
 import { Close } from '@/svg_components';
 import { useFocusManager } from 'react-aria';
 import { GetVisualMedia } from '@/types/definitions';
+import { useTranslations } from 'next-intl';
 import Button from './ui/Button';
 import { VisualMediaModalNavigationButton } from './VisualMediaModalNavigationButton';
 
@@ -19,6 +22,7 @@ export default function VisualMediaSlider({
   initialSlide: number;
   onClose: () => void;
 }) {
+  const t = useTranslations();
   const [isBeginning, setIsBeginning] = useState(true);
   const [isEnd, setIsEnd] = useState(false);
   const focusManager = useFocusManager();
@@ -67,12 +71,12 @@ export default function VisualMediaSlider({
           <SwiperSlide key={url}>
             <div className="swiper-zoom-container">
               {type === 'PHOTO' ? (
-                <img src={url} alt="Post" className="max-h-full" />
+                <img src={url} alt={t('post')} className="max-h-full" />
               ) : (
                 // eslint-disable-next-line jsx-a11y/media-has-caption
                 <video className="max-h-[75%]" autoPlay controls>
                   <source src={url} type="video/mp4" />
-                  Your browser does not support the video tag.
+                  {t('your_browser_does_not_support_the_video_')}
                 </video>
               )}
             </div>

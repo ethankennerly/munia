@@ -1,12 +1,14 @@
+'use client';
+
 import Button from '@/components/ui/Button';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { GetVisualMedia } from '@/types/definitions';
 import { useWritePostMutations } from '@/hooks/mutations/useWritePostMutations';
 import { useDialogs } from '@/hooks/useDialogs';
-import { capitalize } from 'lodash';
 import { revokeVisualMediaObjectUrls } from '@/lib/revokeVisualMediaObjectUrls';
 import { ToEditValues } from '@/lib/createPost';
+import { useTranslations } from 'next-intl';
 import { TextAreaWithMentionsAndHashTags } from './TextAreaWithMentionsAndHashTags';
 import { GenericDialog } from './GenericDialog';
 import { CreatePostSort } from './CreatePostSort';
@@ -22,6 +24,7 @@ export function CreatePostDialog({
   shouldOpenFileInputOnMount: boolean;
   setShown: (isOpen: boolean) => void;
 }) {
+  const t = useTranslations();
   const mode: 'create' | 'edit' = toEditValues === null ? 'create' : 'edit';
   const [content, setContent] = useState(toEditValues?.initialContent || '');
   const [visualMedia, setVisualMedia] = useState<GetVisualMedia[]>(toEditValues?.initialVisualMedia ?? []);
@@ -66,11 +69,11 @@ export function CreatePostDialog({
 
   const confirmExit = useCallback(() => {
     confirm({
-      title: 'Unsaved Changes',
-      message: 'Do you really wish to exit?',
+      title: t('components_unsaved_changes'),
+      message: t('components_you_really_wish'),
       onConfirm: () => setTimeout(() => exit(), 300),
     });
-  }, [confirm, exit]);
+  }, [confirm, exit, t]);
 
   const handleClose = useCallback(() => {
     if (mode === 'create') {
@@ -118,8 +121,9 @@ export function CreatePostDialog({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const dialogTitle = mode === 'create' ? t('components_create_post') : t('components_edit_post');
   return (
-    <GenericDialog title={`${capitalize(mode)} Post`} handleClose={handleClose}>
+    <GenericDialog title={dialogTitle} handleClose={handleClose}>
       <div className="mb-[18px] flex flex-row gap-3 px-4">
         <div className="h-11 w-11">
           <ProfilePhotoOwn />
@@ -128,7 +132,7 @@ export function CreatePostDialog({
           <TextAreaWithMentionsAndHashTags
             content={content}
             setContent={setContent}
-            placeholder="What's on your mind?"
+            placeholder={t('whats_on_your_mind')}
           />
         </div>
         <div>
@@ -138,7 +142,7 @@ export function CreatePostDialog({
             isDisabled={content === '' && visualMedia.length === 0}
             loading={createPostMutation.isPending || updatePostMutation.isPending}
             data-activate-id={mode === 'create' ? 'create-post' : 'update-post'}>
-            Post
+            {t('post')}
           </Button>
         </div>
       </div>

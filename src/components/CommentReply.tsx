@@ -6,6 +6,7 @@ import { isEqual } from 'lodash';
 import SvgHeart from '@/svg_components/Heart';
 import { useSearchParams } from 'next/navigation';
 import { Item, Section } from 'react-stately';
+import { useTranslations } from 'next-intl';
 import { ToggleStepper } from './ui/ToggleStepper';
 import { CommentContent } from './CommentContent';
 import { DropdownMenuButton } from './ui/DropdownMenuButton';
@@ -31,6 +32,7 @@ export const CommentReply = memo(
     likeComment: (params: { commentId: number }) => void;
     unLikeComment: (params: { commentId: number }) => void;
   }) => {
+    const t = useTranslations();
     const numberOfLikes = _count.commentLikes;
     const handleLikeClick = useCallback(
       () => (!isLiked ? likeComment({ commentId }) : unLikeComment({ commentId })),
@@ -71,11 +73,11 @@ export const CommentReply = memo(
             {isOwnReply && (
               <DropdownMenuButton
                 key={`replies-${commentId}-options`}
-                label="Reply options"
+                label={t('components_commentreply')}
                 onAction={onDropdownAction}>
                 <Section>
-                  <Item key="edit">Edit reply</Item>
-                  <Item key="delete">Delete reply</Item>
+                  <Item key="edit">{t('components_commentreply_edit_reply')}</Item>
+                  <Item key="delete">{t('components_commentreply_delete_reply')}</Item>
                 </Section>
               </DropdownMenuButton>
             )}

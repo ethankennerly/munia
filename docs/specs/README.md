@@ -1,4 +1,4 @@
 # Tech Specs
 
-- [Bidirectional Scroll](spec-bidirectional-scroll.md)
+- [Localization](localization.md)
 - [Archived Specs](archive/README.md)

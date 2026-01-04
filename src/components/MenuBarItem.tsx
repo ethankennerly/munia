@@ -6,6 +6,7 @@ import { cn } from '@/lib/cn';
 import { signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import React, { SVGProps, useCallback, useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 import { Badge } from './ui/Badge';
 import { ButtonNaked } from './ui/ButtonNaked';
 
@@ -20,6 +21,7 @@ export function MenuBarItem({
   route: string;
   badge?: number;
 }) {
+  const t = useTranslations();
   const router = useRouter();
   const [isActive] = useActiveRouteChecker(route);
   const { confirm } = useDialogs();
@@ -27,14 +29,14 @@ export function MenuBarItem({
   const onItemClick = useCallback(() => {
     if (route === '/api/auth/signout') {
       confirm({
-        title: 'Confirm Logout',
-        message: 'Do you really wish to logout?',
+        title: t('components_menubaritem'),
+        message: t('components_menubaritem_you_really_wish'),
         onConfirm: () => signOut({ callbackUrl: '/' }),
       });
     } else {
       router.push(route);
     }
-  }, [route, router, confirm]);
+  }, [route, router, confirm, t]);
 
   useEffect(() => {
     if (route === '/api/auth/signout') return;
