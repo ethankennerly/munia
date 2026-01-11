@@ -2,15 +2,34 @@
 
 import { DropdownMenuButton } from '@/components/ui/DropdownMenuButton';
 import { HamburgerMenu } from '@/svg_components';
+import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { Key, useCallback } from 'react';
+import { Key, useCallback, useMemo } from 'react';
 import { Item, Section } from 'react-stately';
 import { useTranslations } from 'next-intl';
 
 export function HomeMobileDropdownMenu() {
   const t = useTranslations();
   const router = useRouter();
+  const { data: session } = useSession();
+  const isLoggedIn = !!session?.user;
+
   const onAction = useCallback((key: Key) => router.push(key as string), [router]);
+
+  const menuItems = useMemo(() => {
+    const items = [
+      { key: '/terms', label: t('terms') },
+      { key: '/privacy-policy', label: t('privacy_policy') },
+    ];
+
+    if (!isLoggedIn) {
+      items.push({ key: '/login', label: t('login') });
+      items.push({ key: '/register', label: t('sign_up') });
+    }
+
+    return items;
+  }, [isLoggedIn]);
+
   return (
     <DropdownMenuButton
       key="home-dropdown-menu"
@@ -18,11 +37,9 @@ export function HomeMobileDropdownMenu() {
       onAction={onAction}
       Icon={HamburgerMenu}>
       <Section>
-        <Item key="/terms">{t('terms')}</Item>
-        <Item key="/privacy-policy">{t('privacy_policy')}</Item>
-        <Item key="/login">{t('login')}</Item>
-        <Item key="/register">{t('sign_up')}</Item>
-        <Item key="/settings">{t('settings_title')}</Item>
+        {menuItems.map((item) => (
+          <Item key={item.key}>{item.label}</Item>
+        ))}
       </Section>
     </DropdownMenuButton>
   );

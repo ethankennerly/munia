@@ -2,7 +2,8 @@ import { Feather } from '@/svg_components';
 import { LogoText } from '@/components/LogoText';
 import Link from 'next/link';
 import React from 'react';
-import { useTranslations } from 'next-intl';
+import { getTranslations } from 'next-intl/server';
+import { getServerUser } from '@/lib/getServerUser';
 import { HomeMobileDropdownMenu } from './HomeMobileDropdownMenu';
 
 function HomeNavLink({ children, href }: { children: React.ReactNode; href: string }) {
@@ -13,8 +14,11 @@ function HomeNavLink({ children, href }: { children: React.ReactNode; href: stri
   );
 }
 
-export default function Layout({ children }: { children: React.ReactNode }) {
-  const t = useTranslations();
+export default async function Layout({ children }: { children: React.ReactNode }) {
+  const t = await getTranslations();
+  const [user] = await getServerUser();
+  const isLoggedIn = !!user;
+
   return (
     <div className="flex min-h-screen w-full justify-center">
       <div className="w-full max-w-3xl gap-3 py-4 sm:py-8">
@@ -29,8 +33,13 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             <HomeNavLink href="/terms">{t('terms')}</HomeNavLink>
             <HomeNavLink href="/privacy-policy">{t('privacy_policy')}</HomeNavLink>
 
-            <HomeNavLink href="/login">{t('login')}</HomeNavLink>
-            <HomeNavLink href="/register">{t('sign_up')}</HomeNavLink>
+            {isLoggedIn && (
+              <>
+                <HomeNavLink href="/login">{t('login')}</HomeNavLink>
+                <HomeNavLink href="/register">{t('sign_up')}</HomeNavLink>
+              </>
+            )}
+
             <HomeNavLink href="/settings">{t('settings_title')}</HomeNavLink>
           </div>
           <div className="sm:hidden">
