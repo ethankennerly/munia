@@ -4,6 +4,7 @@ import Facebook from 'next-auth/providers/facebook';
 import Google from 'next-auth/providers/google';
 import { NextResponse } from 'next/server';
 import { logger } from '@/lib/logging';
+import { routing } from '@/i18n/routing';
 
 export default {
   providers: [
@@ -39,22 +40,44 @@ export default {
       const safeUser = auth?.user as unknown as { id?: string } | undefined;
       logger.debug({ msg: 'api_request', path: pathname });
       logger.debug({ msg: 'auth_state', isAuthenticated: isLoggedIn, userId: safeUser?.id ?? null });
-      const isOnAuthPage = pathname.startsWith('/login') || pathname.startsWith('/register');
+      
+      // Extract locale from pathname if present (e.g., /en/login -> 'en')
+      // Otherwise use default locale
+      const pathSegments = pathname.split('/').filter(Boolean);
+      const firstSegment = pathSegments[0];
+      const locale = routing.locales.includes(firstSegment as (typeof routing.locales)[number])
+        ? firstSegment
+        : routing.defaultLocale;
+      
+      // Normalize pathname by removing locale prefix if present
+      const normalizedPathname = routing.locales.includes(firstSegment as (typeof routing.locales)[number])
+        ? '/' + pathSegments.slice(1).join('/')
+        : pathname;
+      
+      const isOnAuthPage = normalizedPathname.startsWith('/login') || normalizedPathname.startsWith('/register');
 
       const unProtectedPages = ['/terms', '/privacy-policy']; // Add more here if needed
       const isOnUnprotectedPage =
-        pathname === '/' || // The root page '/' is also an unprotected page
-        unProtectedPages.some((page) => pathname.startsWith(page));
+        normalizedPathname === '/' || // The root page '/' is also an unprotected page
+        unProtectedPages.some((page) => normalizedPathname.startsWith(page));
       const isProtectedPage = !isOnUnprotectedPage;
 
       if (isOnAuthPage) {
-        // Redirect to /feed, if logged in and is on an auth page
-        if (isLoggedIn) return NextResponse.redirect(new URL('/feed', nextUrl));
+        // Redirect to /[locale]/feed, if logged in and is on an auth page
+        if (isLoggedIn) {
+          const feedPath = `/${locale}/feed`;
+          return NextResponse.redirect(new URL(feedPath, nextUrl));
+        }
       } else if (isProtectedPage) {
-        // Redirect to /login, if not logged in but is on a protected page
+        // Redirect to /[locale]/login, if not logged in but is on a protected page
         if (!isLoggedIn) {
-          const from = encodeURIComponent(pathname + search); // The /login page shall then use this `from` param as a `callbackUrl` upon successful sign in
-          return NextResponse.redirect(new URL(`/login?from=${from}`, nextUrl));
+          // Construct full path with locale for the 'from' parameter
+          const fullPath = routing.locales.includes(firstSegment as (typeof routing.locales)[number])
+            ? pathname // Already includes locale
+            : `/${locale}${normalizedPathname}`; // Add locale prefix
+          const from = encodeURIComponent(fullPath + search); // The /login page shall then use this `from` param as a `callbackUrl` upon successful sign in
+          const loginPath = `/${locale}/login?from=${from}`;
+          return NextResponse.redirect(new URL(loginPath, nextUrl));
         }
       }
 

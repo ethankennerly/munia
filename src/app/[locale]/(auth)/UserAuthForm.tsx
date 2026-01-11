@@ -8,7 +8,7 @@ import { signIn } from 'next-auth/react';
 import { useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { z } from 'zod';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 
 const emailSchema = z.string().trim().email();
 type UserAuthFormProps = {
@@ -34,10 +34,12 @@ export function UserAuthForm({
     google: false,
   });
   const t = useTranslations();
+  const locale = useLocale();
   // Disable buttons when loading
   const areButtonsDisabled = loading.email || loading.github || loading.facebook || loading.google;
   const searchParams = useSearchParams();
-  const callbackUrl = (searchParams?.get('from') as string | null) ?? '/feed';
+  const fromParam = searchParams?.get('from') as string | null;
+  const callbackUrl = fromParam ?? `/${locale}/feed`;
   const { showToast } = useToast();
   const oauthErrorShownRef = useRef(false);
 
@@ -120,30 +122,14 @@ export function UserAuthForm({
         ...prev,
         [provider]: true,
       }));
-      try {
-        const signInResult = await signIn(provider, {
-          callbackUrl,
-          redirect: false,
-        });
-        setLoading((prev) => ({
-          ...prev,
-          [provider]: false,
-        }));
-        if (signInResult?.error) {
-          showToast({ type: 'error', title: t('something_went_wrong_0') });
-        } else if (signInResult?.ok) {
-          // Redirect manually on success
-          window.location.href = callbackUrl;
-        }
-      } catch {
-        setLoading((prev) => ({
-          ...prev,
-          [provider]: false,
-        }));
-        showToast({ type: 'error', title: t('something_went_wrong_0') });
-      }
+      // OAuth providers require a redirect to the third-party site
+      // Don't use redirect: false for OAuth providers
+      await signIn(provider, {
+        callbackUrl,
+      });
+      // Note: signIn with OAuth providers will redirect, so code below won't execute
     },
-    [callbackUrl, showToast, t],
+    [callbackUrl],
   );
 
   return (
