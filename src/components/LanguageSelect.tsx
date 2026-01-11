@@ -23,6 +23,7 @@ export function LanguageSelect() {
 
   function onLanguageChange(nextLocale: string) {
     router.replace(pathname, { locale: nextLocale });
+    router.refresh();
   }
 
   return (
