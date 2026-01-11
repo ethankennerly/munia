@@ -130,16 +130,16 @@ export default function Page() {
               details: t('strongly-typed_code_and_components_for_m'),
             },
             {
-              header: t('next_js_14'),
+              header: `${t('next_js')} 16`,
               details: t('app_router_route_handlers_nested_layouts'),
             },
-            { header: t('react_18'), details: t('server_and_client_components') },
+            { header: `${t('react')} 19`, details: t('server_and_client_components') },
             {
               header: t('prisma'),
               details: t('type-safe_and_intuitive_database_orm'),
             },
             {
-              header: t('nextauth_js_5'),
+              header: `${t('nextauth_js')} 5`,
               details: t('secure_email_and_social_oauth_logins'),
             },
             {

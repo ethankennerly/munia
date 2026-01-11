@@ -6,6 +6,7 @@ vi.mock('next-intl', async () => {
   return {
     ...actual,
     useTranslations: () => (key: string) => key, // Simply returns the key string
+    useLocale: () => 'en', // Returns default locale
   };
 });
 

@@ -40,7 +40,7 @@ export default {
       const safeUser = auth?.user as unknown as { id?: string } | undefined;
       logger.debug({ msg: 'api_request', path: pathname });
       logger.debug({ msg: 'auth_state', isAuthenticated: isLoggedIn, userId: safeUser?.id ?? null });
-      
+
       // Extract locale from pathname if present (e.g., /en/login -> 'en')
       // Otherwise use default locale
       const pathSegments = pathname.split('/').filter(Boolean);
@@ -48,12 +48,12 @@ export default {
       const locale = routing.locales.includes(firstSegment as (typeof routing.locales)[number])
         ? firstSegment
         : routing.defaultLocale;
-      
+
       // Normalize pathname by removing locale prefix if present
       const normalizedPathname = routing.locales.includes(firstSegment as (typeof routing.locales)[number])
-        ? '/' + pathSegments.slice(1).join('/')
+        ? `/${pathSegments.slice(1).join('/')}`
         : pathname;
-      
+
       const isOnAuthPage = normalizedPathname.startsWith('/login') || normalizedPathname.startsWith('/register');
 
       const unProtectedPages = ['/terms', '/privacy-policy']; // Add more here if needed
