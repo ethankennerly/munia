@@ -10,7 +10,7 @@ import Button from './Button';
 
 interface TextInputProps extends AriaTextFieldProps {
   className?: string;
-  Icon?: (props: SVGProps<SVGSVGElement>) => JSX.Element;
+  Icon?: (props: SVGProps<SVGSVGElement>) => React.ReactElement;
 }
 
 export const TextInput = forwardRef<HTMLInputElement, TextInputProps>(({ className, Icon, ...props }, forwardedRef) => {

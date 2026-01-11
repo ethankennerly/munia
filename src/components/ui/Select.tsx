@@ -14,7 +14,7 @@ import { Popover } from './Popover';
 import { ListBox } from './SelectListBox';
 
 interface SelectProps<T> extends AriaSelectProps<T> {
-  Icon?: (props: SVGProps<SVGSVGElement>) => JSX.Element;
+  Icon?: (props: SVGProps<SVGSVGElement>) => React.ReactElement;
 }
 
 export const Select = forwardRef(

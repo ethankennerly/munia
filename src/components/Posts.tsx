@@ -304,7 +304,6 @@ export function Posts({ type, hashtag, userId }: PostsProps) {
       // Need to manually reset as the `staleTime` is set to `Infinity`
       qc.resetQueries({ queryKey, exact: true });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const toggleComments = useCallback(
@@ -344,10 +343,12 @@ export function Posts({ type, hashtag, userId }: PostsProps) {
   );
 
   // Sort items to ensure newer posts (higher IDs) are at the top
-  const sortPosts = useCallback((items: PostIds) => {
-    // Sort by ID in descending order (higher IDs = newer posts = top)
-    return [...items].sort((a, b) => b.id - a.id);
-  }, []);
+  const sortPosts = useCallback(
+    (items: PostIds) =>
+      // Sort by ID in descending order (higher IDs = newer posts = top)
+      [...items].sort((a, b) => b.id - a.id),
+    [],
+  );
 
   return (
     <BidirectionalScroll<PostIds[number]>

@@ -17,9 +17,7 @@ import { ReplayProvider } from '@/lib/replay/replayContext';
 import { setupDeploymentSync } from '@/lib/utils/deploymentSync';
 
 export function Providers({ children, session }: { children: React.ReactNode; session: Session | null }) {
-  useEffect(() => {
-    return setupDeploymentSync(window);
-  }, []);
+  useEffect(() => setupDeploymentSync(window), []);
 
   return (
     <ThemeContextProvider>

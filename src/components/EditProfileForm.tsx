@@ -1,5 +1,3 @@
-/* eslint-disable react-perf/jsx-no-new-function-as-prop */
-
 'use client';
 
 import { Controller, SubmitErrorHandler, SubmitHandler, useForm } from 'react-hook-form';
@@ -242,7 +240,7 @@ export function EditProfileForm({ redirectTo }: { redirectTo?: string }) {
                 ref={ref}>
                 <Item key="SINGLE">{t('components_single')}</Item>
                 <Item key="IN_A_RELATIONSHIP">{t('components_relationship')}</Item>
-                <Item key="ENGAGED">{t('components_enganged')}</Item>
+                <Item key="ENGAGED">{t('components_engaged')}</Item>
                 <Item key="MARRIED">{t('components_married')}</Item>
               </Select>
             </div>

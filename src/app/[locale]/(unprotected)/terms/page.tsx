@@ -12,11 +12,10 @@ export default async function Terms({ params }: { params: { locale: string } }) 
 
     return (
       <article className="prose lg:prose-xl mx-auto">
-        {/* @ts-expect-error - MDXRemote is an async component */}
         <MDXRemote source={source} />
       </article>
     );
-  } catch (e) {
+  } catch {
     notFound();
   }
 }

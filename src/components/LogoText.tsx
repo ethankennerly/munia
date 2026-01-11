@@ -4,7 +4,7 @@ import { cn } from '@/lib/cn';
 import React from 'react';
 import { useTranslations } from 'next-intl';
 
-interface LogoTextProps extends React.HTMLAttributes<HTMLHeadElement> {}
+type LogoTextProps = React.HTMLAttributes<HTMLHeadElement>;
 export function LogoText({ ...rest }: LogoTextProps) {
   const t = useTranslations();
   return (

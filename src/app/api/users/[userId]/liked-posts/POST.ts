@@ -12,9 +12,10 @@ import { getServerUser } from '@/lib/getServerUser';
 import prisma from '@/lib/prisma/prisma';
 import { NextResponse } from 'next/server';
 
-export async function POST(request: Request, { params }: { params: { userId: string } }) {
+export async function POST(request: Request, { params }: { params: Promise<{ userId: string }> }) {
   const [user] = await getServerUser();
-  if (!user || params.userId !== user.id) return NextResponse.json({}, { status: 401 });
+  const { userId: userIdParam } = await params;
+  if (!user || userIdParam !== user.id) return NextResponse.json({}, { status: 401 });
   const userId = user.id;
 
   const { postId } = await request.json();

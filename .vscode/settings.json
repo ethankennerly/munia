@@ -72,5 +72,7 @@
   },
   "i18n-ally.extract.ignored": [
     "${toUpdate}Photo"
-  ]
+  ],
+  "vim.useSystemClipboard": true,
+  "zenMode.centerLayout": false
 }

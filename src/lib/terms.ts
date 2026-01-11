@@ -9,7 +9,7 @@ export async function getTermsText(): Promise<string | null> {
   try {
     const buf = await fs.readFile(TERMS_FILE_PATH);
     return buf.toString('utf-8');
-  } catch (e) {
+  } catch {
     // Non-PII warning, matches privacy policy behavior
     logger.warn({ msg: 'terms_file_read_failed', path: TERMS_FILE_PATH });
     return null;

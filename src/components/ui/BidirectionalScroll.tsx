@@ -271,7 +271,6 @@ export default function BidirectionalScroll<TItem = unknown>({
       );
       queryResult.fetchNextPage();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     firstIndex,
     lastIndex,
@@ -462,7 +461,6 @@ export default function BidirectionalScroll<TItem = unknown>({
         checkAndFetch();
       });
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     queryResult.data,
     allItems.length,
@@ -557,7 +555,6 @@ export default function BidirectionalScroll<TItem = unknown>({
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     queryResult.hasNextPage,
     queryResult.isFetchingNextPage,
@@ -586,7 +583,7 @@ export default function BidirectionalScroll<TItem = unknown>({
       return (
         <div ref={parentRef} className={className} style={containerStyle}>
           <div style={innerContainerStyle}>
-            {/* eslint-disable react-perf/jsx-no-new-object-as-prop */}
+            {}
             {virtualItems.map((virtualRow) => {
               const item = allItems[virtualRow.index];
               if (!item) return null;
@@ -612,7 +609,7 @@ export default function BidirectionalScroll<TItem = unknown>({
                 </div>
               );
             })}
-            {/* eslint-enable react-perf/jsx-no-new-object-as-prop */}
+            {}
           </div>
           {queryResult.isFetchingNextPage && (
             <div className="p-4 text-center">
@@ -691,7 +688,7 @@ export default function BidirectionalScroll<TItem = unknown>({
   return (
     <div ref={parentRef} className={className} style={containerStyle}>
       <div style={innerContainerStyle}>
-        {/* eslint-disable react-perf/jsx-no-new-object-as-prop */}
+        {}
         {virtualItems.map((virtualRow) => {
           const item = allItems[virtualRow.index];
           if (!item) return null;
@@ -713,7 +710,7 @@ export default function BidirectionalScroll<TItem = unknown>({
             </div>
           );
         })}
-        {/* eslint-enable react-perf/jsx-no-new-object-as-prop */}
+        {}
       </div>
       {queryResult.isFetchingNextPage && (
         <div className="p-4 text-center" data-scroll-state="fetching-next">

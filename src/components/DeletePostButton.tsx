@@ -46,7 +46,7 @@ export function DeletePostButton({ postId }: { postId: number }) {
       if (!res.ok) throw new Error(t('failed_to_delete_post'));
       // Navigate to feed after deletion
       router.push('/feed');
-    } catch (_e) {
+    } catch {
       // optional: toast/notification
     } finally {
       setLoading(false);

@@ -9,7 +9,7 @@ import { DropdownMenu } from './DropdownMenu';
 interface MenuButtonProps<T extends object> extends AriaMenuProps<T>, MenuTriggerProps {
   onAction: (key: Key) => void;
   label: string;
-  Icon?: (props: SVGProps<SVGSVGElement>) => JSX.Element;
+  Icon?: (props: SVGProps<SVGSVGElement>) => React.ReactElement;
 }
 
 export function DropdownMenuButton<T extends object>(props: MenuButtonProps<T>) {

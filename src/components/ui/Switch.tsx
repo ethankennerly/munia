@@ -6,7 +6,7 @@ import { motion } from 'framer-motion';
 
 interface SwitchProps extends AriaSwitchProps {
   children?: React.ReactNode;
-  renderIcon?: () => JSX.Element;
+  renderIcon?: () => React.ReactElement;
 }
 
 export function Switch({ children, renderIcon, ...props }: SwitchProps) {

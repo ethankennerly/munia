@@ -228,13 +228,14 @@ export function ReplayPlayer({ actions, onComplete }: ReplayPlayerProps) {
   }, [actions, setIsReplaying]);
 
   // Cleanup on unmount
-  useEffect(() => {
-    return () => {
+  useEffect(
+    () => () => {
       if (replayWindowRef.current && !replayWindowRef.current.closed) {
         replayWindowRef.current.close();
       }
-    };
-  }, []);
+    },
+    [],
+  );
 
   const progress = actions.length > 0 ? (currentIndex / actions.length) * 100 : 0;
   const progressStyle = useMemo(() => ({ width: `${progress}%` }), [progress]);

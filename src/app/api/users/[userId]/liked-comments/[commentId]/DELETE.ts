@@ -8,11 +8,12 @@ import { getServerUser } from '@/lib/getServerUser';
 import prisma from '@/lib/prisma/prisma';
 import { NextResponse } from 'next/server';
 
-export async function DELETE(request: Request, { params }: { params: { userId: string; commentId: string } }) {
+export async function DELETE(request: Request, { params }: { params: Promise<{ userId: string; commentId: string }> }) {
   const [user] = await getServerUser();
-  if (!user || params.userId !== user.id) return NextResponse.json({}, { status: 401 });
+  const { userId, commentId: commentIdParam } = await params;
+  if (!user || userId !== user.id) return NextResponse.json({}, { status: 401 });
 
-  const commentId = parseInt(params.commentId, 10);
+  const commentId = parseInt(commentIdParam, 10);
 
   const isLiked = await prisma.commentLike.count({
     where: {

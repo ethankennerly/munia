@@ -8,9 +8,10 @@ import { NextResponse } from 'next/server';
 import { getServerUser } from '@/lib/getServerUser';
 import { verifyAccessToComment } from './verifyAccessToComment';
 
-export async function DELETE(request: Request, { params }: { params: { commentId: string } }) {
+export async function DELETE(request: Request, { params }: { params: Promise<{ commentId: string }> }) {
   const [user] = await getServerUser();
-  const commentId = parseInt(params.commentId, 10);
+  const { commentId: commentIdParam } = await params;
+  const commentId = parseInt(commentIdParam, 10);
   if (!verifyAccessToComment(commentId)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
   }

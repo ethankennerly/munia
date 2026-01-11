@@ -63,8 +63,8 @@ describe('BidirectionalScroll', () => {
   const renderComponent = (
     queryResult: Partial<UseInfiniteQueryResult<unknown[], Error>>,
     renderItem = defaultRenderItem,
-  ) => {
-    return render(
+  ) =>
+    render(
       <QueryClientProvider client={queryClient}>
         <BidirectionalScroll
           queryResult={queryResult as UseInfiniteQueryResult<unknown[], Error>}
@@ -72,7 +72,6 @@ describe('BidirectionalScroll', () => {
         />
       </QueryClientProvider>,
     );
-  };
 
   it('renders loading state when data is pending', () => {
     mockQueryResult = createMockQueryResult({ isPending: true, data: undefined });

@@ -120,14 +120,26 @@ export function UserAuthForm({
         ...prev,
         [provider]: true,
       }));
-      const signInResult = await signIn(provider, {
-        callbackUrl,
-      });
-      setLoading((prev) => ({
-        ...prev,
-        [provider]: false,
-      }));
-      if (signInResult?.error) {
+      try {
+        const signInResult = await signIn(provider, {
+          callbackUrl,
+          redirect: false,
+        });
+        setLoading((prev) => ({
+          ...prev,
+          [provider]: false,
+        }));
+        if (signInResult?.error) {
+          showToast({ type: 'error', title: t('something_went_wrong_0') });
+        } else if (signInResult?.ok) {
+          // Redirect manually on success
+          window.location.href = callbackUrl;
+        }
+      } catch {
+        setLoading((prev) => ({
+          ...prev,
+          [provider]: false,
+        }));
         showToast({ type: 'error', title: t('something_went_wrong_0') });
       }
     },

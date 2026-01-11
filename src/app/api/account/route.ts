@@ -33,7 +33,7 @@ export async function DELETE(req: Request) {
       hasConfirm: typeof confirm === 'boolean',
       hasRecent: typeof recentAuthTimestamp === 'number',
     });
-  } catch (e) {
+  } catch {
     logger.warn({ msg: 'api_account_guard_fail', reason: 'invalid_json' });
     return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
   }

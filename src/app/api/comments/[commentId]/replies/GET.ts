@@ -10,17 +10,18 @@ import { toGetComment } from '@/lib/prisma/toGetComment';
 import { NextResponse } from 'next/server';
 import { FindCommentResult } from '@/types/definitions';
 
-export async function GET(request: Request, { params }: { params: { commentId: string } }) {
+export async function GET(request: Request, { params }: { params: Promise<{ commentId: string }> }) {
   /**
    * The `userId` will only be used to check whether the user
    * requesting the comments has liked them or not.
    */
   const [user] = await getServerUser();
   const userId = user?.id;
+  const { commentId } = await params;
 
   const res: FindCommentResult[] = await prisma.comment.findMany({
     where: {
-      parentId: parseInt(params.commentId, 10),
+      parentId: parseInt(commentId, 10),
     },
     include: includeToComment(userId),
     orderBy: {

@@ -1,5 +1,5 @@
 import React from 'react';
-import parse, { Element, domToReact } from 'html-react-parser';
+import parse, { Element, domToReact, DOMNode } from 'html-react-parser';
 import DOMPurify from 'dompurify';
 import Link from 'next/link';
 
@@ -28,17 +28,17 @@ export function HighlightedMentionsAndHashTags({ text, shouldAddLinks }: { text:
     return `${space}<a href="${url}">${coloredWord}</a>`;
   });
 
-  if (!shouldAddLinks) return parse(html) as JSX.Element;
+  if (!shouldAddLinks) return parse(html) as React.ReactElement;
   return parse(html, {
     replace: (domNode) => {
       // Convert the <a> tags into NextJS <Link>'s
       if (domNode instanceof Element && domNode.attribs && domNode.attribs.href && domNode.children)
         return (
           <Link href={domNode.attribs.href} className="link">
-            {domToReact(domNode.children)}
+            {domToReact(domNode.children as DOMNode[])}
           </Link>
         );
       return domNode;
     },
-  }) as JSX.Element;
+  }) as React.ReactElement;
 }

@@ -21,8 +21,8 @@ export default defineConfig({
     setupFiles: ['./vitest.setup.ts'], // Global timeout enforcement
     server: {
       deps: {
-        inline: ['next-intl']
-      }
-    }
+        inline: ['next-intl'],
+      },
+    },
   },
 });

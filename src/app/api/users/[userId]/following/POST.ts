@@ -14,9 +14,10 @@ import { Prisma } from '@prisma/client';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
-export async function POST(request: Request, { params }: { params: { userId: string } }) {
+export async function POST(request: Request, { params }: { params: Promise<{ userId: string }> }) {
   const [user] = await getServerUser();
-  if (!user || user.id !== params.userId) return NextResponse.json({}, { status: 403 });
+  const { userId } = await params;
+  if (!user || user.id !== userId) return NextResponse.json({}, { status: 403 });
 
   try {
     const { userIdToFollow } = followPostSchema.parse(await request.json());

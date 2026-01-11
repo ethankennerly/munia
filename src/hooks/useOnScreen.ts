@@ -1,6 +1,6 @@
 import { RefObject, useEffect, useState } from 'react';
 
-const useOnScreen = (ref: RefObject<HTMLDivElement>, rootMargin = '0px') => {
+const useOnScreen = (ref: RefObject<HTMLDivElement | null>, rootMargin = '0px') => {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {

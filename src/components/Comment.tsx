@@ -93,7 +93,6 @@ export const Comment = memo(
         const shouldOpenRepliesOnMount = searchParams?.get('comment-parent-id') === commentId.toString();
         if (shouldOpenRepliesOnMount) setRepliesVisibility({ commentId, shown: true });
       }, 1000);
-      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (

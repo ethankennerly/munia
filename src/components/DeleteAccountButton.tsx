@@ -21,7 +21,7 @@ export function DeleteAccountButton() {
       });
       if (!res.ok) throw new Error(t('api_account_delete_deletion_failed'));
       await signOut({ callbackUrl: '/register' });
-    } catch (_e) {
+    } catch {
       // optional toast here
     } finally {
       setLoading(false);

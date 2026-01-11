@@ -1,6 +1,6 @@
 'use client';
 
-import { SVGProps } from 'react';
+import { SVGProps, ReactElement } from 'react';
 import { useTranslations } from 'next-intl';
 
 export function AboutItem({
@@ -10,7 +10,7 @@ export function AboutItem({
 }: {
   field: string;
   value: string | null;
-  Icon: (props: SVGProps<SVGSVGElement>) => JSX.Element;
+  Icon: (props: SVGProps<SVGSVGElement>) => ReactElement;
 }) {
   const t = useTranslations();
   return (

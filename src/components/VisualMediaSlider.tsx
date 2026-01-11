@@ -1,6 +1,5 @@
 'use client';
 
-/* eslint-disable react-perf/jsx-no-new-object-as-prop */
 import { Swiper, SwiperSlide, SwiperClass } from 'swiper/react';
 import { Zoom, Navigation, Pagination, Keyboard } from 'swiper';
 import { useCallback, useMemo, useEffect, useState } from 'react';
@@ -66,23 +65,21 @@ export default function VisualMediaSlider({
         </>
       )}
 
-      {visualMedia.map(({ type, url }) => {
-        return (
-          <SwiperSlide key={url}>
-            <div className="swiper-zoom-container">
-              {type === 'PHOTO' ? (
-                <img src={url} alt={t('post')} className="max-h-full" />
-              ) : (
-                // eslint-disable-next-line jsx-a11y/media-has-caption
-                <video className="max-h-[75%]" autoPlay controls>
-                  <source src={url} type="video/mp4" />
-                  {t('your_browser_does_not_support_the_video_')}
-                </video>
-              )}
-            </div>
-          </SwiperSlide>
-        );
-      })}
+      {visualMedia.map(({ type, url }) => (
+        <SwiperSlide key={url}>
+          <div className="swiper-zoom-container">
+            {type === 'PHOTO' ? (
+              <img src={url} alt={t('post')} className="max-h-full" />
+            ) : (
+              // eslint-disable-next-line jsx-a11y/media-has-caption
+              <video className="max-h-[75%]" autoPlay controls>
+                <source src={url} type="video/mp4" />
+                {t('your_browser_does_not_support_the_video_')}
+              </video>
+            )}
+          </div>
+        </SwiperSlide>
+      ))}
     </Swiper>
   );
 }

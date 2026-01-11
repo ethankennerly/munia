@@ -1,19 +1,17 @@
 /* eslint-disable import/first, @typescript-eslint/no-explicit-any */
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
-vi.mock('@/lib/prisma/prisma', () => {
-  return {
-    default: {
-      user: {
-        findUnique: vi.fn(),
-        delete: vi.fn(),
-      },
-      visualMedia: {
-        findMany: vi.fn(),
-      },
+vi.mock('@/lib/prisma/prisma', () => ({
+  default: {
+    user: {
+      findUnique: vi.fn(),
+      delete: vi.fn(),
     },
-  };
-});
+    visualMedia: {
+      findMany: vi.fn(),
+    },
+  },
+}));
 
 vi.mock('@/lib/s3/deleteObject', () => ({
   deleteObject: vi.fn().mockResolvedValue(undefined),

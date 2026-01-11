@@ -1,10 +1,9 @@
 'use client';
 
-/* eslint-disable import/no-duplicates */
 import enUS from 'date-fns/locale/en-US';
 import es from 'date-fns/locale/es';
 import { formatDistanceToNowStrict } from 'date-fns';
-/* eslint-enable import/no-duplicates */
+
 import type { Locale } from 'date-fns';
 import { useLocale } from 'next-intl';
 
@@ -23,12 +22,11 @@ export function useTimeAgo() {
    * @param date The date to format
    * @param addSuffix Whether to include 'ago' or 'in' (default: true)
    */
-  const formatTimeAgo = (date: Date | number, addSuffix = true) => {
-    return formatDistanceToNowStrict(date, {
+  const formatTimeAgo = (date: Date | number, addSuffix = true) =>
+    formatDistanceToNowStrict(date, {
       locale: dateFnsLocale,
       addSuffix,
     });
-  };
 
   return { formatTimeAgo };
 }

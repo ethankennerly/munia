@@ -92,7 +92,7 @@ export const {
   },
   callbacks: {
     // Store reference to authConfig JWT callback before spreading
-    // eslint-disable-next-line no-param-reassign
+
     async jwt({ token, user, ...rest }) {
       // Call the JWT callback from authConfig first if it exists
       const authConfigJwt = authConfig.callbacks?.jwt;

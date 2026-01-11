@@ -6,11 +6,11 @@ import { getTranslations } from 'next-intl/server';
  * Use this page to redirect the user to the respective /posts/:postId
  * route of the comment from the given `commentId`.
  */
-export default async function Page({ params }: { params: { commentId: string } }) {
+export default async function Page({ params }: { params: Promise<{ commentId: string }> }) {
   const t = await getTranslations();
   const comment = await prisma.comment.findUnique({
     where: {
-      id: parseInt(params.commentId, 10),
+      id: parseInt((await params).commentId, 10),
     },
     select: {
       id: true,

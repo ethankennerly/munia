@@ -15,11 +15,12 @@ import { NextResponse } from 'next/server';
 import { GetComment } from '@/types/definitions';
 import { z } from 'zod';
 
-export async function POST(request: Request, { params }: { params: { commentId: string } }) {
+export async function POST(request: Request, { params }: { params: Promise<{ commentId: string }> }) {
   const [user] = await getServerUser();
   if (!user) return NextResponse.json({}, { status: 401 });
   const userId = user.id;
-  const commentId = parseInt(params.commentId, 10);
+  const { commentId: commentIdParam } = await params;
+  const commentId = parseInt(commentIdParam, 10);
 
   try {
     const body = await request.json();

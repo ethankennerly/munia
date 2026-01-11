@@ -31,7 +31,7 @@ const icon = cva('h-6 w-6', {
 });
 
 interface ToggleStepperProps extends VariantProps<typeof icon>, AriaToggleButtonProps {
-  Icon: (props: SVGProps<SVGSVGElement>) => JSX.Element;
+  Icon: (props: SVGProps<SVGSVGElement>) => React.ReactElement;
   quantity: number;
   noun?: string;
   'data-activate-id'?: string;

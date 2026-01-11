@@ -14,7 +14,7 @@ function readEnv(name: string): string | undefined {
         return String(value);
       }
     }
-  } catch (e) {
+  } catch {
     // Ignore errors accessing process.env
   }
   return undefined;

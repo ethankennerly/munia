@@ -78,7 +78,6 @@ export const Post = memo(
     if (isError) return <p>{t('components_post_error')}</p>;
     if (!data) return <p>{t('components_post_this')}</p>;
 
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     const { content, createdAt, user: author, visualMedia, isLiked, _count } = data;
     const isOwnPost = userId === author.id;
     const numberOfLikes = _count.postLikes;

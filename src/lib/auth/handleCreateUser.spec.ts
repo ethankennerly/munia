@@ -1,4 +1,3 @@
-/* eslint-disable import/first, import/order */
 import { describe, it, expect, vi, beforeEach, type Mock } from 'vitest';
 
 import { logger } from '@/lib/logging';

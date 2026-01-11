@@ -8,7 +8,7 @@ interface PopoverProps extends Omit<AriaPopoverProps, 'popoverRef'> {
   children: React.ReactNode;
   state: OverlayTriggerState;
   className?: string;
-  popoverRef?: React.RefObject<HTMLDivElement>;
+  popoverRef?: React.RefObject<HTMLDivElement | null>;
 }
 
 export function Popover(props: PopoverProps) {

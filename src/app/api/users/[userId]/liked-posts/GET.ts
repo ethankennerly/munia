@@ -5,10 +5,11 @@
 import prisma from '@/lib/prisma/prisma';
 import { NextResponse } from 'next/server';
 
-export async function GET(request: Request, { params }: { params: { userId: string } }) {
+export async function GET(request: Request, { params }: { params: Promise<{ userId: string }> }) {
+  const { userId } = await params;
   const res = await prisma.postLike.findMany({
     where: {
-      userId: params.userId,
+      userId,
     },
   });
 

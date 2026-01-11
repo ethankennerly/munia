@@ -14,8 +14,8 @@ export const toGetUser = (findUserResult: FindUserResult): GetUser => {
   // Exclude `followers` and `count` as they're not required
   // in `GetUser`. The `rest` below contains the properties
   // of the `User` type of @prisma/client.
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  const { followers, _count, ...rest } = findUserResult;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { followers: _followers, _count: _unusedCount, ...rest } = findUserResult;
 
   const userResponse: GetUser = {
     ...rest,

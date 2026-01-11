@@ -118,7 +118,6 @@ export function CreatePostDialog({
     return () => {
       document.removeEventListener('keydown', onEscPressed, false);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const dialogTitle = mode === 'create' ? t('components_create_post') : t('components_edit_post');

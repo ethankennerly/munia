@@ -26,7 +26,7 @@ export const CreatePostOptions = forwardRef<
     },
     [forwardedRef],
   );
-  const onUploadImageOrVideoPress = useCallback(() => localRef.current?.click(), []); // eslint-disable-line react-hooks/exhaustive-deps
+  const onUploadImageOrVideoPress = useCallback(() => localRef.current?.click(), []);
 
   return (
     <div className="flex flex-row justify-center gap-6 px-4 pb-5 sm:justify-start">

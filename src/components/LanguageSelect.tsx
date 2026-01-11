@@ -1,5 +1,3 @@
-/* eslint-disable react-perf/jsx-no-new-function-as-prop */
-
 'use client';
 
 import { useLocale, useTranslations } from 'next-intl';

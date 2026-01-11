@@ -11,9 +11,10 @@ import { toGetUser } from '@/lib/prisma/toGetUser';
 import { includeToUser } from '@/lib/prisma/includeToUser';
 import { logger } from '@/lib/logging';
 
-export async function PATCH(request: Request, { params }: { params: { userId: string } }) {
+export async function PATCH(request: Request, { params }: { params: Promise<{ userId: string }> }) {
   const [user] = await getServerUser();
-  if (!user || user.id !== params.userId) return NextResponse.json({}, { status: 401 });
+  const { userId } = await params;
+  if (!user || user.id !== userId) return NextResponse.json({}, { status: 401 });
 
   const userAbout = await request.json();
   logger.info({

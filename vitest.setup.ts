@@ -20,4 +20,3 @@ beforeEach(() => {
     throw new Error(`Test suite exceeded ${MAX_TEST_TIME}ms limit. Stopping tests.`);
   }
 });
-

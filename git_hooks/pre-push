@@ -5,4 +5,4 @@ set -x
 npm test --silent -- --silent &&\
 npm run --silent build &&\
 npm run --silent validate:build &&\
-npm run --silent lint -- --quiet
+npm run --silent lint

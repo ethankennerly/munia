@@ -5,12 +5,12 @@ import { includeToUser } from '@/lib/prisma/includeToUser';
 import { toGetUser } from '@/lib/prisma/toGetUser';
 import { getServerUser } from '@/lib/getServerUser';
 
-export async function GET(request: Request, { params }: { params: { userId: string } }) {
+export async function GET(request: Request, { params }: { params: Promise<{ userId: string }> }) {
   // The user is only for checking whether the requestee
   // is following the user being rquested.
   const [user] = await getServerUser();
 
-  const { userId } = params;
+  const { userId } = await params;
   const res: FindUserResult | null = await prisma.user.findFirst({
     where: {
       id: userId,

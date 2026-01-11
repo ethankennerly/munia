@@ -22,7 +22,6 @@ export default {
     signIn: '/login',
   },
   callbacks: {
-    // eslint-disable-next-line no-param-reassign
     async jwt({ token, user }) {
       // Populate user ID in token for middleware access
       if (user) {

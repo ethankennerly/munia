@@ -14,7 +14,7 @@ import { verifyAccessToPost } from './verifyAccessToPost';
 // 5 minutes in ms
 const RECENT_MS = 5 * 60 * 1000;
 
-export async function DELETE(request: Request, { params }: { params: { postId: string } }) {
+export async function DELETE(request: Request, { params }: { params: Promise<{ postId: string }> }) {
   // Entry log
   logger.info({
     msg: 'api_post_delete_enter',
@@ -23,7 +23,8 @@ export async function DELETE(request: Request, { params }: { params: { postId: s
     at: new Date().toISOString(),
   });
 
-  const postId = parseInt(params.postId, 10);
+  const { postId: postIdParam } = await params;
+  const postId = parseInt(postIdParam, 10);
   logger.debug({
     msg: 'api_post_delete_params',
     postId,
@@ -44,7 +45,7 @@ export async function DELETE(request: Request, { params }: { params: { postId: s
       hasRecent: typeof recentAuthTimestamp === 'number',
       recentType: typeof recentAuthTimestamp,
     });
-  } catch (e) {
+  } catch {
     logger.warn({ msg: 'api_post_guard_fail', reason: 'invalid_json' });
     return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
   }

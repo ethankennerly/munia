@@ -11,7 +11,7 @@ import Button from './Button';
 
 interface TextareaProps extends AriaTextFieldProps<'textarea'> {
   className?: string;
-  Icon?: (props: SVGProps<SVGSVGElement>) => JSX.Element;
+  Icon?: (props: SVGProps<SVGSVGElement>) => React.ReactElement;
 }
 
 export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(

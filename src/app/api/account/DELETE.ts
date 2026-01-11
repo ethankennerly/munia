@@ -25,7 +25,7 @@ export async function DELETE(req: Request) {
     if (!Number.isFinite(ts) || Date.now() - ts > RECENT_MS) {
       return NextResponse.json({ error: 'Re-authentication required' }, { status: 401 });
     }
-  } catch (e) {
+  } catch {
     return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
   }
 

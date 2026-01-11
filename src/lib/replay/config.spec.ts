@@ -1,4 +1,3 @@
-/* eslint-disable import/first */
 import { describe, it, expect, beforeEach } from 'vitest';
 
 // Ensure a clean module state per test by clearing env and re-importing

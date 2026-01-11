@@ -11,7 +11,7 @@ import { buttonIconVariants, buttonVariants } from '@/components/ui/variants/but
 export type ButtonProps = VariantProps<typeof buttonVariants> &
   AriaButtonProps & {
     children?: ReactNode;
-    Icon?: (props: SVGProps<SVGSVGElement>) => JSX.Element;
+    Icon?: (props: SVGProps<SVGSVGElement>) => React.ReactElement;
     loading?: boolean;
     className?: string;
     iconClassName?: string;
