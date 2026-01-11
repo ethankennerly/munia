@@ -7,9 +7,6 @@ const nextConfig = {
   experimental: {
     scrollRestoration: true,
   },
-  turbopack: {
-    root: process.cwd(),
-  },
   images: {
     // 30 days in seconds (60 * 60 * 24 * 30)
     minimumCacheTTL: 2592000,
