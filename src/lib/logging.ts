@@ -43,7 +43,7 @@ function base(level: Level, obj: Record<string, unknown>, channel?: string) {
   // Prefix message with channel if provided
   const originalMessage = obj.message || '';
   const prefixedMessage = channel ? `[${channel.toUpperCase()}] ${originalMessage}` : originalMessage;
-  // eslint-disable-next-line no-console
+
   console[method](JSON.stringify({ level, ...obj, message: prefixedMessage }));
 }
 

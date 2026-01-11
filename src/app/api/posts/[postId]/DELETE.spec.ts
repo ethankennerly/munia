@@ -1,4 +1,4 @@
-/* eslint-disable import/first, @typescript-eslint/no-explicit-any, prettier/prettier */
+/* eslint-disable prettier/prettier */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 // Mocks

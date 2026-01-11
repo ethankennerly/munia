@@ -29,7 +29,7 @@ export function GalleryItem({ type, url, onClick }: { type: VisualMediaType; url
             height={36}
             className="absolute left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] stroke-violet-100 transition-transform group-hover:scale-125"
           />
-          {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
+          {}
           <video className="h-full w-full object-cover">
             <source src={url} type="video/mp4" />
             {t('your_browser_does_not_support_the_video_')}

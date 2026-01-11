@@ -37,7 +37,6 @@ function resolveChannels(): Set<string> {
   // Debug: Log resolved channels in development (only once at module load)
   // This helps verify that the env var is being read correctly
   if (process.env.NODE_ENV === 'development' && typeof window !== 'undefined') {
-    // eslint-disable-next-line no-console
     console.log('[logging-client] NEXT_PUBLIC_LOG_CHANNELS:', fromEnv, '→ Resolved channels:', Array.from(channels));
   }
   return channels;
@@ -48,7 +47,6 @@ const ENABLED_CHANNELS = resolveChannels();
 
 // Debug: Log resolved log level in development (only once at module load)
 if (process.env.NODE_ENV === 'development' && typeof window !== 'undefined') {
-  // eslint-disable-next-line no-console
   console.log(
     '[logging-client] LOG_LEVEL:',
     LOG_LEVEL,
@@ -81,7 +79,7 @@ export const logger = {
         // Prefix message with channel if provided
         const originalMessage = obj.message || '';
         const prefixedMessage = channel ? `[${channel.toUpperCase()}] ${originalMessage}` : originalMessage;
-        // eslint-disable-next-line no-console
+
         console.error(JSON.stringify({ level: 'error', ...obj, message: prefixedMessage }));
       }
     : () => {},
@@ -92,7 +90,7 @@ export const logger = {
         // Prefix message with channel if provided
         const originalMessage = obj.message || '';
         const prefixedMessage = channel ? `[${channel.toUpperCase()}] ${originalMessage}` : originalMessage;
-        // eslint-disable-next-line no-console
+
         console.warn(JSON.stringify({ level: 'warn', ...obj, message: prefixedMessage }));
       }
     : () => {},
@@ -103,7 +101,7 @@ export const logger = {
         // Prefix message with channel if provided
         const originalMessage = obj.message || '';
         const prefixedMessage = channel ? `[${channel.toUpperCase()}] ${originalMessage}` : originalMessage;
-        // eslint-disable-next-line no-console
+
         console.info(JSON.stringify({ level: 'info', ...obj, message: prefixedMessage }));
       }
     : () => {},
@@ -114,7 +112,7 @@ export const logger = {
         // Prefix message with channel if provided
         const originalMessage = obj.message || '';
         const prefixedMessage = channel ? `[${channel.toUpperCase()}] ${originalMessage}` : originalMessage;
-        // eslint-disable-next-line no-console
+
         console.debug(JSON.stringify({ level: 'debug', ...obj, message: prefixedMessage }));
       }
     : () => {},

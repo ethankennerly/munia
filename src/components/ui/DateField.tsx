@@ -58,7 +58,6 @@ export function DateField(props: AriaDateFieldProps<DateValue>) {
   return (
     <div {...fieldProps} ref={ref} className="flex">
       {state.segments.map((segment, i) => (
-        // eslint-disable-next-line react/no-array-index-key
         <DateSegment key={i} segment={segment} state={state} />
       ))}
     </div>

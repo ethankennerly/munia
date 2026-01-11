@@ -551,7 +551,6 @@ export default function BidirectionalScroll<TItem = unknown>({
     // Check immediately in case already at bottom
     handleScroll();
 
-    // eslint-disable-next-line consistent-return
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };

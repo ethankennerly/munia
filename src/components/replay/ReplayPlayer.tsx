@@ -27,6 +27,7 @@ export function ReplayPlayer({ actions, onComplete }: ReplayPlayerProps) {
   const pausedTimeRef = useRef<number | null>(null);
   const isPlayingRef = useRef(false);
   const replayWindowRef = useRef<Window | null>(null);
+  const scheduleNextActionRef = useRef<(index: number, delayOverride?: number) => void>(undefined);
 
   const executeAction = useCallback((action: Action, targetWindow: Window) => {
     // Convert action to command and execute using shared CommandPlayer
@@ -74,7 +75,7 @@ export function ReplayPlayer({ actions, onComplete }: ReplayPlayerProps) {
           // Execute action in the replay window
           executeAction(nextAction, replayWindowRef.current);
           setCurrentIndex(index + 1);
-          scheduleNextAction(index + 1);
+          scheduleNextActionRef.current?.(index + 1);
         } else if (isPlayingRef.current && (!replayWindowRef.current || replayWindowRef.current.closed)) {
           // Window was closed, stop replay
           isPlayingRef.current = false;
@@ -88,6 +89,9 @@ export function ReplayPlayer({ actions, onComplete }: ReplayPlayerProps) {
     },
     [actions, executeAction, onComplete, setIsReplaying],
   );
+
+  // Store the callback in a ref to avoid circular dependency
+  scheduleNextActionRef.current = scheduleNextAction;
 
   const stop = useCallback(() => {
     if (timeoutRef.current) {
@@ -114,7 +118,6 @@ export function ReplayPlayer({ actions, onComplete }: ReplayPlayerProps) {
     if (!replayWindowRef.current || replayWindowRef.current.closed) {
       const newWindow = window.open('/', '_blank', 'width=1200,height=800');
       if (!newWindow) {
-        // eslint-disable-next-line no-alert
         alert(t('components_replay'));
         return;
       }
@@ -166,7 +169,7 @@ export function ReplayPlayer({ actions, onComplete }: ReplayPlayerProps) {
         pausedTimeRef.current = null;
         // Defer to avoid setState during render
         setTimeout(() => {
-          scheduleNextAction(currentIndex, remainingTime);
+          scheduleNextActionRef.current?.(currentIndex, remainingTime);
         }, 0);
         return 'playing';
       }
@@ -179,7 +182,7 @@ export function ReplayPlayer({ actions, onComplete }: ReplayPlayerProps) {
             setTimeout(() => {
               if (isPlayingRef.current && currentIndex < actions.length && replayWindowRef.current) {
                 executeAction(actions[currentIndex], replayWindowRef.current);
-                scheduleNextAction(currentIndex + 1);
+                scheduleNextActionRef.current?.(currentIndex + 1);
               }
             }, 500); // Small delay to ensure window is ready
           } else {
@@ -187,7 +190,7 @@ export function ReplayPlayer({ actions, onComplete }: ReplayPlayerProps) {
               setTimeout(() => {
                 if (isPlayingRef.current && currentIndex < actions.length && replayWindowRef.current) {
                   executeAction(actions[currentIndex], replayWindowRef.current);
-                  scheduleNextAction(currentIndex + 1);
+                  scheduleNextActionRef.current?.(currentIndex + 1);
                 }
               }, 500);
             });
@@ -197,7 +200,7 @@ export function ReplayPlayer({ actions, onComplete }: ReplayPlayerProps) {
       checkWindowReady();
       return 'playing';
     });
-  }, [actions, currentIndex, executeAction, scheduleNextAction, setIsReplaying, t]);
+  }, [actions, currentIndex, executeAction, setIsReplaying, t]);
 
   const pause = useCallback(() => {
     if (timeoutRef.current) {

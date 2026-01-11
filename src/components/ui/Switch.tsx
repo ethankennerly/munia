@@ -15,11 +15,12 @@ export function Switch({ children, renderIcon, ...props }: SwitchProps) {
   const { inputProps } = useSwitch(props, state, ref);
   const { isFocusVisible, focusProps } = useFocusRing();
   const sprintTransition = useMemo(
-    () => ({
-      type: 'spring',
-      stiffness: 700,
-      damping: 30,
-    }),
+    () =>
+      ({
+        type: 'spring' as const,
+        stiffness: 700,
+        damping: 30,
+      }) as const,
     [],
   );
 

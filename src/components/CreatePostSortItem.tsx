@@ -44,7 +44,6 @@ export function CreatePostSortItem({ type, url, onRemove }: GetVisualMedia & { o
         {type === 'PHOTO' ? (
           <img src={url} alt="" className="h-full w-full rounded-md object-cover" />
         ) : (
-          // eslint-disable-next-line jsx-a11y/media-has-caption
           <video className="z-10 h-full w-full rounded-md object-cover">
             <source src={url} />
           </video>

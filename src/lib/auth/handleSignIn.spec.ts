@@ -1,4 +1,3 @@
-/* eslint-disable import/first */
 import { describe, it, expect, vi, beforeEach, type Mock } from 'vitest';
 
 vi.mock('@/lib/auth/importGoogleProfilePic', () => ({ importGoogleProfilePic: vi.fn().mockResolvedValue(null) }));

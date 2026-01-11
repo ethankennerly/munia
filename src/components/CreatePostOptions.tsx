@@ -20,7 +20,6 @@ export const CreatePostOptions = forwardRef<
       if (typeof forwardedRef === 'function') {
         forwardedRef(node);
       } else if (forwardedRef) {
-        // eslint-disable-next-line no-param-reassign
         forwardedRef.current = node;
       }
     },

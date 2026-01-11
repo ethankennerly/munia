@@ -15,7 +15,7 @@ export class CommandPlayer {
   /**
    * Execute a single command in the given context
    */
-  // eslint-disable-next-line class-methods-use-this
+
   executeCommand(command: Command, context: ExecutionContext): void {
     command.execute(context);
   }

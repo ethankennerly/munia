@@ -71,7 +71,6 @@ export default function VisualMediaSlider({
             {type === 'PHOTO' ? (
               <img src={url} alt={t('post')} className="max-h-full" />
             ) : (
-              // eslint-disable-next-line jsx-a11y/media-has-caption
               <video className="max-h-[75%]" autoPlay controls>
                 <source src={url} type="video/mp4" />
                 {t('your_browser_does_not_support_the_video_')}

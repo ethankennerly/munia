@@ -27,15 +27,11 @@ export function CalendarGrid({ state, ...props }: CalendarGridProps) {
       <tbody>
         {[...new Array(weeksInMonth).keys()].map((weekIndex) => (
           <tr key={weekIndex}>
-            {state.getDatesInWeek(weekIndex).map((date, i) =>
-              date ? (
-                // eslint-disable-next-line react/no-array-index-key
-                <CalendarCell key={i} state={state} date={date} />
-              ) : (
-                // eslint-disable-next-line react/no-array-index-key
-                <td key={i} aria-hidden="true" />
-              ),
-            )}
+            {state
+              .getDatesInWeek(weekIndex)
+              .map((date, i) =>
+                date ? <CalendarCell key={i} state={state} date={date} /> : <td key={i} aria-hidden="true" />,
+              )}
           </tr>
         ))}
       </tbody>

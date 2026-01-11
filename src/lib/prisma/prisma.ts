@@ -7,7 +7,6 @@ declare global {
   }
 }
 
-// eslint-disable-next-line import/no-mutable-exports
 let prisma: PrismaClient;
 
 if (typeof window === 'undefined') {

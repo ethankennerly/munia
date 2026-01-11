@@ -97,19 +97,16 @@ export const {
       // Call the JWT callback from authConfig first if it exists
       const authConfigJwt = authConfig.callbacks?.jwt;
       if (authConfigJwt) {
-        // eslint-disable-next-line no-param-reassign
         token = await authConfigJwt({ token, user, ...rest });
       }
       // Ensure user ID is in token (for both adapter and non-adapter flows)
       if (user) {
         const userId = (user as { id?: string })?.id;
         if (userId) {
-          // eslint-disable-next-line no-param-reassign
           token.sub = userId;
         }
         const userEmail = (user as { email?: string })?.email;
         if (userEmail) {
-          // eslint-disable-next-line no-param-reassign
           token.email = userEmail;
         }
       }

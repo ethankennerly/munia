@@ -26,9 +26,8 @@ export default {
     async jwt({ token, user }) {
       // Populate user ID in token for middleware access
       if (user) {
-        // eslint-disable-next-line no-param-reassign
         token.sub = (user as { id?: string })?.id ?? token.sub;
-        // eslint-disable-next-line no-param-reassign
+
         token.email = (user as { email?: string })?.email ?? token.email;
       }
       return token;

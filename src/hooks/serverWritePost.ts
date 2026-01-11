@@ -107,7 +107,6 @@ export async function serverWritePost({ formData, type, postId }: Props) {
         ({ fileName }) => !savedFileNames.includes(fileName),
       );
       for (const { fileName } of filesToDelete) {
-        // eslint-disable-next-line no-await-in-loop
         await deleteObject(fileName);
       }
 
