@@ -33,7 +33,9 @@ export default async function Layout({ children }: { children: React.ReactNode }
             <HomeNavLink href="/terms">{t('terms')}</HomeNavLink>
             <HomeNavLink href="/privacy-policy">{t('privacy_policy')}</HomeNavLink>
 
-            {isLoggedIn && (
+            {isLoggedIn ? (
+              <HomeNavLink href="/feed">{t('components_feedheader')}</HomeNavLink>
+            ) : (
               <>
                 <HomeNavLink href="/login">{t('login')}</HomeNavLink>
                 <HomeNavLink href="/register">{t('sign_up')}</HomeNavLink>

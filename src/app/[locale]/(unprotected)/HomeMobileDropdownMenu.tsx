@@ -22,13 +22,15 @@ export function HomeMobileDropdownMenu() {
       { key: '/privacy-policy', label: t('privacy_policy') },
     ];
 
-    if (!isLoggedIn) {
+    if (isLoggedIn) {
+      items.push({ key: '/feed', label: t('components_feedheader') });
+    } else {
       items.push({ key: '/login', label: t('login') });
       items.push({ key: '/register', label: t('sign_up') });
     }
 
     return items;
-  }, [isLoggedIn]);
+  }, [isLoggedIn, t]);
 
   return (
     <DropdownMenuButton
