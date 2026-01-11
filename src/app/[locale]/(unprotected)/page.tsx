@@ -1,3 +1,5 @@
+'use client';
+
 import { ButtonLink } from '@/components/ui/ButtonLink';
 import { ButtonAnchor } from '@/components/ui/ButtonAnchor';
 import React from 'react';

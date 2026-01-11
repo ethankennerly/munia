@@ -2,11 +2,13 @@
 
 import { useSession } from 'next-auth/react';
 import React, { useRef } from 'react';
+import { useTranslations } from 'next-intl';
 import { useDialogs } from './useDialogs';
 import { useToast } from './useToast';
 import { useSessionUserDataMutation } from './mutations/useSessionUserDataMutation';
 
 export function useUpdateProfileAndCoverPhotoClient(toUpdate: 'profile' | 'cover') {
+  const t = useTranslations();
   const { data: session } = useSession();
   const userId = session?.user.id;
   const { updateSessionUserPhotosMutation } = useSessionUserDataMutation();
@@ -37,15 +39,18 @@ export function useUpdateProfileAndCoverPhotoClient(toUpdate: 'profile' | 'cover
       {
         onSuccess: () => {
           showToast({
-            title: 'Success!',
-            message: `Your ${toUpdate} photo has been updated.`,
+            title: t('hooks_mutations_success'),
+            message:
+              toUpdate === 'profile'
+                ? t('your_profile_photo_has_been_updated')
+                : t('your_cover_photo_has_been_updated'),
             type: 'success',
           });
         },
         onError: () => {
           alert({
-            title: 'Upload Error',
-            message: 'There was an error uploading your photo.',
+            title: t('components_something_went_wrong'),
+            message: toUpdate === 'profile' ? t('error_updating_profile_photo') : t('error_updating_cover_photo'),
           });
         },
       },

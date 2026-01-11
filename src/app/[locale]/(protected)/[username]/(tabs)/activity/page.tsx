@@ -1,5 +1,6 @@
 import { getServerUser } from '@/lib/getServerUser';
 import { getTranslations } from 'next-intl/server';
+import { Suspense } from 'react';
 import { getProfile } from '../../getProfile';
 import { Activities } from './Activities';
 
@@ -14,7 +15,7 @@ export async function generateMetadata({ params }: { params: { username: string 
 }
 
 export default async function Page({ params }: { params: { username: string; locale: string } }) {
-  const { locale } = await params;
+  const { locale, username } = await params;
   const t = await getTranslations({ locale });
   const [user] = await getServerUser();
   if (!user)
@@ -23,7 +24,7 @@ export default async function Page({ params }: { params: { username: string; loc
         <p>{t('this_is_a_protected_page')}</p>
       </main>
     );
-  const profile = await getProfile(params.username);
+  const profile = await getProfile(username);
   const isOwn = user?.id === profile?.id;
 
   if (!isOwn)
@@ -35,7 +36,9 @@ export default async function Page({ params }: { params: { username: string; loc
   return (
     <main>
       <div className="mt-4">
-        <Activities userId={user.id} />
+        <Suspense fallback={<div className="mt-6 text-center text-lg">{t('loading_activities')}</div>}>
+          <Activities userId={user.id} />
+        </Suspense>
       </div>
     </main>
   );

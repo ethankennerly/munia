@@ -203,7 +203,7 @@
   "this_comment_or_reply_no_longer_exists": "Este comentario o respuesta ya no existe.",
   "this_is_a_protected_page": "Esta es una página protegida.",
   "this_social_media_web_app_is_built_using": "Esta aplicación web de redes sociales está construida utilizando las siguientes tecnologías modernas.",
-  "try_another_provider_to_sign_in_error_si": "Pruebe con otro proveedor para iniciar sesión. (Error: {0})",
+  "try_another_provider_to_sign_in_error_si": "Pruebe con other proveedor para iniciar sesión. (Error: {0})",
   "type-safe_and_intuitive_database_orm": "ORM de base de datos intuitivo y seguro de tipos.",
   "username": "Nombre de usuario",
   "utility_classes_for_building_components": "Clases de utilidad para componentes de construcción.",
@@ -244,5 +244,17 @@
   "settings_language": "Idioma",
   "settings_preferences": "Preferencias",
   "settings_theme": "Tema",
-  "settings_title": "Ajustes"
+  "settings_title": "Ajustes",
+  "activity_comment_like": "{isSourceSelf, select, true {<sb>A ti</sb>} other {<sb>{sourceName}</sb>}} le gustó el comentario de {isTargetSelf, select, true {<sb>tu</sb>} other {<sb>{targetName}</sb>}}",
+  "activity_comment_mention": "{isSourceSelf, select, true {<sb>Tú</sb>} other {<sb>{sourceName}</sb>}} mencionó {isTargetSelf, select, true {<sb>tú</sb>} other {<sb>{targetName}</sb>}} en {isSourceSelf, selecciona, true {tu} other {{sourceGender, select, hombre {su} mujer {ella} other {su}}}} comentario",
+  "activity_create_comment": "{isSourceSelf, select, true {<sb>Tú</sb>} other {<sb>{sourceName}</sb>}} comentó en la publicación de {isTargetSelf, select, true {<sb>tu</sb>} other {<sb>{targetName}</sb>}}",
+  "activity_create_follow": "{isSourceSelf, select, true {<sb>You</sb>} other {<sb>{sourceName}</sb>}} comenzó a seguir a {isTargetSelf, select, true {<sb>you</sb>} other {<sb>{targetName}</sb>}}!",
+  "activity_create_reply": "{isSourceSelf, select, true {<sb>Tú</sb>} other {<sb>{sourceName}</sb>}} respondió al comentario de {isTargetSelf, select, true {<sb>tu</sb>} other {<sb>{targetName}</sb>}}",
+  "activity_post_like": "{isSourceSelf, select, true {<sb>A ti</sb>} other {<sb>{sourceName}</sb>}} le gustó la publicación de {isTargetSelf, select, true {<sb>tu</sb>} other {<sb>{targetName}</sb>}}",
+  "activity_post_mention": "{isSourceSelf, select, true {<sb>Tú</sb>} other {<sb>{sourceName}</sb>}} mencionó {isTargetSelf, select, true {<sb>tú</sb>} other {<sb>{targetName}</sb>}} en {isSourceSelf, selecciona, true {tu} other {{sourceGender, select, hombre {su} mujer {her} other {su}}}} publicación",
+  "activity_reply_like": "{isSourceSelf, select, true {<sb>A ti</sb>} other {<sb>{sourceName}</sb>}} le gustó {isTargetSelf, select, true {<sb>tu</sb>} other {<sb>{targetName}</sb>}} respuesta",
+  "activity_reply_mention": "{isSourceSelf, select, true {<sb>Tú</sb>} other {<sb>{sourceName}</sb>}} mencionó {isTargetSelf, select, true {<sb>tú</sb>} other {<sb>{targetName}</sb>}} en {isSourceSelf, selecciona, true {tu} other {{sourceGender, select, hombre {su} mujer {ella} other {su}}}} respuesta",
+  "activity_unknown_action": "Acción desconocida",
+  "your_cover_photo_has_been_updated": "Tu foto de portada ha sido actualizada.",
+  "your_profile_photo_has_been_updated": "Tu foto de perfil ha sido actualizada."
 }
