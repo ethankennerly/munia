@@ -239,5 +239,10 @@
   "components_create_post": "Create Post",
   "components_edit_post": "Edit Post",
   "error_updating_cover_photo": "Error updating cover photo.",
-  "error_updating_profile_photo": "Error updating profile photo."
+  "error_updating_profile_photo": "Error updating profile photo.",
+  "settings_title": "Settings",
+  "settings_description": "Select your language and theme",
+  "settings_preferences": "Preferences",
+  "settings_language": "Language",
+  "settings_theme": "Theme"
 }

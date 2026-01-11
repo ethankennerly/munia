@@ -239,5 +239,10 @@
   "upload_an_image_or_video": "Sube una imagen o vídeo",
   "username_0": "Nombre de usuario *",
   "whats_on_your_mind": "¿Qué tienes en mente?",
-  "you_are_replying_to_author_name_s_commen": "Estás respondiendo al comentario de {name}."
+  "you_are_replying_to_author_name_s_commen": "Estás respondiendo al comentario de {name}.",
+  "settings_description": "Seleccione su idioma y tema",
+  "settings_language": "Idioma",
+  "settings_preferences": "Preferencias",
+  "settings_theme": "Tema",
+  "settings_title": "Ajustes"
 }

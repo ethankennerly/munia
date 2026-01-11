@@ -1,6 +1,6 @@
 'use client';
 
-import { Feather, GridFeedCards, LogOutCircle, NotificationBell, Profile, Search } from '@/svg_components';
+import { Feather, GridFeedCards, LogOutCircle, NotificationBell, Profile, Search, WorldNet } from '@/svg_components';
 import { useSessionUserData } from '@/hooks/useSessionUserData';
 import { useNotificationsCountQuery } from '@/hooks/queries/useNotificationsCountQuery';
 import Link from 'next/link';
@@ -39,6 +39,7 @@ export function MenuBar() {
           badge: notificationCount,
         },
         { title: t('components_menubar'), Icon: Profile, route: `/${username}` },
+        { title: t('settings_title'), Icon: WorldNet, route: '/settings' },
         {
           title: t('components_menubar_logout'),
           Icon: LogOutCircle,

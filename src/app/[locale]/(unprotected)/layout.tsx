@@ -31,6 +31,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
             <HomeNavLink href="/login">{t('login')}</HomeNavLink>
             <HomeNavLink href="/register">{t('sign_up')}</HomeNavLink>
+            <HomeNavLink href="/settings">{t('settings_title')}</HomeNavLink>
           </div>
           <div className="sm:hidden">
             <HomeMobileDropdownMenu />

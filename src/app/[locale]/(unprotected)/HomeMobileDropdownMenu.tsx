@@ -22,6 +22,7 @@ export function HomeMobileDropdownMenu() {
         <Item key="/privacy-policy">{t('privacy_policy')}</Item>
         <Item key="/login">{t('login')}</Item>
         <Item key="/register">{t('sign_up')}</Item>
+        <Item key="/settings">{t('settings_title')}</Item>
       </Section>
     </DropdownMenuButton>
   );
