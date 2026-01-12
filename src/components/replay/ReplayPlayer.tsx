@@ -28,6 +28,7 @@ export function ReplayPlayer({ actions, onComplete }: ReplayPlayerProps) {
   const isPlayingRef = useRef(false);
   const replayWindowRef = useRef<Window | null>(null);
   const scheduleNextActionRef = useRef<(index: number, delayOverride?: number) => void>(undefined);
+  const originalTitleRef = useRef<string | null>(null);
 
   const executeAction = useCallback((action: Action, targetWindow: Window) => {
     // Convert action to command and execute using shared CommandPlayer
@@ -122,14 +123,27 @@ export function ReplayPlayer({ actions, onComplete }: ReplayPlayerProps) {
         return;
       }
       replayWindowRef.current = newWindow;
+      originalTitleRef.current = null; // Reset for new window
 
       // Update title in the replay window
       const updateTitle = () => {
         if (newWindow.document && newWindow.document.title) {
           const currentTitle = newWindow.document.title;
-          if (!currentTitle.includes(t('components_replay_replay'))) {
-            newWindow.document.title = t('currenttitle_-_replay');
+          const replaySuffix = ` - ${t('components_replay_replay')}`;
+
+          // If title already has the replay suffix, don't update
+          if (currentTitle.endsWith(replaySuffix)) {
+            return;
           }
+
+          // Store original title on first update
+          if (originalTitleRef.current === null) {
+            originalTitleRef.current = currentTitle;
+          }
+
+          // Use the original title to avoid growing the string
+          const titleToUse = originalTitleRef.current || currentTitle;
+          newWindow.document.title = t('currenttitle_-_replay', { 0: titleToUse });
         }
       };
 

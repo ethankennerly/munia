@@ -1,12 +1,14 @@
 'use client';
 
+import { use } from 'react';
 import { useReplayActions } from '@/lib/replay/useReplayActions';
 import { ReplayPlayer } from '@/components/replay/ReplayPlayer';
 import { useTranslations } from 'next-intl';
 
-export default function Page({ params }: { params: { id: string } }) {
+export default function Page({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params);
   const t = useTranslations();
-  const { actions, loading, error } = useReplayActions(params.id);
+  const { actions, loading, error } = useReplayActions(id);
 
   if (error) return <p className="p-4 text-red-600">{error}</p>;
   if (loading) return <p className="p-4">Loading...</p>;
@@ -14,7 +16,7 @@ export default function Page({ params }: { params: { id: string } }) {
   return (
     <main className="p-4">
       <h1 className="mb-4 text-2xl font-bold">
-        {t('session')} {params.id.substring(0, 8)}...
+        {t('session')} {id.substring(0, 8)}...
       </h1>
       <p className="mb-4 text-gray-600 dark:text-gray-400">
         {actions.length} action{actions.length !== 1 ? 's' : ''} recorded
