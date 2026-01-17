@@ -1,6 +1,12 @@
 import { withSentryConfig } from '@sentry/nextjs';
 import createNextIntlPlugin from 'next-intl/plugin';
 
+import { fileURLToPath } from 'node:url';
+import { dirname } from 'node:path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
 const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
 
 /** @type {import('next').NextConfig} */
@@ -26,6 +32,11 @@ const nextConfig = {
     // Variable is evaluated at build time, then unused code is tree-shaken
     NEXT_PUBLIC_BUILDTIME_NPM_CONFIG_LOGLEVEL: process.env.npm_config_loglevel || '',
   },
+  turbopack: {
+    root: __dirname,
+  },
+
+  outputFileTracingRoot: __dirname,
 };
 
 export default withSentryConfig(withNextIntl(nextConfig), {
