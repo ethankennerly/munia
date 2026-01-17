@@ -137,7 +137,6 @@
   "google": "Google",
   "email_0": "Email",
   "email": "Email",
-  "something_went_wrong_0": "Something went wrong",
   "please_check_your_email_to_sign_in": "Please check your email to sign in.",
   "email_sent": "Email Sent",
   "try_another_provider_to_sign_in_error_si": "Try another provider to sign in. (Error: {0})",
