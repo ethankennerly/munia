@@ -118,7 +118,7 @@ export function CreatePostDialog({
     return () => {
       document.removeEventListener('keydown', onEscPressed, false);
     };
-  }, []);
+  }, [handleClose]);
 
   const dialogTitle = mode === 'create' ? t('components_create_post') : t('components_edit_post');
   return (

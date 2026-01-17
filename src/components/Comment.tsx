@@ -93,7 +93,7 @@ export const Comment = memo(
         const shouldOpenRepliesOnMount = searchParams?.get('comment-parent-id') === commentId.toString();
         if (shouldOpenRepliesOnMount) setRepliesVisibility({ commentId, shown: true });
       }, 1000);
-    }, []);
+    }, [commentId, searchParams, setRepliesVisibility]);
 
     return (
       <div className="flex gap-4">

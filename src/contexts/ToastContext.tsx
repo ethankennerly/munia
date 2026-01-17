@@ -22,7 +22,7 @@ export function ToastContextProvider({ children }: { children: React.ReactNode }
     () => ({
       addToast: state.add,
     }),
-
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [], // Don't add `state.add` here, otherwise our memoization technique won't work
   );
 

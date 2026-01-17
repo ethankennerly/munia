@@ -304,7 +304,7 @@ export function Posts({ type, hashtag, userId }: PostsProps) {
       // Need to manually reset as the `staleTime` is set to `Infinity`
       qc.resetQueries({ queryKey, exact: true });
     }
-  }, []);
+  }, [qc, queryKey, shouldAnimate]);
 
   const toggleComments = useCallback(
     async (postId: number) => {

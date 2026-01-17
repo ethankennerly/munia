@@ -43,7 +43,7 @@ export function CreatePostModalContextProvider({ children }: { children: React.R
       setToEditValues,
       setShouldOpenFileInputOnMount,
     }),
-
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [], // Don't add `state.setOpen` here, otherwise our memoization technique won't work
   );
 

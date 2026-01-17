@@ -51,6 +51,7 @@ export default function BidirectionalScroll<TItem = unknown>({
   // Virtualizer configuration - use parentRef container (no overflow-auto, uses page scroll)
   // The container tracks scroll position but doesn't create its own scrollbar
   // Use dynamic measurement for variable item heights
+  // eslint-disable-next-line react-hooks/incompatible-library
   const virtualizer = useVirtualizer({
     count: allItems.length,
     getScrollElement: () => parentRef.current,
@@ -271,18 +272,7 @@ export default function BidirectionalScroll<TItem = unknown>({
       );
       queryResult.fetchNextPage();
     }
-  }, [
-    firstIndex,
-    lastIndex,
-    allItems.length,
-    queryResult.hasNextPage,
-    queryResult.hasPreviousPage,
-    queryResult.isFetchingNextPage,
-    queryResult.isFetchingPreviousPage,
-    queryResult.fetchNextPage,
-    queryResult.fetchPreviousPage,
-    queryResult.data,
-  ]);
+  }, [firstIndex, lastIndex, allItems.length, queryResult]);
 
   // Separate ref for scroll-based trigger to avoid conflicts with virtualizer-based trigger
   const scrollBasedLastFetchRef = useRef<number>(0);
@@ -461,13 +451,7 @@ export default function BidirectionalScroll<TItem = unknown>({
         checkAndFetch();
       });
     });
-  }, [
-    queryResult.data,
-    allItems.length,
-    queryResult.hasNextPage,
-    queryResult.isFetchingNextPage,
-    queryResult.fetchNextPage,
-  ]);
+  }, [queryResult, allItems.length, virtualizer]);
 
   // Fallback: Direct scroll listener to ensure prefetch triggers when scrolling to bottom
   // This ensures older posts load even if virtualizer doesn't detect scroll changes
@@ -554,13 +538,7 @@ export default function BidirectionalScroll<TItem = unknown>({
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
-  }, [
-    queryResult.hasNextPage,
-    queryResult.isFetchingNextPage,
-    queryResult.fetchNextPage,
-    queryResult.data,
-    allItems.length,
-  ]);
+  }, [queryResult, allItems.length]);
 
   // Loading state - maintain container structure to prevent layout shift
   // This ensures "Feed" header and "Create Post" don't flicker during slow network loads

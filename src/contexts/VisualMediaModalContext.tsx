@@ -29,7 +29,7 @@ function VisualMediaModalContextProvider({ children }: { children: React.ReactNo
       show: state.open,
       setModal,
     }),
-
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [], // Don't add `state.open` here, otherwise our memoization technique won't work
   );
 
