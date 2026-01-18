@@ -1,5 +1,3 @@
-import { getServerUser } from '@/lib/getServerUser';
-import { DeleteAccountButton } from '@/components/DeleteAccountButton';
 import { getTranslations } from 'next-intl/server';
 import { getProfile } from '../../getProfile';
 import { About } from './About';
