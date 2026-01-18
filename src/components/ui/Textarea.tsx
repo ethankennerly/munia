@@ -19,9 +19,12 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
     const t = useTranslations();
     // Support forwarded refs: https://github.com/adobe/react-spectrum/pull/2293#discussion_r714337674
     const ref = useObjectRef(forwardedRef);
+    // Type assertions needed because react-aria types have strict generic inference for textarea
     const { labelProps, inputProps, errorMessageProps } = useTextField(
-      { inputElementType: 'textarea', label: props.label },
-      ref,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      { inputElementType: 'textarea', ...props } as any,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ref as any,
     );
     const { errorMessage, label } = props;
     const isError = errorMessage !== undefined;
@@ -51,14 +54,15 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
             </div>
           )}
           <textarea
-            {...mergeProps(inputProps, {
+            {...(mergeProps(inputProps, {
               onInput: (e: FormEvent<HTMLTextAreaElement>) => {
                 const textarea = e.target as HTMLTextAreaElement;
                 resizeTextAreaHeight(textarea);
               },
               rows: 1,
               placeholder: ' ',
-            })}
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            }) as any)}
             ref={ref}
             className={cn(
               'peer block w-full resize-none overflow-hidden rounded-2xl bg-input pb-2 pr-5 pt-8 outline-none ring-foreground focus:ring-2',

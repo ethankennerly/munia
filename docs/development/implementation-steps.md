@@ -40,6 +40,8 @@ Each implementation step MUST be:
 
 ### Requirements
 
+- **Minimize scope**. Conserve tokens.
+- **Be concise**. Short responses. Under 100 words. Minimize tokens.
 - **Public-Facing**: Documentation must be accessible to anyone with the git repo
 - **Reproducible**: Steps must allow anyone to verify the feature works
 - **Brief**: Keep instructions concise and actionable and under 400 words per doc
