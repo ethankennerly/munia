@@ -19,14 +19,11 @@ export default async function Page({ params }: { params: { username: string } })
   const { username } = await params;
   const profile = await getProfile(username);
   if (!profile) return null;
-  const [sessionUser] = await getServerUser();
-  const isOwnProfile = sessionUser?.id === profile.id;
 
   return (
     <main>
       <div className="mt-4">
         <About profile={profile} />
-        {isOwnProfile && <DeleteAccountButton />}
       </div>
     </main>
   );

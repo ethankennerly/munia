@@ -5,6 +5,7 @@ import { useCallback, useState } from 'react';
 import { signOut } from 'next-auth/react';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
 import { useTranslations } from 'next-intl';
+import { Delete } from '@/svg_components';
 
 export function DeleteAccountButton() {
   const t = useTranslations();
@@ -33,14 +34,16 @@ export function DeleteAccountButton() {
   const closeDialog = useCallback(() => setOpen(false), []);
 
   return (
-    <div className="mt-6">
+    <div className="mt-4">
       <Button
         onPress={openDialog}
-        shape="pill"
-        expand="full"
+        type="button"
         mode="secondary"
         loading={loading}
-        data-activate-id="delete-account">
+        expand="full"
+        data-activate-id="delete-account"
+        Icon={Delete}
+        className="hover:bg-destructive-accent bg-destructive text-destructive-foreground active:ring-destructive/30">
         {t('delete_account')}
       </Button>
       <ConfirmDialog

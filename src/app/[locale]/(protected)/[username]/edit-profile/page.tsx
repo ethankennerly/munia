@@ -2,6 +2,7 @@ import { EditProfileForm } from '@/components/EditProfileForm';
 import { ResponsiveContainer } from '@/components/ui/ResponsiveContainer';
 import { getTranslations } from 'next-intl/server';
 import { useTranslations } from 'next-intl';
+import { DeleteAccountButton } from '@/components/DeleteAccountButton';
 
 export async function generateMetadata() {
   const t = await getTranslations();

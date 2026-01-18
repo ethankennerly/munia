@@ -19,6 +19,7 @@ import { Textarea } from './ui/Textarea';
 import { Select } from './ui/Select';
 import Button from './ui/Button';
 import { TextInput } from './ui/TextInput';
+import { DeleteAccountButton } from './DeleteAccountButton';
 
 export function EditProfileForm({ redirectTo }: { redirectTo?: string }) {
   const t = useTranslations();
@@ -297,6 +298,9 @@ export function EditProfileForm({ redirectTo }: { redirectTo?: string }) {
             {t('contexts_dialogscontext_submit')}
           </Button>
         </div>
+        {userData?.id &&
+          updateSessionUserDataMutation.isPending === false &&
+          !updateSessionUserDataMutation.isSuccess && <DeleteAccountButton />}
       </form>
     </div>
   );
