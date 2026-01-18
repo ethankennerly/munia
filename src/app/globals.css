@@ -82,4 +82,13 @@
   .link {
     @apply rounded-sm decoration-blue-500 decoration-2 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500;
   }
+
+  .prose a {
+    color: rgb(var(--primary));
+    text-decoration: underline;
+  }
+
+  .prose a:hover {
+    color: rgb(var(--primary-accent));
+  }
 }

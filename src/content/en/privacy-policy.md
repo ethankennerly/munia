@@ -24,7 +24,7 @@ Communication: To send you updates or respond to your inquiries.
 
 Security: To protect our website and users from fraud or harm.
 
-Sharing Your Personal Information
+## Sharing Your Personal Information
 
 We do not sell any of your information to anyone. We may share your information with trusted third-party service providers only as necessary to support our operations:
 

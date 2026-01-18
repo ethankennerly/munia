@@ -2,6 +2,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import { MDXRemote } from 'next-mdx-remote/rsc';
 import { notFound } from 'next/navigation';
+import { ResponsiveContainer } from '@/components/ui/ResponsiveContainer';
 
 export default async function PrivacyPolicy({ params }: { params: { locale: string } }) {
   const { locale } = await params;
@@ -11,9 +12,13 @@ export default async function PrivacyPolicy({ params }: { params: { locale: stri
     const source = await fs.readFile(filePath, 'utf8');
 
     return (
-      <article className="prose lg:prose-xl mx-auto">
-        <MDXRemote source={source} />
-      </article>
+      <main className="flex flex-col items-center py-8">
+        <ResponsiveContainer>
+          <article className="prose prose-lg max-w-none rounded-2xl bg-card px-4 py-8 shadow lg:prose-xl sm:px-8">
+            <MDXRemote source={source} />
+          </article>
+        </ResponsiveContainer>
+      </main>
     );
   } catch {
     notFound();

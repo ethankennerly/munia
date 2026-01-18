@@ -1,4 +1,6 @@
 /** @type {import('tailwindcss').Config} */
+import typography from '@tailwindcss/typography';
+
 export default {
   content: [
     './src/pages/**/*.{js,ts,jsx,tsx}',
@@ -41,8 +43,52 @@ export default {
         'gradient-conic':
           'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
       },
+      typography: {
+        DEFAULT: {
+          css: {
+            color: 'rgba(var(--foreground) / <alpha-value>)',
+            maxWidth: 'none',
+            a: {
+              color: 'rgb(var(--primary))',
+              textDecoration: 'underline',
+              '&:hover': {
+                color: 'rgb(var(--primary-accent))',
+              },
+            },
+            h1: {
+              color: 'rgba(var(--foreground) / <alpha-value>)',
+            },
+            h2: {
+              color: 'rgba(var(--foreground) / <alpha-value>)',
+            },
+            h3: {
+              color: 'rgba(var(--foreground) / <alpha-value>)',
+            },
+            h4: {
+              color: 'rgba(var(--foreground) / <alpha-value>)',
+            },
+            strong: {
+              color: 'rgba(var(--foreground) / <alpha-value>)',
+            },
+            code: {
+              color: 'rgba(var(--foreground) / <alpha-value>)',
+              backgroundColor: 'rgba(var(--muted) / 0.3)',
+            },
+            'code::before': {
+              content: '""',
+            },
+            'code::after': {
+              content: '""',
+            },
+            blockquote: {
+              borderLeftColor: 'rgba(var(--border) / <alpha-value>)',
+              color: 'rgba(var(--muted-foreground) / <alpha-value>)',
+            },
+          },
+        },
+      },
     },
   },
   darkMode: 'class',
-  plugins: [],
+  plugins: [typography],
 };
