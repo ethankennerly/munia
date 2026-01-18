@@ -5,7 +5,7 @@
 @layer base {
   :root {
     --background: 254 253 255;
-    --foreground: 16 0 35;
+    --foreground: 16 100 35;
     --card: 253 250 255;
     --card-foreground: 60 0 119;
     --popover: 251 251 254;
@@ -37,9 +37,9 @@
     --card-foreground: 231 206 255;
     --popover: 24 31 41;
     --popover-foreground: 251 251 254;
-    --primary: 177 58 255;
+    --primary: 240 98 255;
     --primary-foreground: 250 240 255;
-    --primary-accent: 195 112 255;
+    --primary-accent: 250 112 255;
     --secondary: 40 42 54;
     --secondary-foreground: 204 208 222;
     --secondary-accent: 50 52 66;

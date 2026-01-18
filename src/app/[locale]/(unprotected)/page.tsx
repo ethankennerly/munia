@@ -2,14 +2,7 @@ import { readMarkdownFile } from '@/lib/markdown/readMarkdownFile';
 import { MarkdownRenderer } from '@/components/MarkdownRenderer';
 import { ResponsiveContainer } from '@/components/ui/ResponsiveContainer';
 
-/**
- * Root page that renders README.md content.
- *
- * Similar to Terms and Privacy pages, this page displays markdown content
- * while maintaining the navigation header/menu from the layout.
- */
 export default function Page() {
-  // Read README.md from the repository root at build time
   const readmeContent = readMarkdownFile('README.md');
 
   return (
