@@ -21,14 +21,15 @@ import Button from './ui/Button';
 import { TextInput } from './ui/TextInput';
 import { DeleteAccountButton } from './DeleteAccountButton';
 
-export function EditProfileForm({ redirectTo }: { redirectTo?: string }) {
+export function EditProfileForm({ redirectTo, defaultUsername }: { redirectTo?: string; defaultUsername?: string }) {
   const t = useTranslations();
   const [userData] = useSessionUserData();
 
   const defaultValues = useMemo(() => {
     const values = {
       // `undefined` is not allowed as a `defaultValue` https://www.react-hook-form.com/api/usecontroller/controller/
-      username: userData?.username || userData?.id || '',
+      // Use defaultUsername if provided and user doesn't have a username yet, otherwise use existing username or fallback
+      username: userData?.username || defaultUsername || userData?.id || '',
       // email: userData?.email || '',
       name: userData?.name || '',
       phoneNumber: userData?.phoneNumber || null,
@@ -41,7 +42,7 @@ export function EditProfileForm({ redirectTo }: { redirectTo?: string }) {
     };
 
     return values;
-  }, [userData]);
+  }, [userData, defaultUsername]);
 
   const { control, handleSubmit, reset, setError, setFocus } = useForm<UserAboutSchema>({
     resolver: zodResolver(userAboutSchema),

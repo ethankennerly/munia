@@ -75,7 +75,7 @@ export default {
             where: { id: userId },
             select: { username: true, name: true },
           });
-          
+
           if (dbUser && (!dbUser.username || !dbUser.name)) {
             // User needs setup, redirect to /[locale]/setup
             const setupPath = `/${locale}/setup`;
@@ -90,7 +90,7 @@ export default {
         if (isLoggedIn) {
           const setupRedirect = await checkAndRedirectIfSetupNeeded(safeUser?.id);
           if (setupRedirect) return setupRedirect;
-          
+
           // User has complete profile, redirect to /[locale]/feed
           const feedPath = `/${locale}/feed`;
           return NextResponse.redirect(new URL(feedPath, nextUrl));
@@ -106,7 +106,7 @@ export default {
           const loginPath = `/${locale}/login?from=${from}`;
           return NextResponse.redirect(new URL(loginPath, nextUrl));
         }
-        
+
         // If logged in and accessing /feed, check if setup is needed
         if (isLoggedIn && normalizedPathname === '/feed') {
           const setupRedirect = await checkAndRedirectIfSetupNeeded(safeUser?.id);
