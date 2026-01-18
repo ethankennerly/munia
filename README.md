@@ -9,52 +9,19 @@ In this [demo](https://munia-rho.vercel.app), Ethan Kennerly enhanced the follow
 - Patch DoS vulnerability ([2025-12-11](https://react.dev/blog/2025/12/11/denial-of-service-and-source-code-exposure-in-react-server-components))
 - [Delete](https://www.lexology.com/library/detail.aspx?g=a20bdb6d-dffa-4936-8507-3201876b891b) an account
 - [Remove](https://github.com/leandronorcio/munia/issues/1) a post
-- Polish infinite scroll of posts.
+- Polish infinite scroll of [posts](https://munia-rho.vercel.app/feed)
+- Polist editing a profile
 - Upgrade Next.js 16.1.1
-- Translate into [Spanish](https://munia-rho.vercel.app/es).
+- Translate [English](https://munia-rho.vercel.app/en) into [Spanish](https://munia-rho.vercel.app/es).
 - Speed up reloading an [image](https://developer.chrome.com/docs/performance/insights/cache)
-- Collapse a long post
-- Fix birth date editing
+- Collapse a long [posts](https://munia-rho.vercel.app/feed)
 - Resolve 15 accessibility issues.
-- Configure Email, Facebook, GitHub, or Google.
+- Configure [login](https://munia-rho.vercel.app/register) Email, Facebook, GitHub, or Google.
 - Import profile picture from Google
 - Link Google or GitHub by email ([Facebook](https://www.bitdefender.com/en-us/blog/labs/attackers-pose-as-account-owners-via-facebook-login-flaw) linking is unsafe)
 - Admin replays clicks and scrolling
 - Terms of Service
 - Privacy Policy
-
-## Docs
-
-- [docs](docs/README.md)
-
-## Preview 🎬
-
-[![Watch the showcase](https://norcio-dot-dev-public-files.s3.us-east-1.amazonaws.com/munia/showcase-thumbnail.png)](https://norcio-dot-dev-public-files.s3.us-east-1.amazonaws.com/munia/showcase.mp4)
-
-
-## Features ✨
-
-- Email and OAuth 2.0 login (Github, Google and Facebook)
-- Users can update their info, profile photo and cover photo
-- Create, update and delete posts, comments and replies
-- Like and unlike posts, comments and replies
-- Images and videos can be added to posts
-- Drag and drop sorting of images and videos when creating and editing a post
-- Hashtags can be added to posts
-- Users can @ mention other users in their posts, comments and replies
-- Bidirectional infinite scrolling of posts
-- Follow and unfollow other users
-- Search users with filters
-- Display, search and filter a user's followers and following list
-- Activity logging and notifications
-- Gallery of user's uploaded photos and videos
-- Full-page image and videos slider
-- Accessible components
-- Fully responsive design
-- Dark and light themes
-
-> [!NOTE]  
-> This project is a work in progress, it still contains bugs and will constantly be updated to stay up-to-date with the latest framework changes.
 
 ## Tech Stack 🛠️
 
@@ -71,36 +38,6 @@ In this [demo](https://munia-rho.vercel.app), Ethan Kennerly enhanced the follow
 - [AWS S3](https://aws.amazon.com/s3/)
 - [AWS SES](https://aws.amazon.com/ses/)
 
-## About this project
+## More Info
 
-This project is an open source portfolio project that explores how can a social media app be built with Next.js.
-
-It utilizes the following Next.js features:
-
-- routing
-- static and dynamic rendering
-- server and client components
-- nested layouts
-- route handlers
-- middleware
-- font optimizations
-- dynamic metadata
-
-Due to the highly dynamic nature of social media apps, most data fetching and mutations are done on the client-side using React Query.
-
-React Query simplifies the implementation of features that would have been challenging and inefficient with Next.js's server components and server actions. These features include bidirectional infinite scrolling, optimistic updates, client-side data caching, client-side loading states, and more.
-
-## Accessibility
-
-The UI components are built with React Aria's accessibility hooks, assuring accessibility across different platforms.
-
-## Deployment on EC2
-
-Follow these steps to deploy Munia on an EC2 instance.
-
-1. Set up a PostgreSQL database and copy its connection URL into `.env`.
-2. Set up a client application for each OAuth provider (Github, Google and Facebook) and copy the client id's and client secrets into `.env.local`.
-3. Run `npm install`
-4. Run `npm run prisma:deploy`
-5. Run `npm run prisma:seed`
-6. Run `npm run pm2` (or `npm run build` and then `npm run start` if you're not using PM2). You can modify the port specified in the `pm2` script depending on your server configuration.
+- [docs](https://github.com/ethankennerly/munia/blob/main/docs/README.md)

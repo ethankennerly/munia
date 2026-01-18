@@ -3,12 +3,14 @@ import { MarkdownRenderer } from '@/components/MarkdownRenderer';
 import { ResponsiveContainer } from '@/components/ui/ResponsiveContainer';
 
 /**
- * Root page that renders README.md content.
+ * Example page demonstrating how to render README.md from the repository root.
  *
- * Similar to Terms and Privacy pages, this page displays markdown content
- * while maintaining the navigation header/menu from the layout.
+ * This Server Component reads the README.md file at build time and renders it
+ * using the MarkdownRenderer component with GitHub Flavored Markdown support.
+ *
+ * Access this page at: /readme or /[locale]/readme
  */
-export default function Page() {
+export default function ReadmePage() {
   // Read README.md from the repository root at build time
   const readmeContent = readMarkdownFile('README.md');
 

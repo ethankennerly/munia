@@ -22,7 +22,7 @@ export default async function Layout({ children }: { children: React.ReactNode }
   return (
     <div className="flex min-h-screen w-full justify-center">
       <div className="w-full max-w-3xl gap-3 py-4 sm:py-8">
-        <nav className="flex items-center justify-between px-4 sm:px-0">
+        <nav className="sticky top-0 z-10 flex items-center justify-between bg-background/70 px-4 py-4 backdrop-blur-sm sm:px-0 sm:py-4">
           <Link href="/" title={t('home_page')}>
             <div className="flex cursor-pointer flex-row items-center justify-center gap-2 sm:pr-5">
               <Feather className="stroke-primary" width={32} height={32} />
