@@ -11,7 +11,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" className="dark overflow-y-scroll">
       <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2, viewport-fit=cover" />
       </head>
       <body className={cn('bg-background text-foreground', poppins.className)}>{children}</body>
     </html>

@@ -5,6 +5,7 @@ import { getTranslations } from 'next-intl/server';
 import { getServerUser } from '@/lib/getServerUser';
 import { HomeMobileNavBar } from '../(unprotected)/HomeMobileNavBar';
 import ClientOnly from '@/components/ui/ClientOnly';
+import { MobileBottomNav } from '@/components/MobileBottomNav';
 
 function HomeNavLink({ children, href }: { children: React.ReactNode; href: string }) {
   return (
@@ -22,7 +23,12 @@ export default async function Layout({ children }: { children: React.ReactNode }
   return (
     <div className="flex min-h-screen w-full justify-center">
       <div className="w-full max-w-3xl gap-3 pb-20 pt-4 sm:pb-8 sm:pt-8 md:pb-8">
-        <nav className="fixed bottom-0 z-[2] flex w-full items-center justify-between bg-background/70 px-4 py-4 shadow-inner backdrop-blur-sm sm:px-0 sm:py-4 md:sticky md:top-0 md:w-auto md:shadow-none md:backdrop-blur-none">
+        <div className="flex min-h-[calc(100vh-120px)] items-center justify-center px-4">
+          <div className="w-full max-w-[428px]">{children}</div>
+        </div>
+      </div>
+      <ClientOnly>
+        <MobileBottomNav className="items-center justify-between px-4 py-4 sm:px-0 sm:py-4 md:w-auto">
           <Link href="/" title={t('home_page')} className="hidden items-center gap-2 sm:flex sm:pr-5">
             <LogoText className="text-2xl" />
           </Link>
@@ -36,16 +42,10 @@ export default async function Layout({ children }: { children: React.ReactNode }
             <HomeNavLink href="/settings">{t('settings_title')}</HomeNavLink>
           </div>
           <div className="flex w-full sm:hidden">
-            <ClientOnly>
-              <HomeMobileNavBar />
-            </ClientOnly>
+            <HomeMobileNavBar />
           </div>
-        </nav>
-
-        <div className="flex min-h-[calc(100vh-120px)] items-center justify-center px-4">
-          <div className="w-full max-w-[428px]">{children}</div>
-        </div>
-      </div>
+        </MobileBottomNav>
+      </ClientOnly>
     </div>
   );
 }

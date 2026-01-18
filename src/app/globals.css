@@ -92,3 +92,20 @@
     color: rgb(var(--primary-accent));
   }
 }
+
+/* Ensure fixed bottom navigation stays at viewport bottom on mobile browsers */
+/* Safe-area-inset is baked into padding-bottom to handle device notches without interfering with Chrome footer transitions */
+@layer utilities {
+  .fixed-bottom-nav {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0;
+    right: 0;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  /* Safe-area padding baked into CSS to avoid recalculation during Chrome footer transitions */
+  .pb-safe-area {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+}
