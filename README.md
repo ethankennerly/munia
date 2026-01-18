@@ -40,4 +40,4 @@ In this [demo](https://munia-rho.vercel.app), Ethan Kennerly enhanced the follow
 
 ## More Info
 
-- [docs](https://github.com/ethankennerly/munia/blob/main/docs/README.md)
+- [Docs at GitHub](https://github.com/ethankennerly/munia/blob/main/docs/README.md)

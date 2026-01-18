@@ -1,3 +1,5 @@
+'use client';
+
 import type { OverlayTriggerState } from 'react-stately';
 import type { AriaPopoverProps } from '@react-aria/overlays';
 import * as React from 'react';

@@ -50,7 +50,7 @@ export function Activities({ userId }: { userId: string }) {
       {isPending ? (
         <GenericLoading>{t('loading_activities')}</GenericLoading>
       ) : isError ? (
-        <SomethingWentWrong />
+        <SomethingWentWrong defaultMessage={t('components_something_went_wrong')} />
       ) : (
         data.pages.flat().map((activity) => <Activity key={activity.id} {...activity} />)
       )}
@@ -65,7 +65,7 @@ export function Activities({ userId }: { userId: string }) {
         style={bottomLoaderStyle}>
         {hasNextPage && <GenericLoading>{t('loading_more_notifications')}</GenericLoading>}
       </div>
-      {isError && <SomethingWentWrong />}
+      {isError && <SomethingWentWrong defaultMessage={t('components_something_went_wrong')} />}
       {!isError && !isPending && !isFetchingNextPage && !hasNextPage && <AllCaughtUp />}
     </>
   );

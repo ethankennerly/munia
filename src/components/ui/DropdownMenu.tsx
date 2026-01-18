@@ -1,3 +1,5 @@
+'use client';
+
 import { Key, useRef } from 'react';
 import { AriaMenuProps, useMenu } from 'react-aria';
 import { useTreeState } from 'react-stately';

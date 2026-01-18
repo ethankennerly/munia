@@ -125,7 +125,9 @@ export function Notifications({ userId }: { userId: string }) {
         style={bottomLoaderStyle}>
         {isFetchingNextPage && <GenericLoading>{t('loading_more_notifications')}</GenericLoading>}
       </div>
-      {isError && error.message !== NO_PREV_DATA_LOADED && <SomethingWentWrong />}
+      {isError && error.message !== NO_PREV_DATA_LOADED && (
+        <SomethingWentWrong defaultMessage={t('components_something_went_wrong')} />
+      )}
       {!isPending && !isFetchingNextPage && !hasNextPage && <AllCaughtUp />}
     </div>
   );

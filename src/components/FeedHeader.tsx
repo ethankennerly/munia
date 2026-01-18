@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from 'react';
 import { CreatePostModalLauncher } from '@/components/CreatePostModalLauncher';
-import { ThemeSwitch } from '@/components/ui/ThemeSwitch';
 import { useTranslations } from 'next-intl';
 
 // Module-level flag that persists across all component instances
@@ -11,7 +10,7 @@ import { useTranslations } from 'next-intl';
 let hasEverMounted = false;
 
 /**
- * FeedHeader component that renders the Feed title, ThemeSwitch, and CreatePostModalLauncher.
+ * FeedHeader component that renders the Feed title and CreatePostModalLauncher.
  * This component ensures these elements persist across re-renders and only appear after
  * JavaScript has fully loaded, preventing layout shift and flicker during slow network conditions.
  *
@@ -37,9 +36,6 @@ export function FeedHeader() {
     <>
       <div className="mb-4 flex items-center justify-between">
         <h1 className="text-4xl font-bold">{t('components_feedheader')}</h1>
-        <div>
-          <ThemeSwitch />
-        </div>
       </div>
       <CreatePostModalLauncher />
     </>

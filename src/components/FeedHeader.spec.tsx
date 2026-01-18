@@ -5,10 +5,6 @@ import '@testing-library/jest-dom';
 import { FeedHeader } from './FeedHeader';
 
 // Mock the child components
-vi.mock('@/components/ui/ThemeSwitch', () => ({
-  ThemeSwitch: () => <div data-testid="theme-switch">ThemeSwitch</div>,
-}));
-
 vi.mock('@/components/CreatePostModalLauncher', () => ({
   CreatePostModalLauncher: () => <div data-testid="create-post">CreatePostModalLauncher</div>,
 }));
@@ -18,11 +14,10 @@ describe('FeedHeader', () => {
     vi.clearAllMocks();
   });
 
-  it('renders Feed title, ThemeSwitch, and CreatePostModalLauncher after mount', () => {
+  it('renders Feed title and CreatePostModalLauncher after mount', () => {
     render(<FeedHeader />);
 
     expect(screen.getByText('components_feedheader')).toBeInTheDocument();
-    expect(screen.getByTestId('theme-switch')).toBeInTheDocument();
     expect(screen.getByTestId('create-post')).toBeInTheDocument();
   });
 
@@ -31,7 +26,6 @@ describe('FeedHeader', () => {
 
     // Initial render
     expect(screen.getByText('components_feedheader')).toBeInTheDocument();
-    expect(screen.getByTestId('theme-switch')).toBeInTheDocument();
     expect(screen.getByTestId('create-post')).toBeInTheDocument();
 
     // Re-render (simulating server component re-render)
@@ -39,7 +33,6 @@ describe('FeedHeader', () => {
 
     // Components should still be present
     expect(screen.getByText('components_feedheader')).toBeInTheDocument();
-    expect(screen.getByTestId('theme-switch')).toBeInTheDocument();
     expect(screen.getByTestId('create-post')).toBeInTheDocument();
   });
 });

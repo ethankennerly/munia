@@ -1,3 +1,5 @@
+'use client';
+
 import { Key, SVGProps, useMemo, useRef } from 'react';
 import { AriaMenuProps, useMenuTrigger } from 'react-aria';
 import { MenuTriggerProps, useMenuTriggerState } from 'react-stately';

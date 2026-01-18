@@ -100,7 +100,7 @@ export function DiscoverProfiles({ followersOf, followingOf }: { followersOf?: s
       {isPending ? (
         <GenericLoading>{t('components_loading_profiles')}</GenericLoading>
       ) : isError ? (
-        <SomethingWentWrong />
+        <SomethingWentWrong defaultMessage={t('components_something_went_wrong')} />
       ) : (
         <div className="grid grid-cols-1 gap-x-8 gap-y-8 sm:grid-cols-2">
           <AnimatePresence>

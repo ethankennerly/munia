@@ -1,11 +1,11 @@
-import { Feather } from '@/svg_components';
 import { LogoText } from '@/components/LogoText';
 import Link from 'next/link';
 import React from 'react';
 import { getTranslations } from 'next-intl/server';
 import { getServerUser } from '@/lib/getServerUser';
-import { HomeMobileDropdownMenu } from './HomeMobileDropdownMenu';
+import { HomeMobileNavBar } from './HomeMobileNavBar';
 import { SettingsNavHandler } from './SettingsNavHandler';
+import ClientOnly from '@/components/ui/ClientOnly';
 
 function HomeNavLink({ children, href }: { children: React.ReactNode; href: string }) {
   return (
@@ -23,31 +23,24 @@ export default async function Layout({ children }: { children: React.ReactNode }
   return (
     <div className="flex min-h-screen w-full justify-center">
       <SettingsNavHandler isLoggedIn={isLoggedIn} />
-      <div className="w-full max-w-3xl gap-3 py-4 sm:py-8">
-        <nav className="sticky top-0 z-10 flex items-center justify-between bg-background/70 px-4 py-4 backdrop-blur-sm sm:px-0 sm:py-4">
-          <Link href="/" title={t('home_page')}>
-            <div className="flex cursor-pointer flex-row items-center justify-center gap-2 sm:pr-5">
-              <Feather className="stroke-primary" width={32} height={32} />
-              <LogoText className="text-2xl" />
-            </div>
+      <div className="w-full max-w-3xl gap-3 pb-20 pt-4 sm:pb-8 sm:pt-8 md:pb-8">
+        <nav className="fixed bottom-0 z-[2] flex w-full items-center justify-between bg-background/70 px-4 py-4 shadow-inner backdrop-blur-sm sm:px-0 sm:py-4 md:sticky md:top-0 md:w-auto md:shadow-none md:backdrop-blur-none">
+          <Link href="/" title={t('home_page')} className="hidden items-center gap-2 sm:flex sm:pr-5">
+            <LogoText className="text-2xl" />
           </Link>
           <div className="hidden gap-3 sm:flex">
-            <HomeNavLink href="/terms">{t('terms')}</HomeNavLink>
-            <HomeNavLink href="/privacy-policy">{t('privacy_policy')}</HomeNavLink>
-
             {isLoggedIn ? (
               <HomeNavLink href="/feed">{t('components_feedheader')}</HomeNavLink>
             ) : (
-              <>
-                <HomeNavLink href="/login">{t('login')}</HomeNavLink>
-                <HomeNavLink href="/register">{t('sign_up')}</HomeNavLink>
-              </>
+              <HomeNavLink href="/login">{t('login')}</HomeNavLink>
             )}
 
             <HomeNavLink href="/settings">{t('settings_title')}</HomeNavLink>
           </div>
-          <div className="sm:hidden">
-            <HomeMobileDropdownMenu />
+          <div className="flex w-full sm:hidden">
+            <ClientOnly>
+              <HomeMobileNavBar />
+            </ClientOnly>
           </div>
         </nav>
 

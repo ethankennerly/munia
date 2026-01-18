@@ -3,6 +3,7 @@
 import { useTranslations } from 'next-intl';
 import { ThemeSwitch } from '@/components/ui/ThemeSwitch';
 import { LanguageSelect } from '@/components/LanguageSelect';
+import Link from 'next/link';
 
 /**
  * Reusable Settings component that can be used in both protected and unprotected contexts.
@@ -33,6 +34,15 @@ export function Settings() {
           <label className="w-1/2 text-muted-foreground">{t('settings_theme')}</label>
           <ThemeSwitch />
         </div>
+      </div>
+
+      <div className="flex items-center justify-center gap-4 pt-2 text-sm text-muted-foreground">
+        <Link href="/terms" className="underline-offset-4 hover:text-primary hover:underline">
+          {t('terms')}
+        </Link>
+        <Link href="/privacy-policy" className="underline-offset-4 hover:text-primary hover:underline">
+          {t('privacy_policy')}
+        </Link>
       </div>
     </div>
   );
