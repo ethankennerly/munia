@@ -186,7 +186,7 @@
   "open_visual_media": "Open visual media",
   "error_fetching_users_photos": "Error fetching user's photos.",
   "photos": "Photos",
-  "photos_or_profile_name": "Photos | {0}",
+  "photos_or_profile_name": "Photos | {name}",
   "munia": "Munia",
   "initialprofiledata_name_and_apos_followe_0": "{name}'s followed users",
   "initialprofiledata_name_and_apos_followe": "{name}'s followers",

@@ -168,7 +168,7 @@
   "patched_dos_vulnerability": "Vulnerabilidad DoS parcheada (",
   "phone_number": "Número de teléfono",
   "photos": "Fotos",
-  "photos_or_profile_name": "Fotos | {0}",
+  "photos_or_profile_name": "Fotos | {name}",
   "please_check_your_email_to_sign_in": "Por favor revise su correo electrónico para iniciar sesión.",
   "please_setup_your_profile_to_proceed_onl": "Por favor, configure su perfil para continuar, solo el",
   "posts": "Publicaciones",
