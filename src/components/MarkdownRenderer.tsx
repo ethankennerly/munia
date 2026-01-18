@@ -63,5 +63,5 @@ export function MarkdownRenderer({ content, className, wrapWithProse = true }: M
     return <div className={className}>{contentElement}</div>;
   }
 
-  return <div className={cn('prose prose-slate dark:prose-invert max-w-none', className)}>{contentElement}</div>;
+  return <div className={cn('prose prose-slate max-w-none dark:prose-invert', className)}>{contentElement}</div>;
 }
