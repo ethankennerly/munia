@@ -10,7 +10,7 @@ import { extractDateOnly } from '@/lib/utils/dateOnly';
 import { useSessionUserData } from '@/hooks/useSessionUserData';
 import { useSessionUserDataMutation } from '@/hooks/mutations/useSessionUserDataMutation';
 import { useRouter } from 'next/navigation';
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { logger } from '@/lib/logging';
 import { useTranslations } from 'next-intl';
 import { GenericLoading } from './GenericLoading';
@@ -66,18 +66,17 @@ export function EditProfileForm({ redirectTo }: { redirectTo?: string }) {
           router.refresh();
           // Navigate after refresh
           setTimeout(() => {
-            router.push(redirectTo || `/${data.username}`);
+            router.push(redirectTo || `/${data.username}/about`);
           }, 100);
         },
       },
     );
   };
   const onInvalid: SubmitErrorHandler<UserAboutSchema> = (errors) => logger.error(errors);
-  const resetForm = useCallback(() => reset(defaultValues), [reset, defaultValues]);
-
-  useEffect(() => {
+  const resetForm = useCallback(() => {
     reset(defaultValues);
-  }, [reset, defaultValues]);
+    router.push(redirectTo || `/${defaultValues.username}/about`);
+  }, [reset, defaultValues, router, redirectTo]);
 
   if (!userData) return <GenericLoading>{t('components_loading_form')}</GenericLoading>;
   return (
