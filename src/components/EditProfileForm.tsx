@@ -10,7 +10,7 @@ import { extractDateOnly } from '@/lib/utils/dateOnly';
 import { useSessionUserData } from '@/hooks/useSessionUserData';
 import { useSessionUserDataMutation } from '@/hooks/mutations/useSessionUserDataMutation';
 import { useRouter } from 'next/navigation';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { logger } from '@/lib/logging';
 import { useTranslations } from 'next-intl';
 import { GenericLoading } from './GenericLoading';
@@ -48,6 +48,13 @@ export function EditProfileForm({ redirectTo }: { redirectTo?: string }) {
   });
   const { updateSessionUserDataMutation } = useSessionUserDataMutation();
   const router = useRouter();
+
+  // Reset form when userData loads or changes
+  useEffect(() => {
+    if (userData) {
+      reset(defaultValues);
+    }
+  }, [userData, defaultValues, reset]);
 
   const onValid: SubmitHandler<UserAboutSchema> = (data) => {
     updateSessionUserDataMutation.mutate(
