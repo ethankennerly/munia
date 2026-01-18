@@ -22,7 +22,7 @@ export default async function Page({ params }: { params: { username: string } })
     <main>
       <div className="p-4">
         <h1 className="mb-6 mt-1 text-4xl font-bold">
-          {profile ? t('and_apos_s_following', { name: profile.name }) : t('following')}
+          {profile ? t('following_name', { name: profile.name }) : t('following')}
         </h1>
         <DiscoverSearch label={t('search_following')} />
         <DiscoverFilters />
