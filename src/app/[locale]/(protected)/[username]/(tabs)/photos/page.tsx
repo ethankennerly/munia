@@ -23,6 +23,7 @@ async function getVisualMedia(username: string) {
 }
 
 export default async function Page({ params }: { params: { username: string } }) {
-  const visualMedia = await getVisualMedia(params.username);
+  const { username } = await params;
+  const visualMedia = await getVisualMedia(username);
   return <Gallery visualMedia={visualMedia} />;
 }

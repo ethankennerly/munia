@@ -6,14 +6,16 @@ import { getProfile } from '../../getProfile';
 
 export async function generateMetadata({ params }: { params: { username: string } }) {
   const t = await getTranslations();
-  const profile = await getProfile(params.username);
+  const { username } = await params;
+  const profile = await getProfile(username);
   return {
     title: profile ? t('following_or_profile_name', { name: profile.name }) : t('following'),
   };
 }
 
 export default async function Page({ params }: { params: { username: string } }) {
-  const profile = await getProfile(params.username);
+  const { username } = await params;
+  const profile = await getProfile(username);
   const t = await getTranslations();
 
   return (

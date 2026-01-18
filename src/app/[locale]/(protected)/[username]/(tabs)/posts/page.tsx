@@ -6,8 +6,8 @@ import { getProfile } from '../../getProfile';
 
 export async function generateMetadata({ params }: { params: { username: string } }) {
   const t = await getTranslations();
-
-  const profile = await getProfile(params.username);
+  const { username } = await params;
+  const profile = await getProfile(username);
   return {
     title: profile?.name || t('munia'),
   };
@@ -15,7 +15,8 @@ export async function generateMetadata({ params }: { params: { username: string 
 
 export default async function Page({ params }: { params: { username: string } }) {
   const [user] = await getServerUser();
-  const profile = await getProfile(params.username);
+  const { username } = await params;
+  const profile = await getProfile(username);
   const shouldShowCreatePost = user?.id === profile?.id;
 
   return (

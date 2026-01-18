@@ -8,14 +8,16 @@ export const dynamic = 'force-dynamic';
 
 export async function generateMetadata({ params }: { params: { username: string } }) {
   const t = await getTranslations();
-  const profile = await getProfile(params.username);
+  const { username } = await params;
+  const profile = await getProfile(username);
   return {
     title: profile ? t('about_or_profile_name', { name: profile.name }) : t('about'),
   };
 }
 
 export default async function Page({ params }: { params: { username: string } }) {
-  const profile = await getProfile(params.username);
+  const { username } = await params;
+  const profile = await getProfile(username);
   if (!profile) return null;
   const [sessionUser] = await getServerUser();
   const isOwnProfile = sessionUser?.id === profile.id;
