@@ -1,6 +1,8 @@
 import { EditProfileForm } from '@/components/EditProfileForm';
 import { ResponsiveContainer } from '@/components/ui/ResponsiveContainer';
+import { getServerUser } from '@/lib/getServerUser';
 import { getTranslations } from 'next-intl/server';
+import { redirect } from 'next/navigation';
 
 export async function generateMetadata() {
   const t = await getTranslations();
@@ -12,6 +14,12 @@ export async function generateMetadata() {
 
 export default async function Page() {
   const t = await getTranslations();
+
+  const [user] = await getServerUser();
+  if (user) {
+    redirect('/feed');
+  }
+
   return (
     <ResponsiveContainer className="mx-auto my-4 px-4 md:px-0">
       <h1 className="mb-1 text-3xl font-bold">{t('welcome_to_munia')}</h1>
