@@ -9,9 +9,9 @@ import { SettingsNavHandler } from './SettingsNavHandler';
 
 function HomeNavLink({ children, href }: { children: React.ReactNode; href: string }) {
   return (
-    <h3 className="cursor-pointer px-4 py-3 text-lg font-semibold text-muted-foreground hover:text-primary">
+    <h2 className="cursor-pointer px-4 py-3 text-lg font-semibold text-muted-foreground hover:text-primary">
       <Link href={href}>{children}</Link>
-    </h3>
+    </h2>
   );
 }
 
