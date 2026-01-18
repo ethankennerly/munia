@@ -5,6 +5,7 @@ import React from 'react';
 import { getTranslations } from 'next-intl/server';
 import { getServerUser } from '@/lib/getServerUser';
 import { HomeMobileDropdownMenu } from './HomeMobileDropdownMenu';
+import { SettingsNavHandler } from './SettingsNavHandler';
 
 function HomeNavLink({ children, href }: { children: React.ReactNode; href: string }) {
   return (
@@ -21,6 +22,7 @@ export default async function Layout({ children }: { children: React.ReactNode }
 
   return (
     <div className="flex min-h-screen w-full justify-center">
+      <SettingsNavHandler isLoggedIn={isLoggedIn} />
       <div className="w-full max-w-3xl gap-3 py-4 sm:py-8">
         <nav className="sticky top-0 z-10 flex items-center justify-between bg-background/70 px-4 py-4 backdrop-blur-sm sm:px-0 sm:py-4">
           <Link href="/" title={t('home_page')}>

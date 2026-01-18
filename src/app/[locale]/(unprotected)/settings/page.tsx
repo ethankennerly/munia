@@ -1,33 +1,44 @@
-// app/[locale]/settings/page.tsx
-import { useTranslations } from 'next-intl';
-import { ThemeSwitch } from '@/components/ui/ThemeSwitch';
-import { LanguageSelect } from '@/components/LanguageSelect';
+import { Settings as SettingsComponent } from '@/components/Settings';
+import { getTranslations } from 'next-intl/server';
+import { getServerUser } from '@/lib/getServerUser';
+import { MenuBar } from '@/components/MenuBar';
+import { ResponsiveContainer } from '@/components/ui/ResponsiveContainer';
 
-export default function Settings() {
-  const t = useTranslations();
+export async function generateMetadata() {
+  const t = await getTranslations();
 
+  return {
+    title: t('settings_title'),
+  };
+}
+
+export default async function SettingsPage() {
+  const [user] = await getServerUser();
+  const isLoggedIn = !!user;
+
+  // When logged in, render protected layout structure (MenuBar sidebar)
+  // The SettingsNavHandler in the layout will hide the unprotected navigation
+  if (isLoggedIn) {
+    return (
+      <div className="md:flex md:justify-center md:gap-2">
+        <MenuBar />
+        <ResponsiveContainer className="pb-20 md:pb-4">
+          <main>
+            <div className="px-4 pt-4">
+              <SettingsComponent />
+            </div>
+          </main>
+        </ResponsiveContainer>
+      </div>
+    );
+  }
+
+  // When not logged in, just render content (unprotected layout handles navigation)
   return (
-    <div className="mx-auto max-w-2xl space-y-8 p-6">
-      <div>
-        <h1 className="mb-4 mt-4 text-4xl font-bold">{t('settings_title')}</h1>
-        <p className="text-muted-foreground">{t('settings_description')}</p>
+    <main>
+      <div className="px-4 pt-4">
+        <SettingsComponent />
       </div>
-
-      <div className="space-y-6">
-        <h2 className="pb-2 text-lg font-bold">{t('settings_preferences')}</h2>
-
-        <div className="flex items-center justify-between">
-          <label className="w-1/2 text-muted-foreground">{t('settings_language')}</label>
-          <div className="w-1/2">
-            <LanguageSelect />
-          </div>
-        </div>
-
-        <div className="flex items-center justify-between">
-          <label className="w-1/2 text-muted-foreground">{t('settings_theme')}</label>
-          <ThemeSwitch />
-        </div>
-      </div>
-    </div>
+    </main>
   );
 }
