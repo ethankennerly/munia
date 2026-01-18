@@ -20,7 +20,7 @@ export default async function Layout({
   return (
     <div className="pb-0">
       <div className="pr-0 md:pr-4">
-        <ProfileHeader isOwnProfile={isOwnProfile} initialProfileData={profile} />
+        <ProfileHeader isOwnProfile={isOwnProfile} initialProfileData={profile} username={username} />
       </div>
       <div className="px-4">{children}</div>
     </div>

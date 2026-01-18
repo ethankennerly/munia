@@ -14,15 +14,18 @@ import ProfilePhoto from './ProfilePhoto';
 export function ProfileHeader({
   isOwnProfile,
   initialProfileData,
+  username,
 }: {
   isOwnProfile: boolean;
   initialProfileData: GetUser;
+  username: string;
 }) {
   const t = useTranslations();
   const { data } = useUserQuery(initialProfileData.id);
   // If there is no query of the user data yet, use the
   // `initialProfileData` that was fetched on server.
   const profile = data || initialProfileData;
+  const editProfileUrl = `/${username}/edit-profile`;
 
   return (
     <>
@@ -31,9 +34,9 @@ export function ProfileHeader({
           <CoverPhoto isOwnProfile={isOwnProfile} photoUrl={profile.coverPhoto} />
         </div>
         <ProfilePhoto isOwnProfile={isOwnProfile} photoUrl={profile.profilePhoto} name={initialProfileData.name!} />
-        <div className="absolute -bottom-20 right-2 md:right-0">
+        <div className="md:rigt-0 absolute -bottom-20 right-2">
           {isOwnProfile ? (
-            <ButtonLink shape="pill" mode="subtle" href="/edit-profile">
+            <ButtonLink shape="pill" mode="subtle" href={editProfileUrl}>
               {t('edit_profile')}
             </ButtonLink>
           ) : (
