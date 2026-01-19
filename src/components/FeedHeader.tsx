@@ -35,7 +35,7 @@ export function FeedHeader() {
   return (
     <>
       <div className="mb-4 flex items-center justify-between">
-        <h1 className="text-4xl font-bold">{t('components_feedheader')}</h1>
+        <h1 className="text-2xl font-bold sm:text-3xl">{t('components_feedheader')}</h1>
       </div>
       <CreatePostModalLauncher />
     </>

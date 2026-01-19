@@ -9,7 +9,7 @@ export default async function Page({ params }: { params: Promise<{ hashtag: stri
   return (
     <main>
       <div className="px-4 pt-4">
-        <h1 className="mb-4 text-4xl font-bold">#{resolvedParams.hashtag}</h1>
+        <h1 className="mb-4 text-2xl font-bold sm:text-3xl">#{resolvedParams.hashtag}</h1>
         <Suspense fallback={<GenericLoading>{t('components_loading_page')}</GenericLoading>}>
           <Posts type="hashtag" hashtag={resolvedParams.hashtag} />
         </Suspense>

@@ -21,7 +21,7 @@ export default function Page() {
   const mockEnabled = Boolean(env.AUTH_MOCK_EMAIL);
   return (
     <>
-      <h1 className="mb-5 text-5xl font-bold">{t('sign_up')}</h1>
+      <h1 className="mb-5 text-2xl font-bold sm:text-3xl">{t('sign_up')}</h1>
       <UserAuthForm
         emailEnabled={emailEnabled}
         facebookEnabled={facebookEnabled}

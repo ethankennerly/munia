@@ -102,7 +102,7 @@ export function MockOAuthFormPage({ defaultEmail, defaultName, callbackUrl: prop
 
   return (
     <ResponsiveContainer className="mx-auto my-4 px-4 md:px-0">
-      <h1 className="mb-5 text-5xl font-bold">Mock OAuth Provider</h1>
+      <h1 className="mb-5 text-2xl font-bold sm:text-3xl">Mock OAuth Provider</h1>
       <div className="flex w-full max-w-md flex-col gap-4">
         <TextInput
           value={name}

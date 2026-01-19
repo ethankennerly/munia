@@ -19,7 +19,7 @@ export function MenuBar() {
     <FixedBottomNavContainer>
       <Link href="/" title={t('components_menubar_home')} className="mb-4 hidden items-center gap-2 md:flex">
         <Feather className="h-12 w-12 stroke-primary" />
-        <LogoText className="text-3xl" />
+        <LogoText className="text-xl sm:text-2xl" />
       </Link>
       {[
         {

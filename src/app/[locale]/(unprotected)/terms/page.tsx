@@ -14,7 +14,7 @@ export default async function Terms({ params }: { params: { locale: string } }) 
     return (
       <main className="flex flex-col items-center py-8">
         <ResponsiveContainer className="px-4 md:px-0">
-          <article className="prose prose-lg max-w-none rounded-2xl bg-card px-4 py-8 shadow lg:prose-xl sm:px-8">
+          <article className="prose max-w-none rounded-2xl bg-card px-4 py-8 shadow sm:px-8">
             <MDXRemote source={source} />
           </article>
         </ResponsiveContainer>

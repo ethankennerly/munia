@@ -20,7 +20,7 @@ export function HomeContent() {
   return (
     <>
       <div className="mt-4 flex flex-col items-center">
-        <h1 className="mt-4 text-center sm:text-5xl">{t('what_and_apos_s_new')}</h1>
+        <h1 className="mt-4 text-center text-2xl sm:text-3xl lg:text-4xl">{t('what_and_apos_s_new')}</h1>
         <div className="m-6 flex justify-center gap-3">
           <p className="w-1/2 text-muted-foreground">
             {t('in_this')}{' '}
@@ -103,7 +103,9 @@ export function HomeContent() {
             {t('follow_leandro_norcio_on_x')}
           </p>
         </a>
-        <h1 className="mt-4 px-5 text-center text-2xl sm:text-5xl">{t('a_responsive_and_accessible_full_stack_s')}</h1>
+        <h1 className="mt-4 px-5 text-center text-xl sm:text-2xl lg:text-3xl">
+          {t('a_responsive_and_accessible_full_stack_s')}
+        </h1>
         <div className="mt-6 flex justify-center gap-3">
           <ButtonLink href="/login" size="medium" data-activate-id="get-started">
             {t('get_started')}
@@ -119,7 +121,7 @@ export function HomeContent() {
       </div>
 
       <div className="mt-20">
-        <h2 className="text-center text-3xl sm:text-5xl">{t('technology_stack')}</h2>
+        <h2 className="text-center text-xl sm:text-2xl lg:text-3xl">{t('technology_stack')}</h2>
         <p className="mt-2 px-4 text-center text-lg text-muted-foreground">
           {t('this_social_media_web_app_is_built_using')}
         </p>

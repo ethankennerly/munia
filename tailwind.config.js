@@ -48,6 +48,10 @@ export default {
           css: {
             color: 'rgba(var(--foreground) / <alpha-value>)',
             maxWidth: 'none',
+            fontSize: '0.9375rem', // 15px base on mobile for better proportions
+            '@media (min-width: 768px)': {
+              fontSize: '1rem', // 16px base on tablet+
+            },
             a: {
               color: 'rgb(var(--primary))',
               textDecoration: 'underline',
@@ -57,15 +61,51 @@ export default {
             },
             h1: {
               color: 'rgba(var(--foreground) / <alpha-value>)',
+              fontSize: '1.25rem', // 20px on mobile - better proportion to 15px base
+              lineHeight: '1.4',
+              fontWeight: '700',
+              '@media (min-width: 768px)': {
+                fontSize: '1.5rem', // 24px
+              },
+              '@media (min-width: 1024px)': {
+                fontSize: '1.75rem', // 28px
+              },
             },
             h2: {
               color: 'rgba(var(--foreground) / <alpha-value>)',
+              fontSize: '1.0625rem', // 17px on mobile
+              lineHeight: '1.4',
+              fontWeight: '600',
+              '@media (min-width: 768px)': {
+                fontSize: '1.25rem', // 20px
+              },
+              '@media (min-width: 1024px)': {
+                fontSize: '1.5rem', // 24px
+              },
             },
             h3: {
               color: 'rgba(var(--foreground) / <alpha-value>)',
+              fontSize: '0.9375rem', // 15px on mobile (same as base)
+              lineHeight: '1.4',
+              fontWeight: '600',
+              '@media (min-width: 768px)': {
+                fontSize: '1.0625rem', // 17px
+              },
+              '@media (min-width: 1024px)': {
+                fontSize: '1.25rem', // 20px
+              },
             },
             h4: {
               color: 'rgba(var(--foreground) / <alpha-value>)',
+              fontSize: '0.875rem', // 14px on mobile
+              lineHeight: '1.4',
+              fontWeight: '600',
+              '@media (min-width: 768px)': {
+                fontSize: '1rem', // 16px
+              },
+              '@media (min-width: 1024px)': {
+                fontSize: '1.125rem', // 18px
+              },
             },
             strong: {
               color: 'rgba(var(--foreground) / <alpha-value>)',

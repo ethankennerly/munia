@@ -95,7 +95,7 @@ export function Notifications({ userId }: { userId: string }) {
     <div>
       <div className="flex justify-between">
         <div className="mb-4 flex items-center gap-2">
-          <h1 className="text-4xl font-bold">{t('notifications')}</h1>
+          <h1 className="text-2xl font-bold sm:text-3xl">{t('notifications')}</h1>
         </div>
         <DropdownMenuButton
           key="notifications-option"

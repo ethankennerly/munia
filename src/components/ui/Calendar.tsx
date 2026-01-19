@@ -26,7 +26,7 @@ export function Calendar<T extends DateValue>(props: AriaCalendarProps<T>) {
           Icon={ArrowChevronBack}
           iconClassName="h-6 w-6 stroke-primary"
         />
-        <h2 className="ml-2 flex-1 text-center text-xl font-semibold">{title}</h2>
+        <h2 className="ml-2 flex-1 text-center text-lg font-semibold sm:text-xl">{title}</h2>
         <Button
           {...nextButtonProps}
           mode="ghost"

@@ -46,7 +46,7 @@ export const DiscoverProfile = memo(
           {session?.user.id !== user.id && <ProfileActionButtons targetUserId={user.id} />}
         </div>
         <div className="flex flex-col items-center rounded-b-3xl bg-card py-8">
-          <h2 className="mb-3 cursor-pointer px-2 text-center text-2xl font-semibold text-foreground">
+          <h2 className="mb-3 cursor-pointer px-2 text-center text-xl font-semibold text-foreground sm:text-2xl">
             <Link href={`/${user.username}`} className="link">
               {user.name}
             </Link>

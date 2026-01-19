@@ -16,7 +16,7 @@ export function Settings() {
   return (
     <div className="mx-auto max-w-2xl space-y-8 p-6">
       <div>
-        <h1 className="mb-4 mt-4 text-4xl font-bold">{t('settings_title')}</h1>
+        <h1 className="mb-4 mt-4 text-2xl font-bold sm:text-3xl">{t('settings_title')}</h1>
         <p className="text-muted-foreground">{t('settings_description')}</p>
       </div>
 

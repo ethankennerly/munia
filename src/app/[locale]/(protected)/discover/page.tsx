@@ -17,7 +17,7 @@ export default async function Discover({ params }: { params: { locale: string } 
   return (
     <main>
       <div className="px-4 pt-4">
-        <h1 className="mb-4 text-4xl font-bold">{t('discover')}</h1>
+        <h1 className="mb-4 text-2xl font-bold sm:text-3xl">{t('discover')}</h1>
         <DiscoverSearch />
         <DiscoverFilters />
         <DiscoverProfiles />

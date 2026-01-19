@@ -39,7 +39,7 @@ export function AlertDialog({ children, onClose, title, ...props }: DialogProps)
             <Button Icon={Close} mode="ghost" onPress={onClose} />
           </div>
           {title && (
-            <h3 {...titleProps} className="text-center text-2xl font-bold md:text-5xl">
+            <h3 {...titleProps} className="text-center text-xl font-bold sm:text-2xl md:text-3xl">
               {title}
             </h3>
           )}
