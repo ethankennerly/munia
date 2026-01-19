@@ -18,9 +18,9 @@ export function GenericDialog({ title, handleClose, children, ...props }: Generi
     <div
       {...dialogProps}
       ref={dialogRef}
-      className="flex h-full w-full flex-col items-center overflow-y-auto p-2 sm:justify-center">
+      className="flex h-full w-full flex-col items-center justify-center overflow-y-auto p-2">
       <ResponsiveContainer>
-        <div className="mb-6 rounded-xl border border-border bg-popover">
+        <div className="mb-6 max-h-[calc(100vh-2rem-env(safe-area-inset-top)-env(safe-area-inset-bottom))] overflow-y-auto rounded-xl border border-border bg-popover">
           <div className="relative mb-4 rounded-t-xl border-b border-b-border bg-card py-4">
             <h3 {...titleProps} className="text-center text-lg font-semibold">
               {title}
@@ -29,7 +29,7 @@ export function GenericDialog({ title, handleClose, children, ...props }: Generi
               <Button onPress={handleClose} Icon={SvgClose} mode="ghost" size="small" />
             </div>
           </div>
-          {children}
+          <div className="pb-[env(safe-area-inset-bottom)]">{children}</div>
         </div>
       </ResponsiveContainer>
     </div>

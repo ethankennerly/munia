@@ -22,7 +22,7 @@ export function Modal({ state, children, ...rest }: ModalProps) {
 
   return (
     <Overlay>
-      <div {...underlayProps} className="fixed inset-0 z-30 h-screen w-screen">
+      <div {...underlayProps} className="fixed inset-0 z-[9999] h-screen w-screen">
         <motion.div variants={variants} initial="initial" animate="animate" exit="exit" className="h-full w-full">
           <div {...modalProps} ref={ref} className="h-full w-full">
             {children}

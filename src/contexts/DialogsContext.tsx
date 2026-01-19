@@ -148,14 +148,16 @@ export function DialogsContextProvider({ children }: { children: React.ReactNode
                   </div>
                 )}
               </div>
-              <Button onPress={handleAffirmative} shape="pill" expand="half">
-                {affirmativeTexts[dialog.type]}
-              </Button>
-              {dialog.type !== 'alert' && (
-                <Button onPress={hide} shape="pill" mode="ghost">
-                  Cancel
+              <div className="flex w-full items-center justify-center gap-2">
+                <Button onPress={handleAffirmative} shape="pill" expand="half">
+                  {affirmativeTexts[dialog.type]}
                 </Button>
-              )}
+                {dialog.type !== 'alert' && (
+                  <Button onPress={hide} shape="pill" mode="ghost">
+                    Cancel
+                  </Button>
+                )}
+              </div>
             </AlertDialog>
           </Modal>
         )}
