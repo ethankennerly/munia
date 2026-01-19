@@ -12,7 +12,7 @@ import { Post } from './Post';
 
 // If the `type` is 'profile' or 'feed', the `userId` property is required
 // If the `type` is 'hashtag', the `hashtag` property is required
-type PostsProps =
+export type PostsProps =
   | {
       type: 'hashtag';
       userId?: undefined;

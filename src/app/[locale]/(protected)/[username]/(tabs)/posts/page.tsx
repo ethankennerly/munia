@@ -1,10 +1,12 @@
 import { Posts } from '@/components/Posts';
 import { CreatePostModalLauncher } from '@/components/CreatePostModalLauncher';
+import { GenericLoading } from '@/components/GenericLoading';
 import { getServerUser } from '@/lib/getServerUser';
 import { getTranslations } from 'next-intl/server';
 import { getProfile } from '../../getProfile';
+import { Suspense } from 'react';
 
-export async function generateMetadata({ params }: { params: { username: string } }) {
+export async function generateMetadata({ params }: { params: Promise<{ username: string }> }) {
   const t = await getTranslations();
   const { username } = await params;
   const profile = await getProfile(username);
@@ -13,11 +15,12 @@ export async function generateMetadata({ params }: { params: { username: string 
   };
 }
 
-export default async function Page({ params }: { params: { username: string } }) {
+export default async function Page({ params }: { params: Promise<{ username: string }> }) {
   const [user] = await getServerUser();
   const { username } = await params;
   const profile = await getProfile(username);
   const shouldShowCreatePost = user?.id === profile?.id;
+  const t = await getTranslations();
 
   return (
     <main>
@@ -27,7 +30,11 @@ export default async function Page({ params }: { params: { username: string } })
             <CreatePostModalLauncher />
           </div>
         )}
-        {profile && <Posts type="profile" userId={profile.id} />}
+        {profile && (
+          <Suspense fallback={<GenericLoading>{t('components_loading_page')}</GenericLoading>}>
+            <Posts type="profile" userId={profile.id} />
+          </Suspense>
+        )}
       </div>
     </main>
   );
