@@ -32,9 +32,15 @@ export function MenuBarItem({
         title: t('components_menubaritem'),
         message: t('components_menubaritem_you_really_wish'),
         onConfirm: async () => {
-          // Use redirect: false to prevent client-side redirect, then manually redirect with correct origin
-          await signOut({ redirect: false });
+          try {
+            // Use redirect: false to prevent client-side redirect, then manually redirect with correct origin
+            await signOut({ redirect: false });
+          } catch (error) {
+            // Log error but continue with redirect even if signOut fails
+            console.error('Sign out error:', error);
+          }
           // Manually redirect using router to ensure correct origin (mobile device IP)
+          // Redirect even if signOut failed to ensure user is logged out on client side
           router.push('/');
         },
       });
