@@ -14,7 +14,7 @@ import { useUserQuery } from './queries/useUserQuery';
 
 export function useSessionUserData() {
   const { data: session } = useSession();
-  const userId = session?.user.id;
+  const userId = session?.user?.id;
 
   const { data } = useUserQuery(userId);
   return [data];

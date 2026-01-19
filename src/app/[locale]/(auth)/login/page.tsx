@@ -17,6 +17,7 @@ export default function Page() {
   const facebookEnabled = Boolean(env.AUTH_FACEBOOK_ID && env.AUTH_FACEBOOK_SECRET);
   const githubEnabled = Boolean(env.AUTH_GITHUB_ID && env.AUTH_GITHUB_SECRET);
   const googleEnabled = Boolean(env.AUTH_GOOGLE_ID && env.AUTH_GOOGLE_SECRET);
+  const mockEnabled = Boolean(env.AUTH_MOCK_EMAIL);
   return (
     <>
       <h1 className="mb-5 text-5xl font-bold">{t('login')}</h1>
@@ -25,6 +26,9 @@ export default function Page() {
         facebookEnabled={facebookEnabled}
         githubEnabled={githubEnabled}
         googleEnabled={googleEnabled}
+        mockEnabled={mockEnabled}
+        mockDefaultEmail={env.AUTH_MOCK_EMAIL}
+        mockDefaultName={env.AUTH_MOCK_NAME}
       />
       <p className="text-lg text-muted-foreground">{t('no_account_yet')}</p>
       <p className="cursor-pointer text-lg font-semibold text-primary-accent hover:opacity-90">

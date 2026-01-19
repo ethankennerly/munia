@@ -130,15 +130,29 @@ export const {
       if (!userId) {
         throw new Error('User ID not found in token or user object');
       }
+
+      // Validate user exists in database (handles stale sessions with invalid IDs)
+      // This is especially important for mock OAuth testing where IDs might change
+      const dbUser = await prisma.user.findUnique({
+        where: { id: userId },
+        select: { id: true, email: true },
+      });
+
+      // If user doesn't exist in database, throw error to invalidate session
+      // This prevents client-side errors from accessing null user properties
+      if (!dbUser) {
+        throw new Error(`User with ID ${userId} not found in database`);
+      }
+
       return {
         /**
          * Expose only stable identifiers and IdP-derived email for server auth checks.
          * Do not trust user-editable profile fields for authorization.
          */
         user: {
-          id: userId,
-          // Prefer provider/JWT email (stable), fallback to adapter user email
-          email: emailFromToken ?? emailFromUser,
+          id: dbUser.id,
+          // Prefer provider/JWT email (stable), fallback to adapter user email, then DB email
+          email: emailFromToken ?? emailFromUser ?? dbUser.email ?? undefined,
         },
         expires: rest.session.expires,
       };

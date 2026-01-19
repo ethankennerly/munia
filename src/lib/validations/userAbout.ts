@@ -1,7 +1,9 @@
 import { z } from 'zod';
 import { sub } from 'date-fns';
 
-const nonEmptyString = z.string().trim().min(3, { message: 'Value must be at least three characters' });
+// Shared validation schemas for reuse across components (e.g., setup page and mock OAuth form)
+export const nonEmptyString = z.string().trim().min(3, { message: 'Value must be at least three characters' });
+export const emailSchema = z.string().trim().email({ message: 'Invalid email address' });
 
 export const userAboutSchema = z.object({
   username: nonEmptyString.regex(/^[a-zA-Z0-9_]+$/, {

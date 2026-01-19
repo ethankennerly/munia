@@ -2,24 +2,78 @@ import type { NextAuthConfig } from 'next-auth';
 import GitHub from 'next-auth/providers/github';
 import Facebook from 'next-auth/providers/facebook';
 import Google from 'next-auth/providers/google';
+import Credentials from 'next-auth/providers/credentials';
 import { NextResponse } from 'next/server';
 import { logger } from '@/lib/logging';
 import { routing } from '@/i18n/routing';
 import prisma from '@/lib/prisma/prisma';
 
-export default {
-  providers: [
-    GitHub({ allowDangerousEmailAccountLinking: true, checks: ['state', 'pkce'] }),
-    Google({
-      allowDangerousEmailAccountLinking: true,
-      checks: ['state', 'pkce'],
-      authorization: { params: { scope: 'openid profile email' } },
+// Build providers array conditionally
+const providers: NextAuthConfig['providers'] = [
+  GitHub({ allowDangerousEmailAccountLinking: true, checks: ['state', 'pkce'] }),
+  Google({
+    allowDangerousEmailAccountLinking: true,
+    checks: ['state', 'pkce'],
+    authorization: { params: { scope: 'openid profile email' } },
+  }),
+  // In 2016, Facebook allowed a bad actor to impersonate an email address.
+  // https://www.bitdefender.com/en-us/blog/labs/attackers-pose-as-account-owners-via-facebook-login-flaw
+  // Also, Facebook does not check PKCE/state in the same way.
+  Facebook,
+];
+
+// Add mock OAuth provider only if environment variables are defined (localhost testing)
+if (process.env.AUTH_MOCK_EMAIL) {
+  providers.push(
+    Credentials({
+      id: 'mock-oauth',
+      name: 'Mock OAuth',
+      credentials: {
+        name: { label: 'Name', type: 'text' },
+        email: { label: 'Email', type: 'text' },
+      },
+      async authorize(credentials) {
+        // "Standard login flow" simulation: return user object if credentials exist
+        if (credentials?.email && credentials?.name) {
+          const email = (credentials.email as string).toLowerCase().trim();
+          const name = (credentials.name as string).trim();
+          const mockId = `mock:${email}`;
+
+          // Look up existing user by email, or create if doesn't exist
+          // Use deterministic mock ID: mock:${email} for unique identity per email
+          let user = await prisma.user.findUnique({
+            where: { email },
+            select: { id: true, email: true, name: true },
+          });
+
+          if (!user) {
+            // User doesn't exist - create with deterministic mock ID
+            user = await prisma.user.create({
+              data: {
+                id: mockId,
+                email,
+                name,
+                emailVerified: new Date(),
+              },
+              select: { id: true, email: true, name: true },
+            });
+          }
+
+          return {
+            id: user.id,
+            name: user.name || name,
+            email: user.email || email,
+          };
+        }
+        // "Standard refusal" simulation
+        return null;
+      },
     }),
-    // In 2016, Facebook allowed a bad actor to impersonate an email address.
-    // https://www.bitdefender.com/en-us/blog/labs/attackers-pose-as-account-owners-via-facebook-login-flaw
-    // Also, Facebook does not check PKCE/state in the same way.
-    Facebook,
-  ],
+  );
+}
+
+export default {
+  providers,
   pages: {
     signIn: '/login',
   },

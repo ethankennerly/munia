@@ -9,6 +9,7 @@ import { useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { z } from 'zod';
 import { useTranslations, useLocale } from 'next-intl';
+import { useRouter } from 'next/navigation';
 
 const emailSchema = z.string().trim().email();
 type UserAuthFormProps = {
@@ -17,6 +18,9 @@ type UserAuthFormProps = {
   facebookEnabled?: boolean;
   githubEnabled?: boolean;
   googleEnabled?: boolean;
+  mockEnabled?: boolean;
+  mockDefaultEmail?: string;
+  mockDefaultName?: string;
 };
 
 export function UserAuthForm({
@@ -24,6 +28,9 @@ export function UserAuthForm({
   facebookEnabled = false,
   githubEnabled = false,
   googleEnabled = false,
+  mockEnabled = false,
+  mockDefaultEmail = '',
+  mockDefaultName = '',
 }: UserAuthFormProps) {
   const [email, setEmail] = useState('');
   const [inputError, setInputError] = useState<string | null>(null);
@@ -32,11 +39,13 @@ export function UserAuthForm({
     github: false,
     facebook: false,
     google: false,
+    mock: false,
   });
   const t = useTranslations();
   const locale = useLocale();
+  const router = useRouter();
   // Disable buttons when loading
-  const areButtonsDisabled = loading.email || loading.github || loading.facebook || loading.google;
+  const areButtonsDisabled = loading.email || loading.github || loading.facebook || loading.google || loading.mock;
   const searchParams = useSearchParams();
   const fromParam = searchParams?.get('from') as string | null;
   const callbackUrl = fromParam ?? `/${locale}/feed`;
@@ -132,6 +141,15 @@ export function UserAuthForm({
     [callbackUrl],
   );
 
+  const handleMockSignIn = useCallback(() => {
+    // Redirect to mock OAuth page with default values as URL params
+    const params = new URLSearchParams();
+    if (mockDefaultEmail) params.set('email', mockDefaultEmail);
+    if (mockDefaultName) params.set('name', mockDefaultName);
+    params.set('callbackUrl', callbackUrl);
+    router.push(`/${locale}/mock-oauth?${params.toString()}`);
+  }, [mockDefaultEmail, mockDefaultName, callbackUrl, locale, router]);
+
   return (
     <main>
       <div className="mb-4 flex flex-col gap-3">
@@ -192,6 +210,18 @@ export function UserAuthForm({
             isDisabled={areButtonsDisabled}
             data-activate-id="sign-in-google">
             {t('google')}
+          </Button>
+        ) : null}
+        {mockEnabled ? (
+          <Button
+            onPress={handleMockSignIn}
+            shape="pill"
+            expand="full"
+            mode="subtle"
+            loading={loading.mock}
+            isDisabled={areButtonsDisabled}
+            data-activate-id="sign-in-mock">
+            Mock OAuth
           </Button>
         ) : null}
       </div>

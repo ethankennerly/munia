@@ -16,6 +16,11 @@ let stableSearchParamsObj: MockSearchParams;
 
 vi.mock('next/navigation', () => ({
   useSearchParams: () => stableSearchParamsObj,
+  useRouter: () => ({
+    push: vi.fn(),
+    replace: vi.fn(),
+    refresh: vi.fn(),
+  }),
 }));
 
 describe('UserAuthForm OAuth error handling', () => {
