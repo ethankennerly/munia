@@ -2,10 +2,11 @@
 
 import { Post } from '@/components/Post';
 import { DeletePostButton } from '@/components/DeletePostButton';
-import { useCallback, useState } from 'react';
+import { useCallback, useState, use } from 'react';
 
-export default function Page({ params }: { params: { postId: string } }) {
-  const postId = parseInt(params.postId, 10);
+export default function Page({ params }: { params: Promise<{ postId: string }> }) {
+  const resolvedParams = use(params);
+  const postId = parseInt(resolvedParams.postId, 10);
   const [commentsShown, setCommentsShown] = useState(true);
 
   const toggleComments = useCallback(() => setCommentsShown((prev) => !prev), []);
