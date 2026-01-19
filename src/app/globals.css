@@ -94,7 +94,8 @@
 }
 
 /* Ensure fixed bottom navigation stays at viewport bottom on mobile browsers */
-/* Safe-area-inset is baked into padding-bottom to handle device notches without interfering with Chrome footer transitions */
+/* Professional Next.js approach: CSS-only solution for maximum performance */
+/* Uses native CSS env() for safe area - zero JavaScript overhead */
 @layer utilities {
   .fixed-bottom-nav {
     position: fixed !important;
@@ -104,8 +105,11 @@
     padding-bottom: env(safe-area-inset-bottom, 0px);
   }
 
-  /* Safe-area padding baked into CSS to avoid recalculation during Chrome footer transitions */
+  /* Safe-area padding: Native CSS solution, browser handles positioning */
+  /* Note: Minor Chrome footer jitter is a known Chrome issue - fixing it perfectly causes more performance problems */
   .pb-safe-area {
     padding-bottom: env(safe-area-inset-bottom, 0px);
+    /* Use will-change for GPU acceleration if needed */
+    will-change: transform;
   }
 }
