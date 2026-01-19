@@ -14,7 +14,7 @@ export function HomeMobileNavBar() {
   const menuItems = useMemo(() => {
     const items = [
       {
-        title: t('home_page'),
+        title: t('munia'),
         Icon: Feather,
         route: '/',
       },
