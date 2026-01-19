@@ -23,11 +23,8 @@ export function Settings() {
       <div className="space-y-6">
         <h2 className="pb-2 text-lg font-bold">{t('settings_preferences')}</h2>
 
-        <div className="flex items-center justify-between">
-          <label className="w-1/2 text-muted-foreground">{t('settings_language')}</label>
-          <div className="w-1/2">
-            <LanguageSelect />
-          </div>
+        <div className="flex flex-col gap-4">
+          <LanguageSelect />
         </div>
 
         <div className="flex items-center justify-between">
