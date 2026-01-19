@@ -31,7 +31,12 @@ export function MenuBarItem({
       confirm({
         title: t('components_menubaritem'),
         message: t('components_menubaritem_you_really_wish'),
-        onConfirm: () => signOut({ callbackUrl: '/' }),
+        onConfirm: async () => {
+          // Use redirect: false to prevent client-side redirect, then manually redirect with correct origin
+          await signOut({ redirect: false });
+          // Manually redirect using router to ensure correct origin (mobile device IP)
+          router.push('/');
+        },
       });
     } else {
       router.push(route);

@@ -21,7 +21,12 @@ export function DeleteAccountButton() {
         body: JSON.stringify({ confirm: true, recentAuthTimestamp: Date.now() }),
       });
       if (!res.ok) throw new Error(t('api_account_delete_deletion_failed'));
-      await signOut({ callbackUrl: '/register' });
+      // Use redirect: false to prevent client-side redirect, then manually redirect with correct origin
+      await signOut({ redirect: false });
+      // Manually redirect using window.location to ensure correct origin (mobile device IP)
+      if (typeof window !== 'undefined') {
+        window.location.href = '/register';
+      }
     } catch {
       // optional toast here
     } finally {
