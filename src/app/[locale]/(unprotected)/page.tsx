@@ -7,7 +7,7 @@ export default function Page() {
 
   return (
     <main className="flex flex-col items-center py-8">
-      <ResponsiveContainer>
+      <ResponsiveContainer className="px-4 md:px-0">
         <article className="prose prose-lg max-w-none rounded-2xl bg-card px-4 py-8 shadow lg:prose-xl sm:px-8">
           <MarkdownRenderer content={readmeContent} wrapWithProse={false} />
         </article>
