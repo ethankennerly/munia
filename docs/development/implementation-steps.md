@@ -34,7 +34,7 @@ Each implementation step MUST be:
 7. **Verify**: Confirm it's debuggable and testable. Disable diagnostic logging when diagnosing.
 8. **Document**: Create or update test documentation (see Domain Documentation Driven Development)
 9. **Commit & Push**: Code quality checks (linting, tests, build) are automatically enforced by the pre-push hook. Only commit when the step is complete and working. Delete unused files.
-10. **Prevention**: After fixing a bug, update Cursor rules to prevent similar high-risk issues in the future. Keep rules brief and actionable.
+10. **Prevention**: After fixing a bug, update rules to prevent similar high-risk issues in the future. Keep rules brief and actionable.
 
 ## Domain Documentation Driven Development
 

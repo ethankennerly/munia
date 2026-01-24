@@ -12,4 +12,3 @@ This folder contains reviews that are unnecessary understand the implementation.
 - [Removing a Post](spec-removing-a-post.md)
 - [Privacy Policy](spec-privacy-policy.md)
 - [Terms of Service](spec-terms-of-service.md)
-- [Credit Optimization](credit-optimization.md)
