@@ -82,4 +82,11 @@ describe('TruncatedPostContent', () => {
     // Should not show expand button for exactly 3 lines
     expect(screen.queryByText(/components_show_more/i)).not.toBeInTheDocument();
   });
+
+  it('wraps long unbroken words to prevent overflow', () => {
+    const longWord = 'a'.repeat(200);
+    const { container } = render(<TruncatedPostContent content={longWord} />);
+    const textElement = container.querySelector('.text-lg');
+    expect(textElement).toHaveClass('break-words');
+  });
 });

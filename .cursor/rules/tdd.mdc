@@ -1,0 +1,21 @@
+---
+alwaysApply: true
+---
+
+- ALWAYS implement a minimal test that fails the action item.
+- ALWAYS format the test failure message to isolate the root cause with only 1 to 256 characters.
+- If the action item was later discovered to fail and therefore reverted to become unchecked, then :
+    - ALWAYS debug the root cause.
+    - ALWAYS replace the false-negative verification process with a true-positive verification process.
+    - ALWAYS modify that false-negative test to fail to become a true-positive test before fixing a bug in a previous attempt.
+- ALWAYS apply the 80/20 principle of only solving most of the problem in a simple phase.
+- ALWAYS factor architecture to reduce context.
+- ALWAYS solve a problem in phases.
+- ALWAYS audit each phase for a mistake.
+- ALWAYS reduce the problem to conventional algorithms and tools.
+- ALWAYS write self-documenting code without comments.
+- ALWAYS implement a simple, professional Next.js 16 solution.
+- ALWAYS limit total file size between 1 and 256 lines.
+- ALWAYS iterate until all `/git_hooks/pre-push` passes.
+- ALWAYS prepend the text `TDD: ` to every chat response.
+- ALWAYS limit the total chat response between 1 to 256 characters.

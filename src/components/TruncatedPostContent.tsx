@@ -29,7 +29,7 @@ export function TruncatedPostContent({ content }: TruncatedPostContentProps) {
 
   return (
     <div className="mb-4 mt-5">
-      <div className={cn('text-lg text-muted-foreground', !isExpanded && shouldTruncate && 'line-clamp-3')}>
+      <div className={cn('break-words text-lg text-muted-foreground', !isExpanded && shouldTruncate && 'line-clamp-3')}>
         <HighlightedMentionsAndHashTags text={content} shouldAddLinks />
       </div>
       {shouldTruncate && (

@@ -34,10 +34,10 @@ export function CommentContent({
       <p className="text-muted-foreground">@{username}</p>
       <div
         className={cn(
-          'my-2 rounded-[32px] rounded-ss-none px-6 py-3',
+          'my-2 w-full rounded-[32px] rounded-ss-none px-6 py-3',
           !shouldHighlight ? 'border border-input' : 'ring-2 ring-primary',
         )}>
-        <p className="mb-1 text-foreground">
+        <p className="mb-1 break-words text-foreground">
           <HighlightedMentionsAndHashTags text={content} shouldAddLinks />
         </p>
         <p className="ml-auto text-sm text-muted-foreground">{formatTimeAgo(new Date(createdAt))}</p>

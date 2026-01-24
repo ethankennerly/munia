@@ -1,0 +1,72 @@
+import React from 'react';
+import { describe, it, expect, vi } from 'vitest';
+import { render, waitFor } from '@testing-library/react';
+import '@testing-library/jest-dom';
+import { DialogsContextProvider } from './DialogsContext';
+import { useDialogs } from '@/hooks/useDialogs';
+
+vi.mock('next-intl', () => ({
+  useTranslations: () => (key: string) => key,
+}));
+
+vi.mock('@/components/TextAreaWithMentionsAndHashTags', () => ({
+  TextAreaWithMentionsAndHashTags: ({ content }: { content: string }) => (
+    <textarea data-testid="textarea" value={content} readOnly />
+  ),
+}));
+
+vi.mock('@/components/Modal', () => ({
+  Modal: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+}));
+
+function TestComponent({ initialPromptValue }: { initialPromptValue?: string }) {
+  const { prompt } = useDialogs();
+  React.useEffect(() => {
+    prompt({
+      title: 'Reply',
+      message: 'You are replying to test comment.',
+      promptType: 'textarea',
+      onSubmit: () => {},
+      initialPromptValue,
+    });
+  }, [prompt, initialPromptValue]);
+  return null;
+}
+
+describe('DialogsContext', () => {
+  it('constrains textarea container height to prevent buttons from scrolling off screen', async () => {
+    const { container } = render(
+      <DialogsContextProvider>
+        <TestComponent />
+      </DialogsContextProvider>,
+    );
+    await waitFor(() => {
+      const area = container.querySelector('.h-\\[40vh\\].overflow-y-auto');
+      expect(area).toBeTruthy();
+    });
+  });
+
+  it('keeps Submit and Cancel visible: buttons not inside overflow-y-auto', async () => {
+    const { container, getByRole } = render(
+      <DialogsContextProvider>
+        <TestComponent initialPromptValue={'a'.repeat(1000)} />
+      </DialogsContextProvider>,
+    );
+    await waitFor(() => getByRole('button', { name: 'Submit' }));
+    const scroll = container.querySelector('.overflow-y-auto');
+    const submit = getByRole('button', { name: 'Submit' });
+    expect(scroll).toBeTruthy();
+    expect(scroll!.contains(submit)).toBe(false);
+  });
+
+  it('prompt has fixed height so input cannot overlap footer', async () => {
+    const { container } = render(
+      <DialogsContextProvider>
+        <TestComponent initialPromptValue={'a'.repeat(1000)} />
+      </DialogsContextProvider>,
+    );
+    await waitFor(() => container.querySelector('.overflow-y-auto'));
+    const prompt = container.querySelector('.h-\\[40vh\\]');
+    expect(prompt).toBeTruthy();
+  });
+});
