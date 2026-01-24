@@ -12,7 +12,7 @@
 # Estimated savings: ~224KB + token overhead per search
 /src/vectors
 
-/docs/reviews
+/docs/specs/archive
 
 # Build artifacts (if any slip through .gitignore)
 /.next
@@ -25,3 +25,14 @@
 # Temporary replay data (already in .gitignore, but explicit here)
 /tmp
 
+# Images
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.svg
+*.ico
+*.webp
+*.avif
+*.heic
+*.heif
