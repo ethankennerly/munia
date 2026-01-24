@@ -123,11 +123,11 @@ export function CreatePostDialog({
   const dialogTitle = mode === 'create' ? t('components_create_post') : t('components_edit_post');
   return (
     <GenericDialog title={dialogTitle} handleClose={handleClose}>
-      <div className="mb-[18px] flex flex-row gap-3 px-4">
+      <div className="mb-[18px] flex flex-row items-start gap-3 px-4">
         <div className="h-11 w-11">
           <ProfilePhotoOwn />
         </div>
-        <div className="flex flex-1 flex-col justify-center">
+        <div className="flex max-h-[60vh] flex-1 flex-col overflow-y-auto">
           <TextAreaWithMentionsAndHashTags
             content={content}
             setContent={setContent}

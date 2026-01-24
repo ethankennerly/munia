@@ -131,7 +131,9 @@ export function TextAreaWithMentionsAndHashTags({
   // Since the `TextArea` is in `absolute` position, the container won't auto-resize
   // according to the height of the `TextArea`, we can set it manually instead
   useEffect(() => {
-    if (containerRef.current) containerRef.current.style.height = `${textareaRef.current?.scrollHeight}px`;
+    if (containerRef.current && textareaRef.current) {
+      containerRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+    }
   }, [content]);
 
   useEffect(() => {
