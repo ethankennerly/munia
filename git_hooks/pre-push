@@ -2,7 +2,7 @@
 
 set -x
 
+npm run --silent lint &&\
 npm test --silent -- --silent &&\
 npm run --silent build &&\
-npm run --silent validate:build &&\
-npm run --silent lint
+npm run --silent validate:build

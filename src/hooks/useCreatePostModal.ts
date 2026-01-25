@@ -2,11 +2,16 @@ import { useCreatePostModalContextApi } from '@/contexts/CreatePostModalContext'
 import { GetVisualMedia } from '@/types/definitions';
 
 export function useCreatePostModal() {
-  const { setShown, setShouldOpenFileInputOnMount, setToEditValues } = useCreatePostModalContextApi();
+  const { setShown, setShouldOpenFileInputOnMount, setToEditValues, setInitialFilesForCreate } =
+    useCreatePostModalContextApi();
 
-  const launchCreatePost = ({ shouldOpenFileInputOnMount = false }: { shouldOpenFileInputOnMount?: boolean }) => {
+  const launchCreatePost = ({
+    shouldOpenFileInputOnMount = false,
+    initialFiles,
+  }: { shouldOpenFileInputOnMount?: boolean; initialFiles?: File[] } = {}) => {
     setToEditValues(null);
     setShouldOpenFileInputOnMount(shouldOpenFileInputOnMount);
+    setInitialFilesForCreate(initialFiles ?? null);
     setShown(true);
   };
 

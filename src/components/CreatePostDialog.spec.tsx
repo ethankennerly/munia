@@ -1,6 +1,6 @@
 import React from 'react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { CreatePostDialog } from './CreatePostDialog';
 
@@ -34,7 +34,18 @@ vi.mock('@/components/ui/ProfilePhotoOwn', () => ({
 }));
 
 vi.mock('@/components/CreatePostOptions', () => {
-  const MockComponent = React.forwardRef(() => <div data-testid="create-post-options" />);
+  const MockComponent = React.forwardRef<
+    HTMLInputElement,
+    { handleVisualMediaChange: React.ChangeEventHandler<HTMLInputElement> }
+  >((props, ref) => (
+    <input
+      ref={ref}
+      type="file"
+      data-testid="create-post-file-input"
+      onChange={props.handleVisualMediaChange}
+      accept="video/*,.jpg,.jpeg,.png"
+    />
+  ));
   MockComponent.displayName = 'CreatePostOptions';
   return { CreatePostOptions: MockComponent };
 });
@@ -60,5 +71,36 @@ describe('CreatePostDialog', () => {
     const textareaContainer = container.querySelector('.flex.flex-1.flex-col');
     expect(textareaContainer).toHaveClass('max-h-[60vh]');
     expect(textareaContainer).toHaveClass('overflow-y-auto');
+  });
+
+  it('attaches image when dialog opened via Image/Video and user selects a file', () => {
+    vi.stubGlobal('URL', {
+      ...globalThis.URL,
+      createObjectURL: vi.fn(() => 'blob:mock-url'),
+    });
+    render(<CreatePostDialog toEditValues={null} shouldOpenFileInputOnMount={true} setShown={vi.fn()} />);
+    const fileInput = screen.getByTestId('create-post-file-input');
+    const file = new File([''], 'test.png', { type: 'image/png' });
+    fireEvent.change(fileInput, { target: { files: [file] } });
+    const postButton = screen.getByRole('button', { name: 'post' });
+    expect(postButton).not.toBeDisabled();
+  });
+
+  it('attaches image when dialog opens with initial files from launcher', () => {
+    vi.stubGlobal('URL', {
+      ...globalThis.URL,
+      createObjectURL: vi.fn(() => 'blob:mock-url'),
+    });
+    const file = new File([''], 'test.png', { type: 'image/png' });
+    render(
+      <CreatePostDialog
+        toEditValues={null}
+        shouldOpenFileInputOnMount={false}
+        setShown={vi.fn()}
+        initialFiles={[file]}
+      />,
+    );
+    const postButton = screen.getByRole('button', { name: 'post' });
+    expect(postButton).not.toBeDisabled();
   });
 });

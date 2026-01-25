@@ -2,7 +2,7 @@
 
 import { useCreatePostModal } from '@/hooks/useCreatePostModal';
 import SvgImage from '@/svg_components/Image';
-import { useCallback } from 'react';
+import { useCallback, useRef } from 'react';
 import { useTranslations } from 'next-intl';
 import { ProfilePhotoOwn } from './ui/ProfilePhotoOwn';
 import { ButtonNaked } from './ui/ButtonNaked';
@@ -10,12 +10,17 @@ import { ButtonNaked } from './ui/ButtonNaked';
 export function CreatePostModalLauncher() {
   const t = useTranslations();
   const { launchCreatePost } = useCreatePostModal();
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const launcCreatePostFinderClosed = useCallback(() => launchCreatePost({}), [launchCreatePost]);
-  const launchCreatePostFinderOpened = useCallback(() => {
-    launchCreatePost({
-      shouldOpenFileInputOnMount: true,
-    });
-  }, [launchCreatePost]);
+  const onMediaChosen = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const files = e.target.files;
+      if (files?.length) launchCreatePost({ initialFiles: Array.from(files) });
+      e.target.value = '';
+    },
+    [launchCreatePost],
+  );
+  const launchCreatePostFinderOpened = useCallback(() => fileInputRef.current?.click(), []);
 
   return (
     <div className="rounded-xl bg-card px-4 py-4 shadow sm:px-8 sm:py-5">
@@ -31,6 +36,14 @@ export function CreatePostModalLauncher() {
         </ButtonNaked>
       </div>
       <div className="flex flex-row gap-4">
+        <input
+          ref={fileInputRef}
+          type="file"
+          className="hidden"
+          accept="video/*,.jpg,.jpeg,.png"
+          multiple
+          onChange={onMediaChosen}
+        />
         <ButtonNaked
           onPress={launchCreatePostFinderOpened}
           className="group flex cursor-pointer flex-row items-center gap-4"

@@ -4,7 +4,7 @@ import { About } from './About';
 
 export const dynamic = 'force-dynamic';
 
-export async function generateMetadata({ params }: { params: { username: string } }) {
+export async function generateMetadata({ params }: { params: Promise<{ username: string }> }) {
   const t = await getTranslations();
   const { username } = await params;
   const profile = await getProfile(username);
@@ -13,7 +13,7 @@ export async function generateMetadata({ params }: { params: { username: string 
   };
 }
 
-export default async function Page({ params }: { params: { username: string } }) {
+export default async function Page({ params }: { params: Promise<{ username: string }> }) {
   const { username } = await params;
   const profile = await getProfile(username);
   if (!profile) return null;

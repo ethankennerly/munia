@@ -4,7 +4,7 @@ import { MDXRemote } from 'next-mdx-remote/rsc';
 import { notFound } from 'next/navigation';
 import { ResponsiveContainer } from '@/components/ui/ResponsiveContainer';
 
-export default async function PrivacyPolicy({ params }: { params: { locale: string } }) {
+export default async function PrivacyPolicy({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
 
   try {

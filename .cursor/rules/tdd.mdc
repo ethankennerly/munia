@@ -2,20 +2,55 @@
 alwaysApply: true
 ---
 
-- ALWAYS implement a minimal test that fails the action item.
-- ALWAYS format the test failure message to isolate the root cause with only 1 to 256 characters.
-- If the action item was later discovered to fail and therefore reverted to become unchecked, then :
-    - ALWAYS debug the root cause.
-    - ALWAYS replace the false-negative verification process with a true-positive verification process.
-    - ALWAYS modify that false-negative test to fail to become a true-positive test before fixing a bug in a previous attempt.
-- ALWAYS apply the 80/20 principle of only solving most of the problem in a simple phase.
-- ALWAYS factor architecture to reduce context.
-- ALWAYS solve a problem in phases.
-- ALWAYS audit each phase for a mistake.
-- ALWAYS reduce the problem to conventional algorithms and tools.
-- ALWAYS write self-documenting code without comments.
-- ALWAYS implement a simple, professional Next.js 16 solution.
-- ALWAYS limit total file size between 1 and 256 lines.
-- ALWAYS iterate until all `/git_hooks/pre-push` passes.
-- ALWAYS prepend the text `TDD: ` to every chat response.
-- ALWAYS limit the total chat response between 1 to 256 characters.
+Follow steps in strict order. Do not skip steps.
+
+## 1. Functional Tests (Gate)
+
+Write black-box functional tests that **separate buggy vs correct behavior**.
+
+Rules:
+- Treat the system as a black box
+- Use only public inputs and observable outputs
+- No implementation details
+- No redundant assertions
+- No mocks unless required by the public interface
+
+Method:
+- Form multiple root-cause hypotheses
+- Find the **smallest observable behavior** that differs
+- Encode only that behavior
+- Tests MUST fail on the current bug and pass once fixed
+
+Output:
+- Runnable test code only
+- If no separating test exists, explicitly state so
+
+## 2. Minimal Fix (80% Rule)
+
+Implement the **simplest correct solution** that makes all tests pass.
+
+Rules:
+- Solve the core 80% first
+- Prefer standard library and idiomatic patterns
+- No speculative abstractions
+- No premature optimization
+
+## 3. Architecture Cleanup
+
+After tests pass:
+- Modularize only where duplication or coupling exists
+- Split files >256 lines
+- Split methods >64 lines
+- Keep logs <256 characters
+
+## 4. Code Quality Gate
+
+- Clean, readable code
+- No comments
+- All @/git_hooks/pre-push checks must pass
+- Also fix any pre-existing pre-push failures
+
+## 5. Output Discipline
+
+- Prefix every message with `TDD2: `
+- Max 256 characters per message

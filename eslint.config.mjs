@@ -13,6 +13,7 @@ export default [
             "**/next-env.d.ts",
             "**/scripts/**",
             "**/git_hooks/**",
+            "**/.syncause/**",
             "**/.next/**",
             "**/out/**",
             "**/build/**",

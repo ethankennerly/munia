@@ -4,7 +4,7 @@ import { DiscoverFilters } from '@/components/DiscoverFilters';
 import { getTranslations } from 'next-intl/server';
 import { getProfile } from '../../getProfile';
 
-export async function generateMetadata({ params }: { params: { username: string } }) {
+export async function generateMetadata({ params }: { params: Promise<{ username: string }> }) {
   const t = await getTranslations();
   const { username } = await params;
   const profile = await getProfile(username);
@@ -13,7 +13,7 @@ export async function generateMetadata({ params }: { params: { username: string 
   };
 }
 
-export default async function Page({ params }: { params: { username: string } }) {
+export default async function Page({ params }: { params: Promise<{ username: string }> }) {
   const { username } = await params;
   const profile = await getProfile(username);
   const t = await getTranslations();

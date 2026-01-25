@@ -19,15 +19,27 @@ export function CreatePostDialog({
   toEditValues,
   shouldOpenFileInputOnMount,
   setShown,
+  initialFiles,
 }: {
   toEditValues: ToEditValues | null;
   shouldOpenFileInputOnMount: boolean;
   setShown: (isOpen: boolean) => void;
+  initialFiles?: File[];
 }) {
   const t = useTranslations();
   const mode: 'create' | 'edit' = toEditValues === null ? 'create' : 'edit';
   const [content, setContent] = useState(toEditValues?.initialContent || '');
-  const [visualMedia, setVisualMedia] = useState<GetVisualMedia[]>(toEditValues?.initialVisualMedia ?? []);
+  const [visualMedia, setVisualMedia] = useState<GetVisualMedia[]>(() => {
+    const fromEdit = toEditValues?.initialVisualMedia ?? [];
+    if (initialFiles?.length) {
+      const fromFiles: GetVisualMedia[] = initialFiles.map((file) => ({
+        type: file.type.startsWith('image/') ? 'PHOTO' : 'VIDEO',
+        url: URL.createObjectURL(file),
+      }));
+      return [...fromEdit, ...fromFiles];
+    }
+    return fromEdit;
+  });
   const exitCreatePostModal = useCallback(() => setShown(false), [setShown]);
   const { createPostMutation, updatePostMutation } = useWritePostMutations({
     content,

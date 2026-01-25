@@ -3,7 +3,7 @@ import { getTranslations } from 'next-intl/server';
 import { getProfile } from '../../getProfile';
 import { Gallery } from './Gallery';
 
-export async function generateMetadata({ params }: { params: { username: string } }) {
+export async function generateMetadata({ params }: { params: Promise<{ username: string }> }) {
   const { username } = await params;
   const t = await getTranslations();
   const profile = await getProfile(username);
@@ -22,7 +22,7 @@ async function getVisualMedia(username: string) {
   return (await res.json()) as GetVisualMedia[];
 }
 
-export default async function Page({ params }: { params: { username: string } }) {
+export default async function Page({ params }: { params: Promise<{ username: string }> }) {
   const { username } = await params;
   const visualMedia = await getVisualMedia(username);
   return <Gallery visualMedia={visualMedia} />;

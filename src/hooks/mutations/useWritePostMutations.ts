@@ -28,9 +28,9 @@ export function useWritePostMutations({
 
     const visualMediaFilesPromises = visualMedia.map(async ({ url }) => {
       if (url.startsWith('blob:')) {
-        // If the url is a blob, fetch the blob and append it to the formData
         const file = await fetch(url).then((r) => r.blob());
-        formData.append('files', file, file.name);
+        const name = file instanceof File ? file.name : 'upload';
+        formData.append('files', file, name);
       } else {
         // If the url is a link, just append it to the formData
         formData.append('files', url);

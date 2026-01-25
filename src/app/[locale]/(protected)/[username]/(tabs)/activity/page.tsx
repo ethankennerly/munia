@@ -4,7 +4,7 @@ import { Suspense } from 'react';
 import { getProfile } from '../../getProfile';
 import { Activities } from './Activities';
 
-export async function generateMetadata({ params }: { params: { username: string } }) {
+export async function generateMetadata({ params }: { params: Promise<{ username: string }> }) {
   const { username } = await params;
   const t = await getTranslations();
   const profile = await getProfile(username);
@@ -14,7 +14,7 @@ export async function generateMetadata({ params }: { params: { username: string 
   };
 }
 
-export default async function Page({ params }: { params: { username: string; locale: string } }) {
+export default async function Page({ params }: { params: Promise<{ username: string; locale: string }> }) {
   const { locale, username } = await params;
   const t = await getTranslations({ locale });
   const [user] = await getServerUser();

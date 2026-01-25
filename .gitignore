@@ -45,6 +45,5 @@ next-env.d.ts
 # replay
 /tmp
 
-# AI debugger
-.syncause/
+# AI Debugger
 .cursor/debug.log

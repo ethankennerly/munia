@@ -1,6 +1,5 @@
-# MVP
+# Agile Development
 
-Minimal Viable Product:
 - The open tech spec is written as a to-do list of tasks with checkboxes.
 - The lines of the open tech spec are sorted in order priority.
 - ALWAYS read the open tech spec starting from line 1.

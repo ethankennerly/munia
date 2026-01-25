@@ -1,6 +1,6 @@
 'use client';
 
-import React, { Dispatch, SetStateAction, createContext, useContext, useMemo, useState } from 'react';
+import React, { Dispatch, SetStateAction, createContext, useCallback, useContext, useMemo, useState } from 'react';
 import { useOverlayTriggerState } from 'react-stately';
 import { AnimatePresence } from 'framer-motion';
 import { Modal } from '@/components/Modal';
@@ -12,39 +12,50 @@ import { ToEditValues } from '@/lib/createPost';
 const CreatePostModalContextData = createContext<{
   toEditValues: ToEditValues | null;
   shouldOpenFileInputOnMount: boolean;
+  initialFilesForCreate: File[] | null;
 }>({
   toEditValues: null,
   shouldOpenFileInputOnMount: false,
+  initialFilesForCreate: null,
 });
 
 const CreatePostModalContextApi = createContext<{
   setShown: (isOpen: boolean) => void;
   setToEditValues: Dispatch<SetStateAction<ToEditValues | null>>;
   setShouldOpenFileInputOnMount: Dispatch<SetStateAction<boolean>>;
+  setInitialFilesForCreate: Dispatch<SetStateAction<File[] | null>>;
 }>({
   setShown: () => {},
   setToEditValues: () => {},
   setShouldOpenFileInputOnMount: () => {},
+  setInitialFilesForCreate: () => {},
 });
 
 export function CreatePostModalContextProvider({ children }: { children: React.ReactNode }) {
   const state = useOverlayTriggerState({});
   const [toEditValues, setToEditValues] = useState<ToEditValues | null>(null);
   const [shouldOpenFileInputOnMount, setShouldOpenFileInputOnMount] = useState(false);
+  const [initialFilesForCreate, setInitialFilesForCreate] = useState<File[] | null>(null);
 
-  // Memoize to prevent re-rendering of consumers when the states change
   const dataValue = useMemo(
-    () => ({ toEditValues, shouldOpenFileInputOnMount }),
-    [shouldOpenFileInputOnMount, toEditValues],
+    () => ({ toEditValues, shouldOpenFileInputOnMount, initialFilesForCreate }),
+    [shouldOpenFileInputOnMount, toEditValues, initialFilesForCreate],
+  );
+  const setShownWithCleanup = useCallback(
+    (isOpen: boolean) => {
+      state.setOpen(isOpen);
+      if (!isOpen) setInitialFilesForCreate(null);
+    },
+    [state],
   );
   const apiValue = useMemo(
     () => ({
-      setShown: state.setOpen,
+      setShown: setShownWithCleanup,
       setToEditValues,
       setShouldOpenFileInputOnMount,
+      setInitialFilesForCreate,
     }),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [], // Don't add `state.setOpen` here, otherwise our memoization technique won't work
+    [setShownWithCleanup],
   );
 
   return (
@@ -58,7 +69,8 @@ export function CreatePostModalContextProvider({ children }: { children: React.R
               <CreatePostDialog
                 toEditValues={toEditValues}
                 shouldOpenFileInputOnMount={shouldOpenFileInputOnMount}
-                setShown={state.setOpen}
+                setShown={setShownWithCleanup}
+                initialFiles={initialFilesForCreate ?? undefined}
               />
             </Modal>
           )}
