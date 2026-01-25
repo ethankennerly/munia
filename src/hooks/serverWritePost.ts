@@ -13,6 +13,7 @@ import { mentionsActivityLogger } from '@/lib/mentionsActivityLogger';
 import { deleteObject } from '@/lib/s3/deleteObject';
 import { savePostFiles } from '@/lib/s3/savePostFiles';
 import { verifyAccessToPost } from '@/app/api/posts/[postId]/verifyAccessToPost';
+import { validateImageDimensions } from '@/lib/validateImageDimensions';
 
 // If `type` is `edit`, then the `postId` is required
 type Props =
@@ -47,11 +48,17 @@ export async function serverWritePost({ formData, type, postId }: Props) {
     });
     const filesArr = !files ? [] : Array.isArray(files) ? files : [files];
 
-    // Validate if files are valid
     for (const file of filesArr) {
       if (typeof file === 'string') continue;
       if (!isValidFileType(file.type)) {
         return NextResponse.json({ error: 'Invalid file type.' }, { status: 415 });
+      }
+      if (file.type.startsWith('image/')) {
+        const buffer = Buffer.from(await file.arrayBuffer());
+        const result = validateImageDimensions(buffer);
+        if (!result.ok) {
+          return NextResponse.json({ error: result.error }, { status: 413 });
+        }
       }
     }
     const savedFiles = await savePostFiles(filesArr);

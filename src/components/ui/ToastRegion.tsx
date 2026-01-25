@@ -18,7 +18,7 @@ export function ToastRegion<T extends ToastType>({ state, ...props }: ToastRegio
     <div
       {...regionProps}
       ref={ref}
-      className="fixed bottom-16 right-3 z-40 flex max-w-[320px] flex-col gap-3 focus:outline-none md:bottom-6 md:right-6">
+      className="fixed bottom-16 right-3 z-[10000] flex max-w-[320px] flex-col gap-3 focus:outline-none md:bottom-6 md:right-6">
       <AnimatePresence>
         {state.visibleToasts.map((toast) => (
           <motion.div

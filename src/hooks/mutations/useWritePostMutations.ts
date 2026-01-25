@@ -11,10 +11,12 @@ export function useWritePostMutations({
   content,
   visualMedia,
   exitCreatePostModal,
+  clearVisualMedia,
 }: {
   content: string;
   visualMedia: GetVisualMedia[];
   exitCreatePostModal: () => void;
+  clearVisualMedia?: () => void;
 }) {
   const qc = useQueryClient();
   const { data: session } = useSession();
@@ -48,8 +50,10 @@ export function useWritePostMutations({
         body: await generateFormData(),
       });
 
-      if (!res.ok) throw new Error(res.statusText);
-      // Return the created post to be used by callbacks.
+      if (!res.ok) {
+        const body = (await res.json().catch(() => ({}))) as { error?: string };
+        throw new Error(body.error ?? res.statusText);
+      }
       return (await res.json()) as GetPost;
     },
     onSuccess: (createdPost) => {
@@ -84,6 +88,7 @@ export function useWritePostMutations({
     },
     onError: (err) => {
       notifyError(err, 'Error Creating Post');
+      clearVisualMedia?.();
     },
   });
 
@@ -94,8 +99,10 @@ export function useWritePostMutations({
         body: await generateFormData(),
       });
 
-      if (!res.ok) throw new Error(res.statusText);
-      // Return the created post to be used by callbacks.
+      if (!res.ok) {
+        const body = (await res.json().catch(() => ({}))) as { error?: string };
+        throw new Error(body.error ?? res.statusText);
+      }
       return (await res.json()) as GetPost;
     },
     onSuccess: (updatedPost) => {
@@ -129,6 +136,7 @@ export function useWritePostMutations({
     },
     onError: (err) => {
       notifyError(err, 'Error Creating Post');
+      clearVisualMedia?.();
     },
   });
 

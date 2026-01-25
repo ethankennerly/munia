@@ -41,10 +41,15 @@ export function CreatePostDialog({
     return fromEdit;
   });
   const exitCreatePostModal = useCallback(() => setShown(false), [setShown]);
+  const clearVisualMedia = useCallback(() => {
+    revokeVisualMediaObjectUrls(visualMedia);
+    setVisualMedia([]);
+  }, [visualMedia]);
   const { createPostMutation, updatePostMutation } = useWritePostMutations({
     content,
     visualMedia,
     exitCreatePostModal,
+    clearVisualMedia,
   });
   const { confirm } = useDialogs();
   const inputFileRef = useRef<HTMLInputElement>(null);
