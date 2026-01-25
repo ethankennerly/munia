@@ -1,5 +1,13 @@
 # Patches
 
+## next@16.1.1
+
+Replaces `util._extend` with an `Object.assign`-based helper in the bundled
+http-proxy (used by Next dev proxy). Fixes the root cause of the DEP0060
+deprecation so the deprecated API is no longer called.
+
+**Remove when:** Next.js updates its bundled http-proxy or drops the dependency.
+
 ## next-intl@4.7.0
 
 Adds `/* webpackIgnore: true */` to the dynamic `import(t)` in
