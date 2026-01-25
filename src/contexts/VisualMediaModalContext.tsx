@@ -39,7 +39,7 @@ function VisualMediaModalContextProvider({ children }: { children: React.ReactNo
       <AnimatePresence>
         {state.isOpen && (
           <Modal state={state}>
-            <VisualMediaDialog>
+            <VisualMediaDialog onClose={state.close}>
               <VisualMediaSlider {...modal} onClose={state.close} />
             </VisualMediaDialog>
           </Modal>

@@ -1,0 +1,18 @@
+# Posting an Image
+
+## Posting directly from the feed
+
+- [x] Steps to Reproduce: Load the feed. Scroll to the Create Post section. Click the Image/Video button directly. Operating system file selection modal opened. Pick an image file. The Create Post dialog opened.
+- [x] Expected Result: The image is attached to the post.
+    - [x] Actual Result should not occur: No image was attached to the post.
+
+## Posting an image that is too large
+
+- [x] Steps to Reproduce: Select an image at 4KB x 4KB or larger.
+- [x] Expected Result: The image failed to be attached. The failure is acceptable.
+- [x] Expected Result: Click the Post button. The modal remains open. The image is removed from the post.
+    - [x] Actual Result should not occur: Image appeared to be attached. But when the Post button is clicked, the modal did not close.
+- [x] Expected Result: A message is displayed explaining file is too large.
+    - [x] Actual Result should not occur: The message was unclear what the cause was.
+- [x] Expected Result: The error toast is front of the Create Post dialog.
+    - [x] Actual Result should not occur: The error toast is behind of the Create Post dialog.

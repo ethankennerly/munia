@@ -1,0 +1,17 @@
+## Viewing an Image on a Phone with a Chrome Footer
+- [x] Steps to Reproduce: iPhone 13. Chrome. Post image. Scroll to image. Scroll up slightly. Click the image. Modal shows full image.
+    - [x] Expected Result: Image is on screen. Close button "(X)" is on screen near the top right corner of the image.
+        - [x] Actual Result should not occur: Image is not fully on screen. Close button is off top of the screen.
+- [x] Steps to Reproduce: iPhone 13. Chrome. Post image. Scroll to image. Scroll down slightly. Chrome footer might have adjusted. Click the image. Modal shows full image. Click browser bar.
+    - [x] Expected Result: Image is on screen. Close button "(X)" is on screen near the top right corner of the image.
+- [x] Steps to Reproduce: iPhone 13. Chrome. Post image. Scroll to image. Scroll down slightly. Chrome footer might have adjusted. Click the image. Modal shows full image. Click anywhere on screen that is not a button.
+    - [x] Expected Result: View image modal closes.
+        - [x] Actual Result should not occur: View image modal remains open. So, if the Close button was not visible, the user is stuck viewing the image.
+- [ ] Steps to Reproduce: iPhone 13. Chrome. Post image. Scroll to image. Scroll down slightly. Chrome footer might have adjusted. Click the image. Modal shows full image.
+    - [ ] Expected Result: Image is on screen.
+        - [ ] Actual Result should not occur: Image is not fully on screen.
+    - [ ] Expected Result: Close button "(X)" is on screen near the top right corner of the image.
+        - [ ] Actual Result should not occur: Close button is off top of the screen.
+- [ ] Steps to Reproduce: iPhone 13. Chrome. Post a wide image. Scroll to image. Scroll down slightly. Chrome footer might have adjusted. Click the image. Modal shows full image.
+    - [ ] Expected Result: Image is vertical center is above the true center because the chrome footer is taking out some of the vertical space at the bottom.
+        - [ ] Actual Result should not occur: Image has a smaller bottom margin to the Chrome footer than to the top margin of the browser viewport.

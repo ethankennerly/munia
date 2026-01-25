@@ -12,6 +12,7 @@
 # Estimated savings: ~224KB + token overhead per search
 /src/vectors
 
+/docs/development
 /docs/specs/archive
 
 # Build artifacts (if any slip through .gitignore)
