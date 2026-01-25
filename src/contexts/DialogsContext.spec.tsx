@@ -69,4 +69,24 @@ describe('DialogsContext', () => {
     const prompt = container.querySelector('.h-\\[40vh\\]');
     expect(prompt).toBeTruthy();
   });
+
+  it('constrains dialog to visible viewport height so input stays above keyboard', async () => {
+    const addListener = vi.fn();
+    const removeListener = vi.fn();
+    const viewportHeight = 350;
+    Object.defineProperty(window, 'visualViewport', {
+      value: { height: viewportHeight, addEventListener: addListener, removeEventListener: removeListener },
+      configurable: true,
+    });
+    const { container } = render(
+      <DialogsContextProvider>
+        <TestComponent />
+      </DialogsContextProvider>,
+    );
+    await waitFor(() => container.querySelector('.overflow-y-auto'));
+    const constrained = container.querySelector('[style*="max-height"]');
+    expect(constrained).toBeTruthy();
+    expect((constrained as HTMLElement).style.maxHeight).toBe(`${viewportHeight}px`);
+    Object.defineProperty(window, 'visualViewport', { value: undefined, configurable: true });
+  });
 });

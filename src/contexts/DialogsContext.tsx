@@ -47,8 +47,22 @@ export function DialogsContextProvider({ children }: { children: React.ReactNode
 
   const [promptValue, setPromptValue] = useState('');
   const [inputError, setInputError] = useState('');
+  const [visualViewportHeight, setVisualViewportHeight] = useState<number | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    const vv = typeof window !== 'undefined' ? window.visualViewport : null;
+    if (!vv) return;
+    const update = () => setVisualViewportHeight(vv.height);
+    update();
+    vv.addEventListener('resize', update);
+    vv.addEventListener('scroll', update);
+    return () => {
+      vv.removeEventListener('resize', update);
+      vv.removeEventListener('scroll', update);
+    };
+  }, []);
 
   useEffect(() => {
     if (dialog.initialPromptValue) setPromptValue(dialog.initialPromptValue);
@@ -123,49 +137,56 @@ export function DialogsContextProvider({ children }: { children: React.ReactNode
       {children}
       <AnimatePresence>
         {state.isOpen && (
-          <Modal state={state}>
-            <AlertDialog
-              title={dialog.title}
-              onClose={state.close}
-              footer={
-                <div className="flex w-full items-center justify-center gap-2 pt-4">
-                  <Button onPress={handleAffirmative} shape="pill" expand="half">
-                    {affirmativeTexts[dialog.type]}
-                  </Button>
-                  {dialog.type !== 'alert' && (
-                    <Button onPress={hide} shape="pill" mode="ghost">
-                      Cancel
+          <div
+            style={
+              dialog.type === 'prompt' && visualViewportHeight != null
+                ? { maxHeight: `${visualViewportHeight}px` }
+                : undefined
+            }>
+            <Modal state={state}>
+              <AlertDialog
+                title={dialog.title}
+                onClose={state.close}
+                footer={
+                  <div className="flex w-full items-center justify-center gap-2 pt-4">
+                    <Button onPress={handleAffirmative} shape="pill" expand="half">
+                      {affirmativeTexts[dialog.type]}
                     </Button>
-                  )}
+                    {dialog.type !== 'alert' && (
+                      <Button onPress={hide} shape="pill" mode="ghost">
+                        Cancel
+                      </Button>
+                    )}
+                  </div>
+                }>
+                <div className="flex min-h-0 flex-1 flex-col">
+                  <p className="text-center text-lg text-muted-foreground">{dialog.message}</p>
+                  <div className="min-h-0 w-full flex-1">
+                    {dialog.type === 'prompt' && (
+                      <div className="h-[40vh] max-h-[40vh] overflow-y-auto">
+                        {dialog.promptType === 'input' ? (
+                          <TextInput
+                            value={promptValue}
+                            onChange={setPromptValue}
+                            placeholder={dialog.promptLabel || 'Input here'}
+                            ref={inputRef}
+                            errorMessage={inputError || undefined}
+                          />
+                        ) : (
+                          <TextAreaWithMentionsAndHashTags
+                            content={promptValue}
+                            setContent={setPromptValue}
+                            placeholder={dialog.promptLabel || 'Input here'}
+                            errorMessage={inputError || undefined}
+                          />
+                        )}
+                      </div>
+                    )}
+                  </div>
                 </div>
-              }>
-              <div className="flex min-h-0 flex-1 flex-col">
-                <p className="text-center text-lg text-muted-foreground">{dialog.message}</p>
-                <div className="min-h-0 w-full flex-1">
-                  {dialog.type === 'prompt' && (
-                    <div className="h-[40vh] max-h-[40vh] overflow-y-auto">
-                      {dialog.promptType === 'input' ? (
-                        <TextInput
-                          value={promptValue}
-                          onChange={setPromptValue}
-                          placeholder={dialog.promptLabel || 'Input here'}
-                          ref={inputRef}
-                          errorMessage={inputError || undefined}
-                        />
-                      ) : (
-                        <TextAreaWithMentionsAndHashTags
-                          content={promptValue}
-                          setContent={setPromptValue}
-                          placeholder={dialog.promptLabel || 'Input here'}
-                          errorMessage={inputError || undefined}
-                        />
-                      )}
-                    </div>
-                  )}
-                </div>
-              </div>
-            </AlertDialog>
-          </Modal>
+              </AlertDialog>
+            </Modal>
+          </div>
         )}
       </AnimatePresence>
     </DialogsContext.Provider>
