@@ -12,8 +12,8 @@ import { existsSync } from 'fs';
  * Only enabled in development environment.
  */
 export async function POST(req: NextRequest) {
-  // Only allow in development
-  if (process.env.NODE_ENV !== 'development') {
+  const debugLogEnabled = process.env.NODE_ENV === 'development' || process.env.DEBUG_LOG_ENABLED === 'true';
+  if (!debugLogEnabled) {
     return NextResponse.json({ error: 'Not found' }, { status: 404 });
   }
 
@@ -38,25 +38,18 @@ export async function POST(req: NextRequest) {
       hypothesisId: hypothesisId || null,
     };
 
-    // Write to .cursor/debug.log (NDJSON format - one JSON object per line)
-    const logDir = join(process.cwd(), '.cursor');
-    const logFile = join(logDir, 'debug.log');
-
-    // Ensure .cursor directory exists
-    if (!existsSync(logDir)) {
-      await mkdir(logDir, { recursive: true });
+    if (process.env.NODE_ENV === 'development') {
+      const logDir = join(process.cwd(), '.cursor');
+      const logFile = join(logDir, 'debug.log');
+      if (!existsSync(logDir)) {
+        await mkdir(logDir, { recursive: true });
+      }
+      await writeFile(logFile, JSON.stringify(logEntry) + '\n', { flag: 'a' });
     }
 
-    // Append log entry as NDJSON (one JSON object per line)
-    await writeFile(logFile, JSON.stringify(logEntry) + '\n', { flag: 'a' });
-
-    // Also log to server console for immediate visibility
     logger.debug({
       msg: 'debug_log_received',
-      location,
-      message,
-      sessionId: logEntry.sessionId,
-      runId: logEntry.runId,
+      ...logEntry,
     });
 
     return NextResponse.json({ ok: true, logged: true });

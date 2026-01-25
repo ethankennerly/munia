@@ -1,0 +1,14 @@
+## Reply to a Comment
+- [x] Steps to Reproduce: iPhone 13. Chrome. View post. View comment on post. Click reply button on comment. Dialog opened. Input text. Click Submit button. Reply is created. Success toast is displayed.
+    - [x] Expected Result: After a few seconds, the sucess toast is removed. 
+    - [x] Actual Result should not occur: The sucess toast is not removed. Only observed on mobile. Not observed on desktop.
+- [ ] Steps to Reproduce: MacBook Air M1. Chrome. View post. View comment on post. Click reply button on comment. Dialog opened. View margins of title and input text area.
+    - [ ] Expected Result: Title has a small margin to the top of the dialog box. Input text area has a small margin to the left and right side of the dialog box. Submit and Cancel buttons have a small margin to the bottom of the dialog box.
+    - [ ] Actual Result should not occur: Title has a large margin to the top of the dialog box. Input text area has a large margin to the left and right side of the dialog box. Submit and Cancel buttons have a large margin to the bottom of the dialog box.
+- [ ] Steps to Reproduce: iPhone 13. Chrome. View post. View comment on post. Click reply button on comment. Dialog opened. Input text.
+    - [x] Expected Result: Input text is above the keyboard entry of the operating system.
+        - [x] Actual Result should not occur: Input text is partially overlapped by the keyboard entry of the operating system.
+    - [ ] Expected Result: Top of the Reply modal has a very short margin to the top of the browser viewport.
+        - [ ] Actual Result should not occur: Top of the Reply modal has a tall margin to the top of the browser viewport.
+    - [ ] Expected Result: Submit and Cancel buttons have a very short margin above the Chrome footer. It is acceptable for the bottom margin to be static and to have more space to the bottom when the Chrome footer is not visible.
+        - [ ] Actual Result: Submit and Cancel buttons are partially overlapped by Chrome footer.
