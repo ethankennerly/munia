@@ -50,6 +50,7 @@ const nextConfig = {
   },
 
   outputFileTracingRoot: __dirname,
+
 };
 
 export default withSentryConfig(withNextIntl(nextConfig), {
