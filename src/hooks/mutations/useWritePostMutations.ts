@@ -4,6 +4,7 @@ import { useSession } from 'next-auth/react';
 import { GetVisualMedia, GetPost, PostIds } from '@/types/definitions';
 import { POSTS_PER_PAGE } from '@/constants';
 import { revokeVisualMediaObjectUrls } from '@/lib/revokeVisualMediaObjectUrls';
+import { useTranslations } from 'next-intl';
 import { useToast } from '../useToast';
 import { useErrorNotifier } from '../useErrorNotifier';
 
@@ -21,6 +22,7 @@ export function useWritePostMutations({
   const qc = useQueryClient();
   const { data: session } = useSession();
   const queryKey = ['users', session?.user?.id, 'posts'];
+  const t = useTranslations();
   const { showToast } = useToast();
   const { notifyError } = useErrorNotifier();
 
@@ -82,12 +84,12 @@ export function useWritePostMutations({
           pageParams: newPageParams,
         };
       });
-      showToast({ title: 'Successfully Posted', type: 'success' });
+      showToast({ title: t('hooks_mutations_post_success'), type: 'success' });
       revokeVisualMediaObjectUrls(visualMedia);
       exitCreatePostModal();
     },
     onError: (err) => {
-      notifyError(err, 'Error Creating Post');
+      notifyError(err, t('errors_creating_post'));
       clearVisualMedia?.();
     },
   });
@@ -130,12 +132,12 @@ export function useWritePostMutations({
           pageParams: oldData.pageParams,
         };
       });
-      showToast({ title: 'Successfully Edited', type: 'success' });
+      showToast({ title: t('successfully_edited'), type: 'success' });
       revokeVisualMediaObjectUrls(visualMedia);
       exitCreatePostModal();
     },
     onError: (err) => {
-      notifyError(err, 'Error Creating Post');
+      notifyError(err, t('errors_creating_post'));
       clearVisualMedia?.();
     },
   });

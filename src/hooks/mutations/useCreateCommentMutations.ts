@@ -1,10 +1,12 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useTranslations } from 'next-intl';
 import { GetComment } from '@/types/definitions';
 import { useErrorNotifier } from '../useErrorNotifier';
 import { useToast } from '../useToast';
 
 export function useCreateCommentMutations() {
   const qc = useQueryClient();
+  const t = useTranslations();
   const { showToast } = useToast();
   const { notifyError } = useErrorNotifier();
 
@@ -29,8 +31,8 @@ export function useCreateCommentMutations() {
         return [...oldComments, createdComment];
       });
       showToast({
-        title: 'Success',
-        message: 'Your comment has been created.',
+        title: t('hooks_mutations_comment_success'),
+        message: t('your_comment_has_been_created'),
         type: 'success',
       });
     },
@@ -60,8 +62,8 @@ export function useCreateCommentMutations() {
         return [...oldReplies, createdReply];
       });
       showToast({
-        title: 'Success',
-        message: 'Your reply has been created.',
+        title: t('hooks_mutations_reply_success'),
+        message: t('your_reply_has_been_created'),
         type: 'success',
       });
     },

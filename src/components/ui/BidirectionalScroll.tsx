@@ -8,6 +8,7 @@ import { SomethingWentWrong } from '@/components/SometingWentWrong';
 import { AllCaughtUp } from '@/components/AllCaughtUp';
 import { logger } from '@/lib/logging-client';
 import { NO_PREV_DATA_LOADED } from '@/constants';
+import { useTranslations } from 'next-intl';
 
 interface BidirectionalScrollProps<TItem = unknown> {
   // useInfiniteQuery returns InfiniteData<TItem[]>, but we handle it internally
@@ -38,7 +39,7 @@ export default function BidirectionalScroll<TItem = unknown>({
   sortItems,
 }: BidirectionalScrollProps<TItem>) {
   const parentRef = useRef<HTMLDivElement>(null);
-
+  const t = useTranslations();
   // Flatten all pages into a single array and sort if needed
   // Newer items should be at the top (index 0), older items at the bottom
   const allItems = useMemo(() => {
@@ -545,7 +546,7 @@ export default function BidirectionalScroll<TItem = unknown>({
   if (queryResult.isPending) {
     return (
       <div ref={parentRef} className={className} style={containerStyle}>
-        <GenericLoading>Loading items...</GenericLoading>
+        <GenericLoading>{t('loading_items')}</GenericLoading>
       </div>
     );
   }
@@ -590,12 +591,12 @@ export default function BidirectionalScroll<TItem = unknown>({
           </div>
           {queryResult.isFetchingNextPage && (
             <div className="p-4 text-center">
-              <GenericLoading>Loading older items...</GenericLoading>
+              <GenericLoading>{t('loading_older_items')}</GenericLoading>
             </div>
           )}
           {queryResult.isFetchingPreviousPage && (
             <div className="p-4 text-center">
-              <GenericLoading>Loading newer items...</GenericLoading>
+              <GenericLoading>{t('loading_newer_items')}</GenericLoading>
             </div>
           )}
           {!queryResult.isFetchingNextPage && !queryResult.hasNextPage && (
@@ -691,12 +692,12 @@ export default function BidirectionalScroll<TItem = unknown>({
       </div>
       {queryResult.isFetchingNextPage && (
         <div className="p-4 text-center" data-scroll-state="fetching-next">
-          <GenericLoading>Loading older items...</GenericLoading>
+          <GenericLoading>{t('loading_older_items')}</GenericLoading>
         </div>
       )}
       {queryResult.isFetchingPreviousPage && (
         <div className="p-4 text-center" data-scroll-state="fetching-previous">
-          <GenericLoading>Loading newer items...</GenericLoading>
+          <GenericLoading>{t('loading_newer_items')}</GenericLoading>
         </div>
       )}
       {!queryResult.isFetchingNextPage && !queryResult.hasNextPage && (
@@ -705,7 +706,7 @@ export default function BidirectionalScroll<TItem = unknown>({
         </div>
       )}
       {/* Debug indicator - only in development, shows current state */}
-      {process.env.NODE_ENV === 'development' && (
+      {process.env.NODE_ENV === 'development' && logger.isDebugChannelEnabled('SCROLL') && (
         <div
           className="fixed bottom-4 right-4 z-50 rounded-lg bg-black/80 px-3 py-2 text-xs text-white opacity-75"
           data-scroll-debug

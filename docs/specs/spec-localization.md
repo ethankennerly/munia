@@ -27,3 +27,8 @@ Localize end-user text visible to users at runtime.
 
 ## Testing
 - [x] Test all end-user facing pages in Spanish. Prefix path `/es`.
+
+## Localize Success Toast
+- [x] Post. Success toast.
+- [x] Comment. Success toast.
+- [x] Reply. Success toast.

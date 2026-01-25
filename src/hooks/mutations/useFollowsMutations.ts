@@ -1,9 +1,12 @@
+'use client';
+
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { GetUser } from '@/types/definitions';
 import { useSession } from 'next-auth/react';
 import { useToast } from '../useToast';
+import { useTranslations } from 'next-intl';
 
-const follow = async ({ userId, targetUserId }: { userId: string; targetUserId: string }) => {
+async function follow({ userId, targetUserId }: { userId: string; targetUserId: string }, t: (key: string) => string) {
   const res = await fetch(`/api/users/${userId}/following`, {
     method: 'POST',
     headers: {
@@ -14,22 +17,26 @@ const follow = async ({ userId, targetUserId }: { userId: string; targetUserId: 
 
   if (!res.ok) {
     if (res.status === 409) return;
-    throw new Error('Failed to follow user.');
+    throw new Error(t('failed_to_follow_user'));
   }
-};
+}
 
-const unFollow = async ({ userId, targetUserId }: { userId: string; targetUserId: string }) => {
+async function unFollow(
+  { userId, targetUserId }: { userId: string; targetUserId: string },
+  t: (key: string) => string,
+) {
   const res = await fetch(`/api/users/${userId}/following/${targetUserId}`, {
     method: 'DELETE',
   });
 
   if (!res.ok) {
     if (res.status === 409) return;
-    throw new Error('Failed to unfollow user.');
+    throw new Error(t('failed_to_unfollow_user'));
   }
-};
+}
 
 export function useFollowsMutations({ targetUserId }: { targetUserId: string }) {
+  const t = useTranslations();
   const qc = useQueryClient();
   const { data: session } = useSession();
   const currentUserId = session?.user.id;
@@ -39,9 +46,9 @@ export function useFollowsMutations({ targetUserId }: { targetUserId: string }) 
   const followMutation = useMutation({
     mutationFn: () => {
       if (currentUserId) {
-        return follow({ userId: currentUserId, targetUserId });
+        return follow({ userId: currentUserId, targetUserId }, t);
       }
-      return Promise.reject(new Error('User not authenticated.'));
+      return Promise.reject(new Error(t('user_not_authenticated')));
     },
     onMutate: async () => {
       // Cancel outgoing queries and snapshot the prev value
@@ -64,7 +71,7 @@ export function useFollowsMutations({ targetUserId }: { targetUserId: string }) 
     onError: (err: Error, variables, context) => {
       qc.setQueryData(queryKey, context?.previousTargetUser);
       showToast({
-        title: 'Something Went Wrong',
+        title: t('something_went_wrong'),
         message: err.message,
         type: 'error',
       });
@@ -74,9 +81,9 @@ export function useFollowsMutations({ targetUserId }: { targetUserId: string }) 
   const unFollowMutation = useMutation({
     mutationFn: () => {
       if (currentUserId) {
-        return unFollow({ userId: currentUserId, targetUserId });
+        return unFollow({ userId: currentUserId, targetUserId }, t);
       }
-      return Promise.reject(new Error('User not authenticated.'));
+      return Promise.reject(new Error(t('user_not_authenticated')));
     },
     onMutate: async () => {
       // Cancel outgoing queries and snapshot the prev value
@@ -99,7 +106,7 @@ export function useFollowsMutations({ targetUserId }: { targetUserId: string }) 
     onError: (err: Error, variables, context) => {
       qc.setQueryData(queryKey, context?.previousTargetUser);
       showToast({
-        title: 'Something Went Wrong',
+        title: t('something_went_wrong'),
         message: err.message,
         type: 'error',
       });

@@ -4,12 +4,24 @@ import React from 'react';
 import { useWritePostMutations } from './useWritePostMutations';
 
 const mockNotifyError = vi.fn();
-vi.mock('../useToast', () => ({ useToast: () => ({ showToast: vi.fn() }) }));
+const showToastMock = vi.fn();
+vi.mock('../useToast', () => ({ useToast: () => ({ showToast: showToastMock }) }));
 vi.mock('../useErrorNotifier', () => ({ useErrorNotifier: () => ({ notifyError: mockNotifyError }) }));
+vi.mock('next-intl', () => ({
+  useTranslations: () => (key: string) => (key === 'hooks_mutations_post_success' ? 'Publicado correctamente' : key),
+}));
 vi.mock('next-auth/react', () => ({ useSession: () => ({ data: { user: { id: '1' } } }) }));
 vi.mock('@tanstack/react-query', () => ({
-  useMutation: (opts: { mutationFn: () => Promise<unknown>; onError: (err: Error) => void }) => ({
-    mutate: () => opts.mutationFn().catch(opts.onError),
+  useMutation: (opts: {
+    mutationFn: () => Promise<unknown>;
+    onSuccess?: (data: unknown) => void;
+    onError?: (err: Error) => void;
+  }) => ({
+    mutate: () =>
+      opts
+        .mutationFn()
+        .then((data) => opts.onSuccess?.(data))
+        .catch((err) => opts.onError?.(err)),
     isPending: false,
   }),
   useQueryClient: () => ({ setQueryData: vi.fn(), setQueriesData: vi.fn() }),
@@ -61,6 +73,19 @@ describe('useWritePostMutations', () => {
     const err = mockNotifyError.mock.calls[0][0];
     expect(err instanceof Error).toBe(true);
     expect((err as Error).message).toBe(serverMessage);
+  });
+
+  it('shows post success toast with localized title', async () => {
+    const createdPost = { id: 1 };
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(() => Promise.resolve({ ok: true, json: () => Promise.resolve(createdPost) })),
+    );
+    render(<TestHost />);
+    screen.getByRole('button', { name: 'Post' }).click();
+    await vi.waitFor(() => {
+      expect(showToastMock).toHaveBeenCalledWith({ title: 'Publicado correctamente', type: 'success' });
+    });
   });
 
   it('calls clearVisualMedia when create post fails so dialog can remove image and stay open', async () => {

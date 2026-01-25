@@ -14,6 +14,16 @@ vi.mock('@tanstack/react-virtual', () => ({
   useVirtualizer: (config: unknown) => mockUseVirtualizer(config),
 }));
 
+vi.mock('next-intl', () => ({
+  useTranslations: () => (key: string) =>
+    ({
+      loading_items: 'Loading items...',
+      loading_older_items: 'Loading older items',
+      loading_newer_items: 'Loading newer items',
+      components_allcaughtup: 'No older posts to load.',
+    })[key] ?? key,
+}));
+
 describe('BidirectionalScroll', () => {
   let queryClient: QueryClient;
   let mockQueryResult: Partial<UseInfiniteQueryResult<unknown[], Error>>;
@@ -267,7 +277,7 @@ describe('BidirectionalScroll', () => {
     expect(spinner).toHaveClass('animate-spin');
   });
 
-  it('shows "components_allcaughtup" when no more pages and not fetching', () => {
+  it('shows "no older posts" when no more pages and not fetching', () => {
     mockQueryResult = createMockQueryResult({
       hasNextPage: false,
       hasPreviousPage: false,
@@ -280,6 +290,6 @@ describe('BidirectionalScroll', () => {
     });
     renderComponent(mockQueryResult);
 
-    expect(screen.getByText(/components_allcaughtup/i)).toBeInTheDocument();
+    expect(screen.getByText(/no older posts to load/i)).toBeInTheDocument();
   });
 });

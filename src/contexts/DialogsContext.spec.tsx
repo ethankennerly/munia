@@ -6,7 +6,15 @@ import { DialogsContextProvider } from './DialogsContext';
 import { useDialogs } from '@/hooks/useDialogs';
 
 vi.mock('next-intl', () => ({
-  useTranslations: () => (key: string) => key,
+  useTranslations: () => (key: string) =>
+    ({
+      contexts_dialogscontext_submit: 'Submit',
+      components_confirmdialog_cancel: 'Cancel',
+      components_confirmdialog: 'Confirm',
+      this_cannot_be_empty: 'This cannot be empty',
+      okay: 'Okay',
+      input_here: 'Type here',
+    })[key] ?? key,
 }));
 
 vi.mock('@/components/TextAreaWithMentionsAndHashTags', () => ({

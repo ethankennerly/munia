@@ -17,6 +17,7 @@ import { TextAreaWithMentionsAndHashTags } from '@/components/TextAreaWithMentio
 import { AnimatePresence } from 'framer-motion';
 import { AlertDialog } from '../components/AlertDialog';
 import { Modal } from '../components/Modal';
+import { useTranslations } from 'next-intl';
 
 interface BasicDialogType {
   type: 'alert' | 'confirm' | 'prompt';
@@ -39,6 +40,7 @@ export const DialogsContext = createContext<{
 
 export function DialogsContextProvider({ children }: { children: React.ReactNode }) {
   const state = useOverlayTriggerState({});
+  const t = useTranslations();
   const [dialog, setDialog] = useState<BasicDialogType>({
     type: 'alert',
     title: '',
@@ -107,18 +109,18 @@ export function DialogsContextProvider({ children }: { children: React.ReactNode
     }
     if (dialog.type === 'prompt') {
       if (promptValue === '') {
-        setInputError('This cannot be empty.');
+        setInputError(t('this_cannot_be_empty'));
         return;
       }
       dialog?.onSubmit?.(promptValue);
       hide();
     }
-  }, [dialog, hide, promptValue]);
+  }, [dialog, hide, promptValue, t]);
 
   const affirmativeTexts = {
-    alert: 'Okay',
-    confirm: 'Confirm',
-    prompt: 'Submit',
+    alert: t('okay'),
+    confirm: t('components_confirmdialog'),
+    prompt: t('contexts_dialogscontext_submit'),
   };
 
   // This prevents unncessesary rerenders of the `DialogsContext` consumers
@@ -154,7 +156,7 @@ export function DialogsContextProvider({ children }: { children: React.ReactNode
                     </Button>
                     {dialog.type !== 'alert' && (
                       <Button onPress={hide} shape="pill" mode="ghost">
-                        Cancel
+                        {t('components_confirmdialog_cancel')}
                       </Button>
                     )}
                   </div>
@@ -168,7 +170,7 @@ export function DialogsContextProvider({ children }: { children: React.ReactNode
                           <TextInput
                             value={promptValue}
                             onChange={setPromptValue}
-                            placeholder={dialog.promptLabel || 'Input here'}
+                            placeholder={dialog.promptLabel || t('input_here')}
                             ref={inputRef}
                             errorMessage={inputError || undefined}
                           />
@@ -176,7 +178,7 @@ export function DialogsContextProvider({ children }: { children: React.ReactNode
                           <TextAreaWithMentionsAndHashTags
                             content={promptValue}
                             setContent={setPromptValue}
-                            placeholder={dialog.promptLabel || 'Input here'}
+                            placeholder={dialog.promptLabel || t('input_here')}
                             errorMessage={inputError || undefined}
                           />
                         )}
