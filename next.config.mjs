@@ -1,3 +1,4 @@
+import nextEnv from '@next/env';
 import { withSentryConfig } from '@sentry/nextjs';
 import createNextIntlPlugin from 'next-intl/plugin';
 
@@ -7,10 +8,22 @@ import { dirname } from 'node:path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
+nextEnv.loadEnvConfig(__dirname);
+
 const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
+
+const allowedDevOriginsEnv = process.env.NEXT_ALLOWED_DEV_ORIGINS;
+const allowedDevOrigins =
+  allowedDevOriginsEnv === undefined
+    ? undefined
+    : allowedDevOriginsEnv
+        .split(',')
+        .map((s) => s.trim().toLowerCase())
+        .filter(Boolean);
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  ...(allowedDevOrigins?.length ? { allowedDevOrigins } : {}),
   experimental: {
     mcpServer: true,
     scrollRestoration: true,
