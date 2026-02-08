@@ -226,6 +226,7 @@
   "failed_to_delete_post": "No se pudo eliminar la publicación",
   "filter_by_gender": "Filtrar por género",
   "filter_by_status": "Filtrar por estado",
+  "filter_any": "(Cualquiera)",
   "image_video": "Imagen / Vídeo",
   "name_0": "Nombre *",
   "name_s_avatar": "avatar de {username}",

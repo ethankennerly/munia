@@ -32,3 +32,4 @@ Localize end-user text visible to users at runtime.
 - [x] Post. Success toast.
 - [x] Comment. Success toast.
 - [x] Reply. Success toast.
+- [x] Edit. Success toast.

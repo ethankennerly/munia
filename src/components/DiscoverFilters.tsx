@@ -23,7 +23,7 @@ export function DiscoverFilters() {
   const genderFilters: Gender[] = ['MALE', 'FEMALE', 'NONBINARY'];
   const relationshipStatusFilters: RelationshipStatus[] = ['SINGLE', 'IN_A_RELATIONSHIP', 'ENGAGED', 'MARRIED'];
 
-  const { getGenderLabel, getRelationshipLabel } = useLocalizedEnums();
+  const { getClearLabel, getGenderLabel, getRelationshipLabel } = useLocalizedEnums();
 
   const updateParams = useCallback(
     <T extends DiscoverFilterKeys>({ key, value }: { key: T; value: TDiscoverFilters[T] }) => {
@@ -44,7 +44,7 @@ export function DiscoverFilters() {
     (key: Key | null) => {
       updateParams({
         key: 'gender',
-        value: (key ? (key as Gender) : undefined) as TDiscoverFilters['gender'],
+        value: (key && key !== '' ? (key as Gender) : undefined) as TDiscoverFilters['gender'],
       });
     },
     [updateParams],
@@ -53,7 +53,7 @@ export function DiscoverFilters() {
     (key: Key | null) => {
       updateParams({
         key: 'relationship-status',
-        value: (key ? (key as RelationshipStatus) : undefined) as TDiscoverFilters['relationship-status'],
+        value: (key && key !== '' ? (key as RelationshipStatus) : undefined) as TDiscoverFilters['relationship-status'],
       });
     },
     [updateParams],
@@ -66,9 +66,10 @@ export function DiscoverFilters() {
           label={t('filter_by_gender')}
           selectedKey={toUpper(snakeCase(filters.gender)) || null}
           onSelectionChange={onSelectGender}>
-          {genderFilters.map((gender) => (
-            <Item key={gender}>{getGenderLabel(gender)}</Item>
-          ))}
+          {[
+            <Item key="">{getClearLabel()}</Item>,
+            ...genderFilters.map((gender) => <Item key={gender}>{getGenderLabel(gender)}</Item>),
+          ]}
         </Select>
       </div>
       <div className="flex-1">
@@ -76,9 +77,12 @@ export function DiscoverFilters() {
           label={t('filter_by_status')}
           selectedKey={toUpper(snakeCase(filters.relationshipStatus)) || null}
           onSelectionChange={onSelectRelationshipStatus}>
-          {relationshipStatusFilters.map((relationship) => (
-            <Item key={relationship}>{getRelationshipLabel(relationship)}</Item>
-          ))}
+          {[
+            <Item key="">{getClearLabel()}</Item>,
+            ...relationshipStatusFilters.map((relationship) => (
+              <Item key={relationship}>{getRelationshipLabel(relationship)}</Item>
+            )),
+          ]}
         </Select>
       </div>
     </div>

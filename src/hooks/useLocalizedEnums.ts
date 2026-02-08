@@ -6,6 +6,9 @@ import { Gender, RelationshipStatus } from '@prisma/client';
 export function useLocalizedEnums() {
   const t = useTranslations();
 
+  // Get label for clear/unselected state
+  const getClearLabel = () => t('filter_any');
+
   // Map gender values to their translated equivalents
   const getGenderLabel = (gender: Gender | null) => {
     switch (gender) {
@@ -36,5 +39,5 @@ export function useLocalizedEnums() {
     }
   };
 
-  return { getGenderLabel, getRelationshipLabel };
+  return { getClearLabel, getGenderLabel, getRelationshipLabel };
 }
