@@ -28,9 +28,11 @@ export function DiscoverSearch({ label }: { label?: string }) {
     [pathname, router, searchParams],
   );
 
+  const searchValue = searchParams?.get('search') ?? '';
+
   return (
     <div className="sticky top-4 z-[2] mb-4">
-      <TextInput onChange={handleChange} label={resolvedLabel} Icon={SvgSearch} />
+      <TextInput value={searchValue} onChange={handleChange} label={resolvedLabel} Icon={SvgSearch} />
     </div>
   );
 }
