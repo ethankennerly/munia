@@ -41,7 +41,7 @@ export function AlertDialog({ children, onClose, title, footer, ...props }: Dial
       <div
         {...dialogProps}
         ref={ref}
-        className="relative flex max-h-[calc(100vh-2rem-env(safe-area-inset-top)-env(safe-area-inset-bottom))] w-full max-w-md flex-col gap-6 overflow-hidden rounded-2xl border border-border bg-card px-5 py-6 focus:outline-none md:w-[600px] md:rounded-3xl md:px-32 md:py-24">
+        className="relative flex max-h-[calc(100vh-2rem-env(safe-area-inset-top)-env(safe-area-inset-bottom))] w-full max-w-md flex-col gap-6 overflow-hidden rounded-2xl border border-border bg-card px-5 py-6 focus:outline-none md:w-[600px] md:rounded-3xl">
         <div className="flex min-h-0 flex-1 flex-col items-center gap-6 outline-none">
           <div className="absolute right-2 top-2 z-10 md:right-8 md:top-8">
             <Button Icon={Close} mode="ghost" onPress={onClose} />
