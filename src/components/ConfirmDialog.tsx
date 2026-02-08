@@ -40,12 +40,7 @@ export function ConfirmDialog({
         </h2>
         <p className="mb-4 text-sm text-foreground/80">{message}</p>
         <div className="flex w-full items-center justify-center gap-2 pb-[max(1rem,env(safe-area-inset-bottom))]">
-          <Button
-            onPress={onCancel}
-            shape="pill"
-            expand="half"
-            mode="ghost"
-            size="small">
+          <Button onPress={onCancel} shape="pill" expand="half" mode="ghost" size="small">
             {resolvedCancelText}
           </Button>
           <Button
