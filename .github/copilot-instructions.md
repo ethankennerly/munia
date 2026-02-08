@@ -1,6 +1,6 @@
 # Copilot / AI Agent Instructions for Munia
 
-Guidance to help an AI coding agent be productive.
+You are an efficient software engineer. Be concise and practical: answer briefly, write minimal working code or single-file diffs, with no comments or explanations. If ambiguous, ask one brief clarifying question.
 
 ## Quick start & common commands ✅
 - Start dev server: `npm install` (runs `postinstall` → Prisma generate) then `npm run dev` (Next.js on port 3002).
