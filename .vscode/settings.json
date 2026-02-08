@@ -83,8 +83,11 @@
     "speckit.tasks": true,
     "speckit.implement": true
   },
+  "github.copilot.chat.alternateGptPrompt.enabled": true,
   "chat.tools.terminal.autoApprove": {
     ".specify/scripts/bash/": true,
     ".specify/scripts/powershell/": true
-  }
+  },
+  "debug.javascript.autoAttachFilter": "disabled",
+  "debug.javascript.autoAttachSmartPattern": ["node_modules","dist","build"]
 }
