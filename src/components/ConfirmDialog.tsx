@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { useTranslations } from 'next-intl';
+import Button from '@/components/ui/Button';
 
 type ConfirmDialogProps = {
   open: boolean;
@@ -39,18 +40,22 @@ export function ConfirmDialog({
         </h2>
         <p className="mb-4 text-sm text-foreground/80">{message}</p>
         <div className="flex w-full items-center justify-center gap-2 pb-[max(1rem,env(safe-area-inset-bottom))]">
-          <button
-            type="button"
-            onClick={onCancel}
-            className="rounded-full bg-muted px-4 py-2 text-sm font-medium text-foreground hover:bg-muted/80">
+          <Button
+            onPress={onCancel}
+            shape="pill"
+            expand="half"
+            mode="ghost"
+            size="small">
             {resolvedCancelText}
-          </button>
-          <button
-            type="button"
-            onClick={onConfirm}
-            className="rounded-full bg-destructive px-4 py-2 text-sm font-semibold text-destructive-foreground hover:opacity-90">
+          </Button>
+          <Button
+            onPress={onConfirm}
+            shape="pill"
+            expand="half"
+            size="small"
+            className="bg-destructive text-destructive-foreground hover:opacity-90">
             {resolvedConfirmText}
-          </button>
+          </Button>
         </div>
       </div>
     </div>
