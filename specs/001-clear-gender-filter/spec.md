@@ -59,32 +59,59 @@ Users need clear visual indication that they can clear selections in dropdowns, 
 
 ### Functional Requirements
 
-- **FR-001**: System MUST provide a mechanism to clear/reset the gender filter that is accessible from the Discover page
-- **FR-002**: When user clears the gender filter, the system MUST remove the `gender` query parameter from the URL
-- **FR-003**: When user clears the gender filter, the system MUST reset the gender Select component to its unselected state
-- **FR-004**: Clearing the gender filter MUST NOT affect other active filters (relationship status filter must remain intact)
-- **FR-005**: The clear mechanism MUST be visually distinct and easily discoverable by users
-- **FR-006**: System MUST support clearing the gender filter via keyboard and mouse interactions
-- **FR-007**: Cleared state is the first option in the dropdown, allowing users to select it directly to clear the filter without needing a separate button
-- **FR-009**: The cleared state is labeled appropriately in all supported languages. English reads "(Any)".
-- **FR-008**: Cleared state is localized.
-- **FR-008**: The cleared dropdown option not only appears in Gender, but also in Relationship Status, and any other drop down, to maintain consistency across filters.
-- **FR-008**: The cleared dropdown option not only appears in Discover page, but also in any other pages that have a dropdown.
-- **FR-009**: The cleared state label is equal in all dropdrowns.
-- **FR-009**: The cleared state is consistent across all pages and dropdowns.
+**Core Clear Mechanism (App-Wide)**:
+- **FR-001**: The base `Select` component MUST render a clear option as the first item in every dropdown
+- **FR-002**: The clear option MUST be labeled "(Any)" consistently across all Select instances (English) and localized equivalently in other languages
+- **FR-003**: Selecting the clear option MUST set the selected value to `undefined`, removing it from URL parameters or form state
+- **FR-004**: The clear option MUST be rendered by default for all Select components (no opt-in required)
+- **FR-005**: Clearing one selection MUST NOT affect other active selections or filters (isolation guarantee)
+- **FR-006**: System MUST support clearing via keyboard (Enter/Space on focused option) and mouse (click)
+- **FR-007**: The clear option Item key MUST use empty string `""` to prevent null stringification; the resulting value passed to handler MUST be `undefined` (not empty string), achieved via condition check `key && key !== ''`
+- **FR-008**: Clearing the same selection multiple times MUST be idempotent (no duplicate updates)
+
+**UI/UX Consistency**:
+- **FR-009**: The "(Any)" option MUST appear in the same position (first) and with the same styling across all Select components
+- **FR-010**: All pages and forms using Select MUST render the clear option consistently
+- **FR-011**: The clear option MUST be included in all Select instances: DiscoverFilters (gender, relationship status), EditProfileForm (gender, relationship status), and any other future Select usage
+
+**URL & Form State Management**:
+- **FR-012**: When clearing a URL-based filter (Discover page), the corresponding query parameter MUST be removed entirely, not set to a null/empty value
+- **FR-013**: When clearing a form field (EditProfileForm), the field value MUST be set to `undefined` or empty, not to "null" string
+- **FR-014**: Clearing a filter/field MUST update the UI immediately without page reload
+
+**Localization**:
+- **FR-015**: The clear option label MUST be localized using the `filter_any` translation key (English: "(Any)", Spanish: "(Cualquiera)", etc.)
+- **FR-016**: Translation keys MUST be consistent and reused across all pages and components
+
+### Architectural Requirements
+
+- **AR-001**: The clear mechanism MUST be implemented at the base `Select` component level to avoid code duplication
+- **AR-002**: All components using Select (DiscoverFilters, EditProfileForm, etc.) MUST automatically inherit the clear option without additional implementation
+- **AR-003**: The implementation MUST not require changes to parent components' selection handlers beyond using empty string key checks
 
 ### Key Entities *(include if feature involves data)*
 
-- **Filter State**: The current gender filter selection stored in URL search parameters and component state
-- **Select Component**: The UI element that displays and manages gender filter selection
-- **DiscoverFilters Component**: The parent component that manages all filter interactions
+- **Select Component**: The base UI component that displays and manages value selection for all dropdowns across the app
+- **DiscoverFilters Component**: Uses Select for gender and relationship status filters; clears should update URL parameters
+- **EditProfileForm Component**: Uses Select for profile fields (gender, relationship status); clears should update form state
+- **Filter State**: Stored in URL search parameters (Discover) or component state (forms)
+- **Clear Option**: First item in every dropdown, labeled "(Any)", with Item key `""` (empty string) that triggers selection handler to return `undefined` value
 
 ## Success Criteria *(mandatory)*
 
 ### Measurable Outcomes
 
-- **SC-001**: Users can clear the gender filter within 2 clicks or keyboard interactions
-- **SC-002**: Filter clearing action completes without page reload or noticeable delay
-- **SC-003**: 100% of users testing the feature can successfully clear the gender filter without documentation
-- **SC-004**: Clearing the filter updates the UI and URL parameters consistently on first attempt
-- **SC-005**: The feature does not cause any performance regression (filter updates remain under 100ms)
+- **SC-001**: Users can clear any selection within 2 clicks or keyboard interactions across all pages (Discover, Profile Edit, etc.)
+- **SC-002**: Selection clearing action completes without page reload or noticeable delay (<100ms)
+- **SC-003**: 100% of Select components in the app render the clear option by default with no additional configuration
+- **SC-004**: Clearing a selection updates UI and URL/form state consistently on first attempt; no retry needed
+- **SC-005**: The feature does not cause any performance regression; Select rendering remains within acceptable performance bounds
+- **SC-006**: All dropdowns across the application (DiscoverFilters, EditProfileForm, and any other pages with Select) display the same clear option pattern
+- **SC-007**: Clearing a filter/field on one page does not affect selections on other pages (verified through integration tests)
+
+### Test Coverage Requirements
+
+- **TC-001**: Select component MUST have comprehensive tests covering: clear option rendering, empty string key handling, selection clearing, localization
+- **TC-002**: Select component tests MUST verify that selecting the clear option results in `undefined` value, not null or "null" string
+- **TC-003**: DiscoverFilters and EditProfileForm MUST have integration tests verifying clear option works correctly with their specific use cases
+- **TC-004**: All tests MUST pass before feature completion (target: <1s for feature tests, <10s for full suite)

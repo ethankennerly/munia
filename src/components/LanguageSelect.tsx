@@ -30,7 +30,8 @@ export function LanguageSelect() {
       name="language"
       selectedKey={locale || ''}
       onSelectionChange={(key) => onLanguageChange(key ? key.toString() : '')}
-      Icon={WorldNet}>
+      Icon={WorldNet}
+      isClearable={false}>
       {routing.locales.map((loc) => (
         <Item key={loc}>{toLocaleTitleCase(loc)}</Item>
       ))}

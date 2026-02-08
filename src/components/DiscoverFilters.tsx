@@ -23,7 +23,7 @@ export function DiscoverFilters() {
   const genderFilters: Gender[] = ['MALE', 'FEMALE', 'NONBINARY'];
   const relationshipStatusFilters: RelationshipStatus[] = ['SINGLE', 'IN_A_RELATIONSHIP', 'ENGAGED', 'MARRIED'];
 
-  const { getClearLabel, getGenderLabel, getRelationshipLabel } = useLocalizedEnums();
+  const { getGenderLabel, getRelationshipLabel } = useLocalizedEnums();
 
   const updateParams = useCallback(
     <T extends DiscoverFilterKeys>({ key, value }: { key: T; value: TDiscoverFilters[T] }) => {
@@ -66,10 +66,9 @@ export function DiscoverFilters() {
           label={t('filter_by_gender')}
           selectedKey={toUpper(snakeCase(filters.gender)) || null}
           onSelectionChange={onSelectGender}>
-          {[
-            <Item key="">{getClearLabel()}</Item>,
-            ...genderFilters.map((gender) => <Item key={gender}>{getGenderLabel(gender)}</Item>),
-          ]}
+          {genderFilters.map((gender) => (
+            <Item key={gender}>{getGenderLabel(gender)}</Item>
+          ))}
         </Select>
       </div>
       <div className="flex-1">
@@ -77,12 +76,9 @@ export function DiscoverFilters() {
           label={t('filter_by_status')}
           selectedKey={toUpper(snakeCase(filters.relationshipStatus)) || null}
           onSelectionChange={onSelectRelationshipStatus}>
-          {[
-            <Item key="">{getClearLabel()}</Item>,
-            ...relationshipStatusFilters.map((relationship) => (
-              <Item key={relationship}>{getRelationshipLabel(relationship)}</Item>
-            )),
-          ]}
+          {relationshipStatusFilters.map((relationship) => (
+            <Item key={relationship}>{getRelationshipLabel(relationship)}</Item>
+          ))}
         </Select>
       </div>
     </div>

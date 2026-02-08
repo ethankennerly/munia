@@ -9,15 +9,28 @@ import { useObjectRef } from '@react-aria/utils';
 import SvgArrowChevronDown from '@/svg_components/ArrowChevronDown';
 import { Popover } from './Popover';
 import { ListBox } from './SelectListBox';
+import { Item } from 'react-stately';
+import { useTranslations } from 'next-intl';
 
 interface SelectProps<T> extends AriaSelectProps<T> {
   Icon?: (props: SVGProps<SVGSVGElement>) => React.ReactElement;
+  isClearable?: boolean;
 }
 
 export const Select = forwardRef(
-  ({ Icon, ...props }: SelectProps<object>, forwardedRef: ForwardedRef<HTMLButtonElement>) => {
-    // Create state based on the incoming props
-    const state = useSelectState(props);
+  (
+    { Icon, children, isClearable = true, ...props }: SelectProps<object>,
+    forwardedRef: ForwardedRef<HTMLButtonElement>,
+  ) => {
+    const t = useTranslations();
+
+    // Prepend clear option to children if isClearable is true
+    const clearOption = <Item key="">{t('filter_any')}</Item>;
+    const childrenWithClear = isClearable ? (children ? [clearOption, children] : [clearOption]) : children;
+
+    // Create state based on the incoming props with clear option prepended
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const state = useSelectState({ ...props, children: childrenWithClear } as any);
 
     // Get props for child elements from useSelect
     const ref = useObjectRef(forwardedRef);
