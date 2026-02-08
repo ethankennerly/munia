@@ -11,5 +11,5 @@ export function useTheme() {
     return undefined;
   };
 
-  return { theme, switchTheme };
+  return { theme, switchTheme, handleThemeChange };
 }

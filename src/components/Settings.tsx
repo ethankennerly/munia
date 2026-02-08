@@ -1,7 +1,7 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import { ThemeSwitch } from '@/components/ui/ThemeSwitch';
+import { ThemeSelect } from '@/components/ThemeSelect';
 import { LanguageSelect } from '@/components/LanguageSelect';
 import Link from 'next/link';
 
@@ -25,11 +25,7 @@ export function Settings() {
 
         <div className="flex flex-col gap-4">
           <LanguageSelect />
-        </div>
-
-        <div className="flex items-center justify-between">
-          <label className="w-1/2 text-muted-foreground">{t('settings_theme')}</label>
-          <ThemeSwitch />
+          <ThemeSelect />
         </div>
       </div>
 
