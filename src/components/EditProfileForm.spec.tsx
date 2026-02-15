@@ -47,8 +47,8 @@ vi.mock('@/components/DeleteAccountButton', () => ({
   DeleteAccountButton: () => <button>Delete Account</button>,
 }));
 
-vi.mock('@/components/GenericLoading', () => ({
-  GenericLoading: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+vi.mock('@/components/EditProfileFormSkeleton', () => ({
+  EditProfileFormSkeleton: () => <div>Loading form...</div>,
 }));
 
 vi.mock('@/components/ui/DatePicker', () => ({

@@ -11,7 +11,7 @@ import { NO_PREV_DATA_LOADED } from '@/constants';
 import { DropdownMenuButton } from '@/components/ui/DropdownMenuButton';
 import { Section, Item } from 'react-stately';
 import { useNotificationsCountQuery } from '@/hooks/queries/useNotificationsCountQuery';
-import { GenericLoading } from '@/components/GenericLoading';
+import { ActivitySkeletonList } from '@/components/ActivitySkeleton';
 import { SomethingWentWrong } from '@/components/SometingWentWrong';
 import { getNotifications } from '@/lib/client_data_fetching/getNotifications';
 import { useTranslations } from 'next-intl';
@@ -109,7 +109,7 @@ export function Notifications({ userId }: { userId: string }) {
       </div>
       <div>
         {isPending ? (
-          <GenericLoading>{t('loading_notifications')}</GenericLoading>
+          <ActivitySkeletonList count={5} />
         ) : (
           data?.pages.flat().map((activity) => <Activity key={activity.id} {...activity} />)
         )}
@@ -123,7 +123,7 @@ export function Notifications({ userId }: { userId: string }) {
          * so the bottom loader has to be hidden first
          */
         style={bottomLoaderStyle}>
-        {isFetchingNextPage && <GenericLoading>{t('loading_more_notifications')}</GenericLoading>}
+        {isFetchingNextPage && <ActivitySkeletonList count={2} />}
       </div>
       {isError && error.message !== NO_PREV_DATA_LOADED && (
         <SomethingWentWrong defaultMessage={t('components_something_went_wrong')} />

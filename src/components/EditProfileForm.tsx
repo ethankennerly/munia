@@ -13,7 +13,7 @@ import { useRouter } from 'nextjs-toploader/app';
 import { useCallback, useEffect, useMemo } from 'react';
 import { logger } from '@/lib/logging';
 import { useTranslations } from 'next-intl';
-import { GenericLoading } from './GenericLoading';
+import { EditProfileFormSkeleton } from './EditProfileFormSkeleton';
 import { DatePicker } from './ui/DatePicker';
 import { Textarea } from './ui/Textarea';
 import { Select } from './ui/Select';
@@ -89,7 +89,7 @@ export function EditProfileForm({ redirectTo, defaultUsername }: { redirectTo?: 
     router.push(redirectTo || `/${defaultValues.username}/about`);
   }, [reset, defaultValues, router, redirectTo]);
 
-  if (!userData) return <GenericLoading>{t('components_loading_form')}</GenericLoading>;
+  if (!userData) return <EditProfileFormSkeleton />;
   return (
     <div>
       <form onSubmit={handleSubmit(onValid, onInvalid)} className="flex flex-col gap-4">

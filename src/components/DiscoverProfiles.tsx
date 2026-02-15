@@ -10,7 +10,7 @@ import { GetUser } from '@/types/definitions';
 import { AnimatePresence, motion } from 'framer-motion';
 import { SomethingWentWrong } from '@/components/SometingWentWrong';
 import { useShouldAnimate } from '@/hooks/useShouldAnimate';
-import { GenericLoading } from '@/components/GenericLoading';
+import { DiscoverProfileSkeletonGrid } from '@/components/DiscoverProfileSkeleton';
 import { getDiscoverProfiles } from '@/lib/client_data_fetching/getDiscoverProfiles';
 import { DISCOVER_PROFILES_PER_PAGE } from '@/constants';
 import { cn } from '@/lib/cn';
@@ -98,7 +98,7 @@ export function DiscoverProfiles({ followersOf, followingOf }: { followersOf?: s
   return (
     <>
       {isPending ? (
-        <GenericLoading>{t('components_loading_profiles')}</GenericLoading>
+        <DiscoverProfileSkeletonGrid count={4} />
       ) : isError ? (
         <SomethingWentWrong defaultMessage={t('components_something_went_wrong')} />
       ) : (

@@ -7,7 +7,7 @@ import { useEffect, useMemo, useRef } from 'react';
 import { GetActivity } from '@/types/definitions';
 import { Activity } from '@/components/Activity';
 import { SomethingWentWrong } from '@/components/SometingWentWrong';
-import { GenericLoading } from '@/components/GenericLoading';
+import { ActivitySkeletonList } from '@/components/ActivitySkeleton';
 import { getActivities } from '@/lib/client_data_fetching/getActivities';
 import { useTranslations } from 'next-intl';
 
@@ -48,7 +48,7 @@ export function Activities({ userId }: { userId: string }) {
   return (
     <>
       {isPending ? (
-        <GenericLoading>{t('loading_activities')}</GenericLoading>
+        <ActivitySkeletonList count={5} />
       ) : isError ? (
         <SomethingWentWrong defaultMessage={t('components_something_went_wrong')} />
       ) : (
@@ -63,7 +63,7 @@ export function Activities({ userId }: { userId: string }) {
          * so the bottom loader has to be hidden first
          */
         style={bottomLoaderStyle}>
-        {hasNextPage && <GenericLoading>{t('loading_more_notifications')}</GenericLoading>}
+        {hasNextPage && <ActivitySkeletonList count={2} />}
       </div>
       {isError && <SomethingWentWrong defaultMessage={t('components_something_went_wrong')} />}
       {!isError && !isPending && !isFetchingNextPage && !hasNextPage && <AllCaughtUp />}

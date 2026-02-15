@@ -9,6 +9,7 @@ import { useShouldAnimate } from '@/hooks/useShouldAnimate';
 import { logger } from '@/lib/logging-client';
 import BidirectionalScroll from './ui/BidirectionalScroll';
 import { Post } from './Post';
+import { PostSkeletonList } from './PostSkeleton';
 
 // If the `type` is 'profile' or 'feed', the `userId` property is required
 // If the `type` is 'hashtag', the `hashtag` property is required
@@ -357,6 +358,7 @@ export function Posts({ type, hashtag, userId }: PostsProps) {
       estimateSize={400}
       itemSpacing={16}
       sortItems={sortPosts}
+      loadingFallback={<PostSkeletonList count={3} />}
     />
   );
 }

@@ -20,6 +20,8 @@ interface BidirectionalScrollProps<TItem = unknown> {
   className?: string;
   // Optional function to sort items to ensure correct order (e.g., newer posts at top)
   sortItems?: (items: TItem[]) => TItem[];
+  // Optional skeleton fallback shown during initial loading (isPending) instead of GenericLoading
+  loadingFallback?: React.ReactNode;
 }
 
 const PREFETCH_THRESHOLD = 5;
@@ -37,6 +39,7 @@ export default function BidirectionalScroll<TItem = unknown>({
   containerSpacing = DEFAULT_CONTAINER_SPACING,
   className = '',
   sortItems,
+  loadingFallback,
 }: BidirectionalScrollProps<TItem>) {
   const parentRef = useRef<HTMLDivElement>(null);
   const t = useTranslations();
@@ -546,7 +549,7 @@ export default function BidirectionalScroll<TItem = unknown>({
   if (queryResult.isPending) {
     return (
       <div ref={parentRef} className={className} style={containerStyle}>
-        <GenericLoading>{t('loading_items')}</GenericLoading>
+        {loadingFallback || <GenericLoading>{t('loading_items')}</GenericLoading>}
       </div>
     );
   }

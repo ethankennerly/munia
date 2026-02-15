@@ -18,6 +18,7 @@ import { PostVisualMediaContainer } from './PostVisualMediaContainer';
 import ProfileBlock from './ProfileBlock';
 import { TruncatedPostContent } from './TruncatedPostContent';
 import { PostOptions } from './PostOptions';
+import { PostSkeleton } from './PostSkeleton';
 
 export const Post = memo(
   ({
@@ -74,7 +75,7 @@ export const Post = memo(
       [],
     );
 
-    if (isPending) return <p>Loading...</p>;
+    if (isPending) return <PostSkeleton />;
     if (isError) return <p>{t('components_post_error')}</p>;
     if (!data) return <p>{t('components_post_this')}</p>;
 

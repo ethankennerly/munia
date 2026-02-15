@@ -9,7 +9,7 @@ import { useSession } from 'next-auth/react';
 import { useShouldAnimate } from '@/hooks/useShouldAnimate';
 import { commentFramerVariants } from '@/lib/framerVariants';
 import { useTranslations } from 'next-intl';
-import { GenericLoading } from '@/components/GenericLoading';
+import { CommentSkeletonList } from '@/components/CommentSkeleton';
 import { CommentCreate } from './CommentCreate';
 import { Comment } from './Comment';
 
@@ -59,7 +59,7 @@ export function Comments({ postId }: { postId: number }) {
     <div>
       <div className="flex flex-col pt-2">
         {isPending ? (
-          <GenericLoading>{t('components_comments')}</GenericLoading>
+          <CommentSkeletonList count={3} />
         ) : isError ? (
           <p className="py-2 text-muted-foreground">{error.message}</p>
         ) : (

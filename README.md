@@ -11,8 +11,9 @@ In this [demo](https://munia-rho.vercel.app), Ethan Kennerly enhanced the follow
 - [Remove](https://github.com/leandronorcio/munia/issues/1) a post
 - Polish desktop and mobile menus and dialogs
 - Polish infinite scroll of [posts](https://munia-rho.vercel.app/feed)
-- Polist editing a profile
-- Upgrade Next.js 16.1.1
+- Polish editing a profile
+- Polish loading progress
+- Upgrade Next.js 16
 - Translate [English](https://munia-rho.vercel.app/en) into [Spanish](https://munia-rho.vercel.app/es).
 - Speed up reloading an [image](https://developer.chrome.com/docs/performance/insights/cache)
 - Collapse a long [posts](https://munia-rho.vercel.app/feed)
@@ -26,18 +27,18 @@ In this [demo](https://munia-rho.vercel.app), Ethan Kennerly enhanced the follow
 
 ## Tech Stack 🛠️
 
-- [TypeScript](https://www.typescriptlang.org/)
-- [React](https://react.dev/)
+- [TypeScript 5](https://www.typescriptlang.org/)
+- [React 19](https://react.dev/)
 - [Next.js 16](https://nextjs.org/)
-- [NextAuth.js](https://next-auth.js.org/)
-- [Tailwind CSS](https://tailwindcss.com/)
-- [React Query](https://tanstack.com/query/latest/docs/react/overview)
-- [React Aria](https://react-spectrum.adobe.com/react-aria/getting-started.html)
-- [React Hook Form](https://react-hook-form.com/)
-- [Zod](https://zod.dev/)
-- [Prisma](https://www.prisma.io/)
-- [AWS S3](https://aws.amazon.com/s3/)
-- [AWS SES](https://aws.amazon.com/ses/)
+- [NextAuth 5](https://next-auth.js.org/)
+- [Tailwind CSS 3](https://tailwindcss.com/)
+- [Tanstack Query 5](https://tanstack.com/query/latest/docs/react/overview)
+- [React Aria 3](https://react-spectrum.adobe.com/react-aria/getting-started.html)
+- [React Hook Form 7](https://react-hook-form.com/)
+- [Zod 3](https://zod.dev/)
+- [Prisma 5](https://www.prisma.io/)
+- [AWS S3 3](https://aws.amazon.com/s3/)
+- [AWS SES 3](https://aws.amazon.com/ses/)
 
 ## More Info
 

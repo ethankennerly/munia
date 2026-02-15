@@ -8,6 +8,7 @@ import { useSession } from 'next-auth/react';
 import { cn } from '@/lib/cn';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
+import { DiscoverProfileSkeleton } from '@/components/DiscoverProfileSkeleton';
 
 export const DiscoverProfile = memo(
   ({ userId }: { userId: string }) => {
@@ -19,7 +20,7 @@ export const DiscoverProfile = memo(
     const { data: user, isPending, isError } = useUserQuery(userId);
     const { data: session } = useSession();
 
-    if (isPending) return <div>Loading...</div>;
+    if (isPending) return <DiscoverProfileSkeleton />;
     if (isError) return <div>{t('components_error_loading_profile')}</div>;
     if (!user) return null;
 
