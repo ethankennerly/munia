@@ -2,7 +2,7 @@ import React from 'react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { FeedHeader } from './FeedHeader';
+import { FeedHeader, FeedHeaderSkeleton } from './FeedHeader';
 
 // Mock the child components
 vi.mock('@/components/CreatePostModalLauncher', () => ({
@@ -14,7 +14,7 @@ describe('FeedHeader', () => {
     vi.clearAllMocks();
   });
 
-  it('renders Feed title and CreatePostModalLauncher after mount', () => {
+  it('renders Feed title and CreatePostModalLauncher immediately', () => {
     render(<FeedHeader />);
 
     expect(screen.getByText('components_feedheader')).toBeInTheDocument();
@@ -24,15 +24,21 @@ describe('FeedHeader', () => {
   it('maintains components during re-renders', () => {
     const { rerender } = render(<FeedHeader />);
 
-    // Initial render
     expect(screen.getByText('components_feedheader')).toBeInTheDocument();
     expect(screen.getByTestId('create-post')).toBeInTheDocument();
 
-    // Re-render (simulating server component re-render)
     rerender(<FeedHeader />);
 
-    // Components should still be present
     expect(screen.getByText('components_feedheader')).toBeInTheDocument();
     expect(screen.getByTestId('create-post')).toBeInTheDocument();
+  });
+});
+
+describe('FeedHeaderSkeleton', () => {
+  it('renders shimmer placeholders that reserve space', () => {
+    const { container } = render(<FeedHeaderSkeleton />);
+
+    const shimmers = container.querySelectorAll('.animate-shimmer');
+    expect(shimmers.length).toBeGreaterThanOrEqual(3);
   });
 });

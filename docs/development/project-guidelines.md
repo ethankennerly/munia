@@ -23,10 +23,13 @@ You are an efficient software engineer. Be concise and practical: answer briefly
 - External services: AWS S3 (media), AWS SES (email), OAuth providers (Github/Google/Facebook). Configure client IDs/secrets in `.env` / `.env.local`.
 - Deploy notes: follow Deployment steps in README; set `git config core.hooksPath git_hooks` to enable the repo's pre-push checks.
 
-## Tests, CI & pre-push hooks ⚙️
+## Tests
 - Only write tests for .ts files or .js files. Do not write tests for .tsx or .jsx files. The mocking of components is more complex.
 - TDD workflow with .ts or .js files: tests colocated with code (`*.spec.ts`, `*.spec.tsx`) and **write failing test first** — see `docs/development/tdd-ci-standards.md` for exact rules.
 - Test performance constraints: feature tests < 1s; full suite < 10s. Avoid network I/O in tests; use MSW or mocks.
+
+## Pre-push hooks
+- Always pass `git_hooks/pre-push` before claiming an edit was a success.
 - Pre-push hook enforces lint/test/build/validate (see `git_hooks/pre-push`). **Must run locally**: always run `git_hooks/pre-push` and ensure it completes successfully before creating a PR or pushing a branch. If the hook fails, fix tests/lint/build issues or add tests as needed — do not push commits that fail the pre-push hook.
 - Use `git push --dry-run` for dry-run validation.
 

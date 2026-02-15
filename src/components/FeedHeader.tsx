@@ -1,36 +1,49 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { CreatePostModalLauncher } from '@/components/CreatePostModalLauncher';
 import { useTranslations } from 'next-intl';
 
-// Module-level flag that persists across all component instances
-// This ensures components never disappear once they've been mounted, even if
-// the component is unmounted and remounted (e.g., during server component re-renders)
-let hasEverMounted = false;
+/**
+ * Skeleton placeholder that reserves the same space as the rendered FeedHeader.
+ * Used by loading.tsx (Suspense fallback) while the server component resolves.
+ * Matches dimensions of: title (h-8 mb-4) + CreatePostModalLauncher card.
+ */
+export function FeedHeaderSkeleton() {
+  return (
+    <>
+      {/* "Feed" title skeleton: text-2xl ≈ h-8 */}
+      <div className="mb-4 flex items-center justify-between">
+        <div className="animate-shimmer h-8 w-20 rounded" />
+      </div>
+
+      {/* CreatePostModalLauncher skeleton: rounded-xl bg-card, avatar + text + media button.
+          No mb-4 — real CreatePostModalLauncher has no bottom margin;
+          BidirectionalScroll's paddingTop:16px provides the gap below. */}
+      <div className="rounded-xl bg-card px-4 py-4 shadow sm:px-8 sm:py-5">
+        <div className="mb-[18px] flex flex-row">
+          <div className="animate-shimmer mr-3 h-12 w-12 rounded-full" />
+          <div className="flex flex-grow flex-col justify-center">
+            <div className="animate-shimmer h-5 w-40 rounded" />
+          </div>
+        </div>
+        <div className="flex flex-row gap-4">
+          <div className="animate-shimmer h-6 w-6 rounded" />
+          <div className="animate-shimmer h-5 w-20 rounded" />
+        </div>
+      </div>
+    </>
+  );
+}
 
 /**
- * FeedHeader component that renders the Feed title and CreatePostModalLauncher.
- * This component ensures these elements persist across re-renders and only appear after
- * JavaScript has fully loaded, preventing layout shift and flicker during slow network conditions.
- *
- * Uses a module-level flag to ensure components never disappear once mounted, even if
- * the component instance is recreated.
+ * FeedHeader renders the Feed title and CreatePostModalLauncher.
+ * Renders real content during SSR — all hooks (useTranslations, useCreatePostModal,
+ * useSession via ProfilePhotoOwn) work during server rendering. This eliminates CLS
+ * because the content occupies correct space from the first paint.
  */
 export function FeedHeader() {
   const t = useTranslations();
-  const [hasMounted, setHasMounted] = useState(hasEverMounted);
-
-  useEffect(() => {
-    // Mark as mounted - this persists across all component instances
-    hasEverMounted = true;
-    setHasMounted(true);
-  }, []);
-
-  // Don't render anything until mounted to prevent hydration issues
-  if (!hasMounted) {
-    return null;
-  }
 
   return (
     <>
