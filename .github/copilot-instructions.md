@@ -26,11 +26,10 @@ You are an efficient software engineer. Be concise and practical: answer briefly
 - Deploy notes: follow Deployment steps in README; set `git config core.hooksPath git_hooks` to enable the repo's pre-push checks.
 
 ## Tests, CI & pre-push hooks ⚙️
-- Pre-push hook enforces lint/test/build/validate (see `git_hooks/pre-push`). **Must run locally**: always run `./git_hooks/pre-push` and ensure it completes successfully before creating a PR or pushing a branch. If the hook fails, fix tests/lint/build issues or add tests as needed — do not push commits that fail the pre-push hook.
+- Pre-push hook enforces lint/test/build/validate (see `git_hooks/pre-push`). **Must run locally**: always run `git_hooks/pre-push` and ensure it completes successfully before creating a PR or pushing a branch. If the hook fails, fix tests/lint/build issues or add tests as needed — do not push commits that fail the pre-push hook.
 - Use `git push --dry-run` for dry-run validation if desired.
 
 ## Examples & quick file references 📁
-- TDD rules & CI: `docs/development/tdd-ci-standards.md`
 - Date helpers: `src/lib/utils/dateOnly.ts` (+ tests `*.spec.ts`)
 - Logging: `src/lib/logging.ts`, `src/lib/logging-client.ts`
 - Auth: `src/auth.ts`, `src/auth.config.ts`

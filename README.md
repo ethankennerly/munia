@@ -28,7 +28,7 @@ In this [demo](https://munia-rho.vercel.app), Ethan Kennerly enhanced the follow
 
 - [TypeScript](https://www.typescriptlang.org/)
 - [React](https://react.dev/)
-- [Next.js](https://nextjs.org/)
+- [Next.js 16](https://nextjs.org/)
 - [NextAuth.js](https://next-auth.js.org/)
 - [Tailwind CSS](https://tailwindcss.com/)
 - [React Query](https://tanstack.com/query/latest/docs/react/overview)
