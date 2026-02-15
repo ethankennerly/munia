@@ -3,13 +3,15 @@ import { useCallback, useEffect, useRef } from 'react';
 
 export function ClickDebounce({ milliseconds = 300, children }: { milliseconds?: number; children: React.ReactNode }) {
   const wrapperRef = useRef<HTMLDivElement>(null);
-  const timerRef = useRef<ReturnType<typeof setTimeout>>();
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const disablePointerEvents = useCallback(() => {
     const wrapper = wrapperRef.current;
-    if (!wrapper || !timerRef || !timerRef.current) return;
+    if (!wrapper) return;
     wrapper.style.pointerEvents = 'none';
-    clearTimeout(timerRef.current);
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+    }
     timerRef.current = setTimeout(() => {
       wrapper.style.pointerEvents = '';
     }, milliseconds);
@@ -24,7 +26,9 @@ export function ClickDebounce({ milliseconds = 300, children }: { milliseconds?:
     wrapper.addEventListener('click', handleClick, true);
     return () => {
       wrapper.removeEventListener('click', handleClick, true);
-      clearTimeout(timerRef.current);
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
     };
   }, [disablePointerEvents]);
 

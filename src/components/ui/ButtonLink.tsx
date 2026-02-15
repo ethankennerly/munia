@@ -30,7 +30,11 @@ export function ButtonLink({
         buttonVariants({ size, mode, shape, expand }),
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:ring-offset-2',
       )}>
-      <ButtonContent>{children}</ButtonContent>
+      <ButtonLinkInner>{children}</ButtonLinkInner>
     </Link>
   );
+}
+
+function ButtonLinkInner({ children }: { children: React.ReactNode }) {
+  return <ButtonContent linkClassName="pointer-events-none">{children}</ButtonContent>;
 }
