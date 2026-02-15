@@ -15,6 +15,7 @@ import { ActivateRecorder } from '@/components/replay/ActivateRecorder';
 import { ScrollRecorder } from '@/components/replay/ScrollRecorder';
 import { ReplayProvider } from '@/lib/replay/replayContext';
 import { setupDeploymentSync } from '@/lib/utils/deploymentSync';
+import { ClickDebounce } from '@/components/ui/ClickDebounce';
 
 export function Providers({ children, session }: { children: React.ReactNode; session: Session | null }) {
   useEffect(() => setupDeploymentSync(window), []);
@@ -31,7 +32,9 @@ export function Providers({ children, session }: { children: React.ReactNode; se
               <DialogsContextProvider>
                 <VisualMediaModalContextProvider>
                   <CreatePostModalContextProvider>
-                    <ShouldAnimateContextProvider>{children}</ShouldAnimateContextProvider>
+                    <ShouldAnimateContextProvider>
+                      <ClickDebounce>{children}</ClickDebounce>
+                    </ShouldAnimateContextProvider>
                   </CreatePostModalContextProvider>
                 </VisualMediaModalContextProvider>
               </DialogsContextProvider>
