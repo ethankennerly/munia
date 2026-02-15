@@ -20,6 +20,7 @@ import { Select } from './ui/Select';
 import Button from './ui/Button';
 import { TextInput } from './ui/TextInput';
 import { DeleteAccountButton } from './DeleteAccountButton';
+import { cn } from '@/lib/cn';
 
 export function EditProfileForm({ redirectTo, defaultUsername }: { redirectTo?: string; defaultUsername?: string }) {
   const t = useTranslations();
@@ -50,6 +51,7 @@ export function EditProfileForm({ redirectTo, defaultUsername }: { redirectTo?: 
   });
   const { updateSessionUserDataMutation } = useSessionUserDataMutation();
   const router = useRouter();
+  const isSubmitting = updateSessionUserDataMutation.isPending || updateSessionUserDataMutation.isSuccess;
 
   // Reset form when userData loads or changes
   useEffect(() => {
@@ -91,24 +93,31 @@ export function EditProfileForm({ redirectTo, defaultUsername }: { redirectTo?: 
   return (
     <div>
       <form onSubmit={handleSubmit(onValid, onInvalid)} className="flex flex-col gap-4">
-        <Controller
-          control={control}
-          name="username"
-          render={({ field: { onChange, ref, value }, fieldState: { error } }) => (
-            <div>
-              <TextInput
-                label={t('username_0')}
-                value={value}
-                onChange={(v) => onChange(v)}
-                errorMessage={error?.message}
-                ref={ref}
-                Icon={AtSign}
-              />
-            </div>
-          )}
-        />
+        <fieldset
+          disabled={isSubmitting}
+          className={cn(
+            'space-y-4 transition-all duration-300',
+            // Visual "Ghost" Feedback: Dim the form and make it non-interactive
+            isSubmitting && 'pointer-events-none cursor-wait opacity-60 grayscale-[50%]',
+          )}>
+          <Controller
+            control={control}
+            name="username"
+            render={({ field: { onChange, ref, value }, fieldState: { error } }) => (
+              <div>
+                <TextInput
+                  label={t('username_0')}
+                  value={value}
+                  onChange={(v) => onChange(v)}
+                  errorMessage={error?.message}
+                  ref={ref}
+                  Icon={AtSign}
+                />
+              </div>
+            )}
+          />
 
-        {/* <Controller
+          {/* <Controller
           control={control}
           name="email"
           render={({
@@ -128,180 +137,176 @@ export function EditProfileForm({ redirectTo, defaultUsername }: { redirectTo?: 
           )}
         /> */}
 
-        <Controller
-          control={control}
-          name="name"
-          render={({ field: { onChange, ref, value }, fieldState: { error } }) => (
-            <div>
-              <TextInput
-                label={t('name_0')}
-                value={value}
-                onChange={(v) => onChange(v)}
-                errorMessage={error?.message}
-                ref={ref}
-                Icon={Profile}
-              />
-            </div>
-          )}
-        />
-
-        <Controller
-          control={control}
-          name="phoneNumber"
-          render={({ field: { onChange, ref, value }, fieldState: { error } }) => (
-            <div>
-              <TextInput
-                label={t('protected_username_tabs_phone_number')}
-                value={value || ''}
-                onChange={(v) => onChange(v || null)}
-                errorMessage={error?.message}
-                ref={ref}
-                Icon={Phone}
-              />
-            </div>
-          )}
-        />
-
-        <Controller
-          control={control}
-          name="bio"
-          render={({ field: { onChange, ref, value }, fieldState: { error } }) => (
-            <div>
-              <Textarea
-                label={t('bio')}
-                value={value || ''}
-                onChange={(v) => onChange(v || null)}
-                errorMessage={error?.message}
-                ref={ref}
-                Icon={Bullhorn}
-              />
-            </div>
-          )}
-        />
-        <Controller
-          control={control}
-          name="website"
-          render={({ field: { onChange, ref, value }, fieldState: { error } }) => (
-            <div>
-              <TextInput
-                label={t('protected_username_tabs_website')}
-                value={value || ''}
-                onChange={(v) => onChange(v || null)}
-                errorMessage={error?.message}
-                ref={ref}
-                Icon={WorldNet}
-              />
-            </div>
-          )}
-        />
-
-        <Controller
-          control={control}
-          name="address"
-          render={({ field: { onChange, ref, value }, fieldState: { error } }) => (
-            <div>
-              <TextInput
-                label={t('protected_username_tabs_address')}
-                value={value || ''}
-                onChange={(v) => onChange(v || null)}
-                errorMessage={error?.message}
-                ref={ref}
-                Icon={BuildingBusinessOffice}
-              />
-            </div>
-          )}
-        />
-
-        <Controller
-          control={control}
-          name="gender"
-          render={({ field: { onChange, ref, value }, fieldState: { error } }) => (
-            <div>
-              <Select
-                label={t('protected_username_tabs_gender')}
-                name="gender"
-                selectedKey={value || null}
-                onSelectionChange={(key) => onChange(key || null)}
-                errorMessage={error?.message}
-                ref={ref}
-                Icon={Other}>
-                <Item key="MALE">{t('components_male')}</Item>
-                <Item key="FEMALE">{t('components_female')}</Item>
-                <Item key="NONBINARY">{t('components_nonbinary')}</Item>
-              </Select>
-            </div>
-          )}
-        />
-
-        <Controller
-          control={control}
-          name="relationshipStatus"
-          render={({ field: { onChange, ref, value }, fieldState: { error } }) => (
-            <div>
-              <Select
-                label={t('protected_username_tabs_relationship_status')}
-                name="relationshipStatus"
-                selectedKey={value || null}
-                onSelectionChange={(key) => onChange(key || null)}
-                errorMessage={error?.message}
-                Icon={Heart}
-                ref={ref}>
-                <Item key="SINGLE">{t('components_single')}</Item>
-                <Item key="IN_A_RELATIONSHIP">{t('components_relationship')}</Item>
-                <Item key="ENGAGED">{t('components_engaged')}</Item>
-                <Item key="MARRIED">{t('components_married')}</Item>
-              </Select>
-            </div>
-          )}
-        />
-
-        {/* This DatePicker is not controlled */}
-        <Controller
-          control={control}
-          name="birthDate"
-          render={({ field: { onChange, ref }, fieldState: { error } }) => {
-            // Extract date part to avoid timezone conversion issues
-            const getDateValue = () => {
-              if (!userData.birthDate) return undefined;
-              const dateOnly = extractDateOnly(userData.birthDate);
-              return dateOnly ? parseDate(dateOnly) : undefined;
-            };
-
-            return (
+          <Controller
+            control={control}
+            name="name"
+            render={({ field: { onChange, ref, value }, fieldState: { error } }) => (
               <div>
-                <DatePicker
-                  label={t('protected_username_tabs_birth_date')}
-                  defaultValue={getDateValue()}
-                  onChange={(value) => {
-                    onChange(value?.toString() ?? null);
-                  }}
+                <TextInput
+                  label={t('name_0')}
+                  value={value}
+                  onChange={(v) => onChange(v)}
                   errorMessage={error?.message}
-                  triggerRef={ref}
+                  ref={ref}
+                  Icon={Profile}
                 />
               </div>
-            );
-          }}
-        />
+            )}
+          />
 
-        <div className="flex justify-end gap-4">
-          <Button
-            mode="secondary"
-            type="button"
-            loading={updateSessionUserDataMutation.isPending === true}
-            onPress={resetForm}
-            data-activate-id="reset-profile">
-            {t('reset')}
-          </Button>
-          <Button
-            type="submit"
-            loading={updateSessionUserDataMutation.isPending === true}
-            data-activate-id="submit-profile">
-            {t('contexts_dialogscontext_submit')}
-          </Button>
-        </div>
-        {userData?.id &&
-          updateSessionUserDataMutation.isPending === false &&
-          !updateSessionUserDataMutation.isSuccess && <DeleteAccountButton />}
+          <Controller
+            control={control}
+            name="phoneNumber"
+            render={({ field: { onChange, ref, value }, fieldState: { error } }) => (
+              <div>
+                <TextInput
+                  label={t('protected_username_tabs_phone_number')}
+                  value={value || ''}
+                  onChange={(v) => onChange(v || null)}
+                  errorMessage={error?.message}
+                  ref={ref}
+                  Icon={Phone}
+                />
+              </div>
+            )}
+          />
+
+          <Controller
+            control={control}
+            name="bio"
+            render={({ field: { onChange, ref, value }, fieldState: { error } }) => (
+              <div>
+                <Textarea
+                  label={t('bio')}
+                  value={value || ''}
+                  onChange={(v) => onChange(v || null)}
+                  errorMessage={error?.message}
+                  ref={ref}
+                  Icon={Bullhorn}
+                />
+              </div>
+            )}
+          />
+          <Controller
+            control={control}
+            name="website"
+            render={({ field: { onChange, ref, value }, fieldState: { error } }) => (
+              <div>
+                <TextInput
+                  label={t('protected_username_tabs_website')}
+                  value={value || ''}
+                  onChange={(v) => onChange(v || null)}
+                  errorMessage={error?.message}
+                  ref={ref}
+                  Icon={WorldNet}
+                />
+              </div>
+            )}
+          />
+
+          <Controller
+            control={control}
+            name="address"
+            render={({ field: { onChange, ref, value }, fieldState: { error } }) => (
+              <div>
+                <TextInput
+                  label={t('protected_username_tabs_address')}
+                  value={value || ''}
+                  onChange={(v) => onChange(v || null)}
+                  errorMessage={error?.message}
+                  ref={ref}
+                  Icon={BuildingBusinessOffice}
+                />
+              </div>
+            )}
+          />
+
+          <Controller
+            control={control}
+            name="gender"
+            render={({ field: { onChange, ref, value }, fieldState: { error } }) => (
+              <div>
+                <Select
+                  label={t('protected_username_tabs_gender')}
+                  name="gender"
+                  selectedKey={value || null}
+                  onSelectionChange={(key) => onChange(key || null)}
+                  errorMessage={error?.message}
+                  ref={ref}
+                  Icon={Other}>
+                  <Item key="MALE">{t('components_male')}</Item>
+                  <Item key="FEMALE">{t('components_female')}</Item>
+                  <Item key="NONBINARY">{t('components_nonbinary')}</Item>
+                </Select>
+              </div>
+            )}
+          />
+
+          <Controller
+            control={control}
+            name="relationshipStatus"
+            render={({ field: { onChange, ref, value }, fieldState: { error } }) => (
+              <div>
+                <Select
+                  label={t('protected_username_tabs_relationship_status')}
+                  name="relationshipStatus"
+                  selectedKey={value || null}
+                  onSelectionChange={(key) => onChange(key || null)}
+                  errorMessage={error?.message}
+                  Icon={Heart}
+                  ref={ref}>
+                  <Item key="SINGLE">{t('components_single')}</Item>
+                  <Item key="IN_A_RELATIONSHIP">{t('components_relationship')}</Item>
+                  <Item key="ENGAGED">{t('components_engaged')}</Item>
+                  <Item key="MARRIED">{t('components_married')}</Item>
+                </Select>
+              </div>
+            )}
+          />
+
+          {/* This DatePicker is not controlled */}
+          <Controller
+            control={control}
+            name="birthDate"
+            render={({ field: { onChange, ref }, fieldState: { error } }) => {
+              // Extract date part to avoid timezone conversion issues
+              const getDateValue = () => {
+                if (!userData.birthDate) return undefined;
+                const dateOnly = extractDateOnly(userData.birthDate);
+                return dateOnly ? parseDate(dateOnly) : undefined;
+              };
+
+              return (
+                <div>
+                  <DatePicker
+                    label={t('protected_username_tabs_birth_date')}
+                    defaultValue={getDateValue()}
+                    onChange={(value) => {
+                      onChange(value?.toString() ?? null);
+                    }}
+                    errorMessage={error?.message}
+                    triggerRef={ref}
+                  />
+                </div>
+              );
+            }}
+          />
+
+          <div className="flex justify-end gap-4">
+            <Button
+              mode="secondary"
+              type="button"
+              loading={isSubmitting}
+              onPress={resetForm}
+              data-activate-id="reset-profile">
+              {t('reset')}
+            </Button>
+            <Button type="submit" loading={isSubmitting} data-activate-id="submit-profile">
+              {t('contexts_dialogscontext_submit')}
+            </Button>
+          </div>
+          {userData?.id && !isSubmitting && <DeleteAccountButton />}
+        </fieldset>
       </form>
     </div>
   );
