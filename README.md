@@ -16,7 +16,7 @@ In this [demo](https://munia-rho.vercel.app), Ethan Kennerly enhanced the follow
 - Upgrade Next.js 16
 - Translate [English](https://munia-rho.vercel.app/en) into [Spanish](https://munia-rho.vercel.app/es).
 - Speed up reloading an [image](https://developer.chrome.com/docs/performance/insights/cache)
-- Collapse a long [posts](https://munia-rho.vercel.app/feed)
+- Collapse a long [post](https://munia-rho.vercel.app/feed)
 - Resolve 15 accessibility issues.
 - Configure [login](https://munia-rho.vercel.app/register) Email, Facebook, GitHub, Google, or Mock.
 - Import profile picture from Google
