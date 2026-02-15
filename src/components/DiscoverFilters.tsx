@@ -3,7 +3,8 @@
 import { Select } from '@/components/ui/Select';
 import { Gender, RelationshipStatus } from '@prisma/client';
 import { kebabCase, snakeCase, toUpper } from 'lodash';
-import { usePathname, useSearchParams, useRouter } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
+import { useRouter } from 'nextjs-toploader/app';
 import { Item } from 'react-stately';
 import { DiscoverFilterKeys, DiscoverFilters as TDiscoverFilters } from '@/types/definitions';
 import { Key, useCallback } from 'react';

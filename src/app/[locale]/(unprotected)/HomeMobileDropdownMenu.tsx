@@ -3,7 +3,7 @@
 import { DropdownMenuButton } from '@/components/ui/DropdownMenuButton';
 import { HamburgerMenu } from '@/svg_components';
 import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
+import { useRouter } from 'nextjs-toploader/app';
 import { Key, useCallback, useMemo } from 'react';
 import { Item, Section } from 'react-stately';
 import { useTranslations } from 'next-intl';

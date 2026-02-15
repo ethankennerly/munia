@@ -1,7 +1,8 @@
 'use client';
 
 import { useCallback, useState, useEffect } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
+import { useRouter } from 'nextjs-toploader/app';
 import { TextInput } from '@/components/ui/TextInput';
 import Button from '@/components/ui/Button';
 import { useTranslations, useLocale } from 'next-intl';

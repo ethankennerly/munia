@@ -3,7 +3,7 @@
 import { GetActivity } from '@/types/definitions';
 import { SemiBold } from '@/components/ui/SemiBold';
 import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
+import { useRouter } from 'nextjs-toploader/app';
 import { useNotificationsReadStatusMutations } from '@/hooks/mutations/useNotificationsReadStatusMutations';
 import { useTranslations } from 'next-intl';
 import { ReactNode } from 'react';

@@ -39,6 +39,10 @@ vi.mock('next/navigation', () => ({
   useRouter: () => ({ push: vi.fn(), refresh: vi.fn() }),
 }));
 
+vi.mock('nextjs-toploader/app', () => ({
+  useRouter: () => ({ push: vi.fn(), refresh: vi.fn() }),
+}));
+
 vi.mock('@/components/DeleteAccountButton', () => ({
   DeleteAccountButton: () => <button>Delete Account</button>,
 }));

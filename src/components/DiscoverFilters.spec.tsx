@@ -61,6 +61,12 @@ vi.mock('next/navigation', () => ({
   usePathname: () => '/discover',
 }));
 
+vi.mock('nextjs-toploader/app', () => ({
+  useRouter: () => ({
+    push: pushMock,
+  }),
+}));
+
 describe('DiscoverFilters - Clear Gender/Status Filter', () => {
   beforeEach(() => {
     vi.clearAllMocks();

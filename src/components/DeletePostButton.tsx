@@ -3,7 +3,7 @@
 import Button from '@/components/ui/Button';
 import { useSession } from 'next-auth/react';
 import { useCallback, useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter } from 'nextjs-toploader/app';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
 import { useTranslations } from 'next-intl';
 

@@ -4,7 +4,7 @@ import { useActiveRouteChecker } from '@/hooks/useActiveRouteChecker';
 import { useDialogs } from '@/hooks/useDialogs';
 import { cn } from '@/lib/cn';
 import { signOut } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
+import { useRouter } from 'nextjs-toploader/app';
 import React, { SVGProps, ReactElement, useCallback, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { Badge } from './ui/Badge';

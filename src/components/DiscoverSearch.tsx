@@ -2,7 +2,8 @@
 
 import { TextInput } from '@/components/ui/TextInput';
 import SvgSearch from '@/svg_components/Search';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
+import { useRouter } from 'nextjs-toploader/app';
 import { useCallback } from 'react';
 import { useTranslations } from 'next-intl';
 

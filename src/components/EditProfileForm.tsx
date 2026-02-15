@@ -9,7 +9,7 @@ import { parseDate } from '@internationalized/date';
 import { extractDateOnly } from '@/lib/utils/dateOnly';
 import { useSessionUserData } from '@/hooks/useSessionUserData';
 import { useSessionUserDataMutation } from '@/hooks/mutations/useSessionUserDataMutation';
-import { useRouter } from 'next/navigation';
+import { useRouter } from 'nextjs-toploader/app';
 import { useCallback, useEffect, useMemo } from 'react';
 import { logger } from '@/lib/logging';
 import { useTranslations } from 'next-intl';

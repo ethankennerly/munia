@@ -16,12 +16,14 @@ import { ScrollRecorder } from '@/components/replay/ScrollRecorder';
 import { ReplayProvider } from '@/lib/replay/replayContext';
 import { setupDeploymentSync } from '@/lib/utils/deploymentSync';
 import { ClickDebounce } from '@/components/ui/ClickDebounce';
+import NextTopLoader from 'nextjs-toploader';
 
 export function Providers({ children, session }: { children: React.ReactNode; session: Session | null }) {
   useEffect(() => setupDeploymentSync(window), []);
 
   return (
     <ThemeContextProvider>
+      <NextTopLoader color="rgb(var(--primary))" showSpinner={false} />
       <ToastContextProvider>
         <ReactQueryProvider>
           <SessionProvider session={session}>

@@ -23,6 +23,14 @@ vi.mock('next/navigation', () => ({
   }),
 }));
 
+vi.mock('nextjs-toploader/app', () => ({
+  useRouter: () => ({
+    push: vi.fn(),
+    replace: vi.fn(),
+    refresh: vi.fn(),
+  }),
+}));
+
 describe('UserAuthForm OAuth error handling', () => {
   const originalLocation = window.location;
   const replaceStateSpy = vi.spyOn(window.history, 'replaceState');

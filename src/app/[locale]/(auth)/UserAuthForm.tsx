@@ -6,10 +6,10 @@ import { useToast } from '@/hooks/useToast';
 import { AtSign, Facebook, Github, Google, LogInSquare } from '@/svg_components';
 import { signIn } from 'next-auth/react';
 import { useSearchParams } from 'next/navigation';
+import { useRouter } from 'nextjs-toploader/app';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { z } from 'zod';
 import { useTranslations, useLocale } from 'next-intl';
-import { useRouter } from 'next/navigation';
 
 const emailSchema = z.string().trim().email();
 type UserAuthFormProps = {
