@@ -2,8 +2,9 @@ import { DiscoverFilters } from '@/components/DiscoverFilters';
 import { DiscoverProfiles } from '@/components/DiscoverProfiles';
 import { DiscoverSearch } from '@/components/DiscoverSearch';
 import { getTranslations } from 'next-intl/server';
+import type { Metadata } from 'next';
 
-export async function generateMetadata() {
+export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations();
 
   return {

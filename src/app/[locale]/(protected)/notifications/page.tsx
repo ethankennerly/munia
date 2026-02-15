@@ -1,8 +1,9 @@
 import { getServerUser } from '@/lib/getServerUser';
 import { getTranslations } from 'next-intl/server';
 import { Notifications } from './Notifications';
+import type { Metadata } from 'next';
 
-export async function generateMetadata() {
+export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations();
 
   return {

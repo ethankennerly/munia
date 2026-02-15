@@ -1,6 +1,7 @@
 import { MockOAuthFormPage } from '../MockOAuthFormPage';
+import type { Metadata } from 'next';
 
-export async function generateMetadata() {
+export async function generateMetadata(): Promise<Metadata> {
   return {
     title: 'Mock OAuth Provider',
   };

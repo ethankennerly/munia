@@ -2,8 +2,9 @@ import Link from 'next/link';
 import { getTranslations } from 'next-intl/server';
 import { useTranslations } from 'next-intl';
 import { UserAuthForm } from '../UserAuthForm';
+import type { Metadata } from 'next';
 
-export async function generateMetadata() {
+export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations();
   return {
     title: t('munia_or_login'),

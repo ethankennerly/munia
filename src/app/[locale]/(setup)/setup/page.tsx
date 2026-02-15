@@ -5,8 +5,9 @@ import { getTranslations } from 'next-intl/server';
 import { redirect } from 'next/navigation';
 import prisma from '@/lib/prisma/prisma';
 import { generateUniqueUsername } from '@/lib/utils/generateUniqueUsername';
+import type { Metadata } from 'next';
 
-export async function generateMetadata() {
+export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations();
 
   return {

@@ -1,7 +1,8 @@
 import { Settings as SettingsComponent } from '@/components/Settings';
 import { getTranslations } from 'next-intl/server';
+import type { Metadata } from 'next';
 
-export async function generateMetadata() {
+export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations();
 
   return {
