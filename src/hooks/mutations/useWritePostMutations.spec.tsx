@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import React from 'react';
+import { VisualMediaType } from '@prisma/client';
 import { useWritePostMutations } from './useWritePostMutations';
 
 const mockNotifyError = vi.fn();
@@ -33,7 +34,7 @@ function TestHost({
   visualMedia = [],
 }: {
   clearVisualMedia?: () => void;
-  visualMedia?: { type: string; url: string }[];
+  visualMedia?: { type: VisualMediaType; url: string }[];
 }) {
   const { createPostMutation } = useWritePostMutations({
     content: '',

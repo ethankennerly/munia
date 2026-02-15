@@ -8,5 +8,6 @@ unset VSCODE_INSPECTOR_OPTIONS
 
 npm run --silent lint &&\
 npm test --silent -- --silent &&\
+npx next typegen && npx tsc --noEmit &&\
 npm run --silent build &&\
 npm run --silent validate:build

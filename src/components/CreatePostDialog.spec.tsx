@@ -63,7 +63,7 @@ describe('CreatePostDialog', () => {
     const longContent = Array(100).fill('line of text\n').join('');
     const { container } = render(
       <CreatePostDialog
-        toEditValues={{ initialContent: longContent, initialVisualMedia: [], postId: 'test' }}
+        toEditValues={{ initialContent: longContent, initialVisualMedia: [], postId: 1 }}
         shouldOpenFileInputOnMount={false}
         setShown={vi.fn()}
       />,

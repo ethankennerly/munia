@@ -2,43 +2,43 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 
 // Ensure a clean module state per test by clearing env and re-importing
 describe('logging-client', () => {
-  const OLD_ENV = process.env;
-  let consoleErrorSpy: ReturnType<typeof vi.spyOn>;
-  let consoleWarnSpy: ReturnType<typeof vi.spyOn>;
-  let consoleInfoSpy: ReturnType<typeof vi.spyOn>;
-  let consoleDebugSpy: ReturnType<typeof vi.spyOn>;
-
   beforeEach(() => {
-    process.env = { ...OLD_ENV };
-    delete process.env.NEXT_PUBLIC_BUILDTIME_NPM_CONFIG_LOGLEVEL;
-    delete process.env.npm_config_loglevel;
-    delete process.env.NODE_ENV;
-    delete process.env.VITEST_WORKER_ID;
-
-    consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-    consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
-    consoleInfoSpy = vi.spyOn(console, 'info').mockImplementation(() => {});
-    consoleDebugSpy = vi.spyOn(console, 'debug').mockImplementation(() => {});
+    // Unstub any previously stubbed environment variables
+    vi.unstubAllEnvs();
+    // Clear module cache to force re-evaluation of constants
+    vi.resetModules();
   });
 
   afterEach(() => {
     vi.restoreAllMocks();
+    vi.unstubAllEnvs();
     // Clear module cache to force re-evaluation of constants
     vi.resetModules();
   });
 
   it('uses debug level in test environment', async () => {
-    process.env.VITEST_WORKER_ID = '1';
+    vi.stubEnv('VITEST_WORKER_ID', '1');
     vi.resetModules();
+
+    const consoleDebugSpy = vi.spyOn(console, 'debug').mockImplementation(() => {});
     const { logger } = await import('./logging-client');
+
     logger.debug({ message: 'test' });
     expect(consoleDebugSpy).toHaveBeenCalled();
   });
 
   it('maps npm loglevel "warn" correctly', async () => {
-    process.env.NEXT_PUBLIC_BUILDTIME_NPM_CONFIG_LOGLEVEL = 'warn';
-    process.env.NODE_ENV = 'production';
+    vi.unstubAllEnvs();
+    vi.stubEnv('NEXT_PUBLIC_BUILDTIME_NPM_CONFIG_LOGLEVEL', 'warn');
+    vi.stubEnv('NODE_ENV', 'production');
+    vi.stubEnv('VITEST_WORKER_ID', '');
     vi.resetModules();
+
+    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const consoleInfoSpy = vi.spyOn(console, 'info').mockImplementation(() => {});
+    const consoleDebugSpy = vi.spyOn(console, 'debug').mockImplementation(() => {});
+
     const { logger } = await import('./logging-client');
 
     logger.error({ message: 'error' });
@@ -55,9 +55,17 @@ describe('logging-client', () => {
   });
 
   it('maps npm loglevel "info" correctly', async () => {
-    process.env.NEXT_PUBLIC_BUILDTIME_NPM_CONFIG_LOGLEVEL = 'info';
-    process.env.NODE_ENV = 'production';
+    vi.unstubAllEnvs();
+    vi.stubEnv('NEXT_PUBLIC_BUILDTIME_NPM_CONFIG_LOGLEVEL', 'info');
+    vi.stubEnv('NODE_ENV', 'production');
+    vi.stubEnv('VITEST_WORKER_ID', '');
     vi.resetModules();
+
+    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const consoleInfoSpy = vi.spyOn(console, 'info').mockImplementation(() => {});
+    const consoleDebugSpy = vi.spyOn(console, 'debug').mockImplementation(() => {});
+
     const { logger } = await import('./logging-client');
 
     logger.error({ message: 'error' });
@@ -74,9 +82,17 @@ describe('logging-client', () => {
   });
 
   it('maps npm loglevel "error" correctly', async () => {
-    process.env.NEXT_PUBLIC_BUILDTIME_NPM_CONFIG_LOGLEVEL = 'error';
-    process.env.NODE_ENV = 'production';
+    vi.unstubAllEnvs();
+    vi.stubEnv('NEXT_PUBLIC_BUILDTIME_NPM_CONFIG_LOGLEVEL', 'error');
+    vi.stubEnv('NODE_ENV', 'production');
+    vi.stubEnv('VITEST_WORKER_ID', '');
     vi.resetModules();
+
+    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const consoleInfoSpy = vi.spyOn(console, 'info').mockImplementation(() => {});
+    const consoleDebugSpy = vi.spyOn(console, 'debug').mockImplementation(() => {});
+
     const { logger } = await import('./logging-client');
 
     logger.error({ message: 'error' });
@@ -93,9 +109,15 @@ describe('logging-client', () => {
   });
 
   it('maps npm loglevel "silent" to error level', async () => {
-    process.env.NEXT_PUBLIC_BUILDTIME_NPM_CONFIG_LOGLEVEL = 'silent';
-    process.env.NODE_ENV = 'production';
+    vi.unstubAllEnvs();
+    vi.stubEnv('NEXT_PUBLIC_BUILDTIME_NPM_CONFIG_LOGLEVEL', 'silent');
+    vi.stubEnv('NODE_ENV', 'production');
+    vi.stubEnv('VITEST_WORKER_ID', '');
     vi.resetModules();
+
+    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
     const { logger } = await import('./logging-client');
 
     logger.error({ message: 'error' });
@@ -106,9 +128,13 @@ describe('logging-client', () => {
   });
 
   it('maps npm loglevel "verbose" to debug level', async () => {
-    process.env.NEXT_PUBLIC_BUILDTIME_NPM_CONFIG_LOGLEVEL = 'verbose';
-    process.env.NODE_ENV = 'production';
+    vi.unstubAllEnvs();
+    vi.stubEnv('NEXT_PUBLIC_BUILDTIME_NPM_CONFIG_LOGLEVEL', 'verbose');
+    vi.stubEnv('NODE_ENV', 'production');
     vi.resetModules();
+
+    const consoleDebugSpy = vi.spyOn(console, 'debug').mockImplementation(() => {});
+
     const { logger } = await import('./logging-client');
 
     logger.debug({ message: 'debug' });
@@ -116,17 +142,50 @@ describe('logging-client', () => {
   });
 
   it('defaults to debug in development when loglevel not set', async () => {
-    process.env.NODE_ENV = 'development';
+    vi.unstubAllEnvs();
     vi.resetModules();
+    // Override process.env right before import
+    const originalEnv = process.env;
+    const testEnv = {
+      ...originalEnv,
+      NODE_ENV: 'development',
+    } as any;
+    // Delete VITEST_WORKER_ID to ensure we don't default to debug
+    delete testEnv.VITEST_WORKER_ID;
+    delete testEnv.NEXT_PUBLIC_BUILDTIME_NPM_CONFIG_LOGLEVEL;
+    delete testEnv.npm_config_loglevel;
+    (process as any).env = testEnv;
+    vi.resetModules();
+
+    const consoleDebugSpy = vi.spyOn(console, 'debug').mockImplementation(() => {});
+
     const { logger } = await import('./logging-client');
 
     logger.debug({ message: 'debug' });
     expect(consoleDebugSpy).toHaveBeenCalled();
+
+    (process as any).env = originalEnv;
   });
 
   it('defaults to info in production when loglevel not set', async () => {
-    process.env.NODE_ENV = 'production';
+    vi.unstubAllEnvs();
     vi.resetModules();
+    // Override process.env right before import
+    const originalEnv = process.env;
+    const testEnv = {
+      ...originalEnv,
+      NODE_ENV: 'production',
+    } as any;
+    // Delete VITEST_WORKER_ID to ensure we use default behavior
+    delete testEnv.VITEST_WORKER_ID;
+    delete testEnv.NEXT_PUBLIC_BUILDTIME_NPM_CONFIG_LOGLEVEL;
+    delete testEnv.npm_config_loglevel;
+    (process as any).env = testEnv;
+    vi.resetModules();
+
+    const consoleInfoSpy = vi.spyOn(console, 'info').mockImplementation(() => {});
+    const consoleDebugSpy = vi.spyOn(console, 'debug').mockImplementation(() => {});
+
     const { logger } = await import('./logging-client');
 
     logger.info({ message: 'info' });
@@ -134,12 +193,21 @@ describe('logging-client', () => {
 
     logger.debug({ message: 'debug' });
     expect(consoleDebugSpy).not.toHaveBeenCalled(); // debug disabled at info level
+
+    (process as any).env = originalEnv;
   });
 
   it('uses correct console methods for each log level', async () => {
-    process.env.NEXT_PUBLIC_BUILDTIME_NPM_CONFIG_LOGLEVEL = 'verbose';
-    process.env.NODE_ENV = 'production';
+    vi.unstubAllEnvs();
+    vi.stubEnv('NEXT_PUBLIC_BUILDTIME_NPM_CONFIG_LOGLEVEL', 'verbose');
+    vi.stubEnv('NODE_ENV', 'production');
     vi.resetModules();
+
+    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const consoleInfoSpy = vi.spyOn(console, 'info').mockImplementation(() => {});
+    const consoleDebugSpy = vi.spyOn(console, 'debug').mockImplementation(() => {});
+
     const { logger } = await import('./logging-client');
 
     logger.error({ message: 'error' });
@@ -156,9 +224,13 @@ describe('logging-client', () => {
   });
 
   it('formats logs as JSON with level and message', async () => {
-    process.env.NEXT_PUBLIC_BUILDTIME_NPM_CONFIG_LOGLEVEL = 'info';
-    process.env.NODE_ENV = 'production';
+    vi.unstubAllEnvs();
+    vi.stubEnv('NEXT_PUBLIC_BUILDTIME_NPM_CONFIG_LOGLEVEL', 'info');
+    vi.stubEnv('NODE_ENV', 'production');
     vi.resetModules();
+
+    const consoleInfoSpy = vi.spyOn(console, 'info').mockImplementation(() => {});
+
     const { logger } = await import('./logging-client');
 
     logger.info({ message: 'test', userId: '123' });
@@ -172,9 +244,15 @@ describe('logging-client', () => {
   });
 
   it('disabled levels are no-ops (do not call console)', async () => {
-    process.env.NEXT_PUBLIC_BUILDTIME_NPM_CONFIG_LOGLEVEL = 'warn';
-    process.env.NODE_ENV = 'production';
+    vi.unstubAllEnvs();
+    vi.stubEnv('NEXT_PUBLIC_BUILDTIME_NPM_CONFIG_LOGLEVEL', 'warn');
+    vi.stubEnv('NODE_ENV', 'production');
+    vi.stubEnv('VITEST_WORKER_ID', '');
     vi.resetModules();
+
+    const consoleInfoSpy = vi.spyOn(console, 'info').mockImplementation(() => {});
+    const consoleDebugSpy = vi.spyOn(console, 'debug').mockImplementation(() => {});
+
     const { logger } = await import('./logging-client');
 
     // These should be no-ops

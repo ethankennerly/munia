@@ -10,9 +10,11 @@ describe('CommentReply', () => {
     const { container } = render(
       <CommentReply
         id={1}
+        postId={1}
+        parentId={1}
         content={longWord}
         createdAt={new Date()}
-        user={{ id: 1, name: 'Test', username: 'test', profilePhoto: null }}
+        user={{ id: '1', name: 'Test', username: 'test', profilePhoto: null }}
         isOwnReply={false}
         isLiked={false}
         _count={{ commentLikes: 0, replies: 0 }}

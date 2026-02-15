@@ -42,12 +42,14 @@ describe('Comment', () => {
     const { container } = render(
       <Comment
         id={1}
+        postId={1}
+        parentId={null}
         content={longWord}
         createdAt={new Date()}
-        user={{ id: 1, name: 'Test', username: 'test', profilePhoto: null }}
+        user={{ id: '1', name: 'Test', username: 'test', profilePhoto: null }}
         isOwnComment={false}
         isLiked={false}
-        _count={{ commentLikes: 0, comments: 0, replies: 0 }}
+        _count={{ commentLikes: 0, replies: 0 }}
         repliesShown={false}
         setRepliesVisibility={() => {}}
         queryKey={['test']}

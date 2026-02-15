@@ -5,9 +5,14 @@ import '@testing-library/jest-dom';
 import { QueryClient, QueryClientProvider, InfiniteData, UseInfiniteQueryResult } from '@tanstack/react-query';
 import BidirectionalScroll from './BidirectionalScroll';
 
+interface MockItem {
+  id: number;
+  content: string;
+}
+
 // Mock @tanstack/react-virtual
-const mockGetVirtualItems = vi.fn(() => []);
-const mockGetTotalSize = vi.fn(() => 0);
+const mockGetVirtualItems = vi.fn(() => [] as Array<{ key: string; index: number; start: number; size: number }>);
+const mockGetTotalSize = vi.fn(() => 0 as number);
 const mockUseVirtualizer = vi.fn();
 
 vi.mock('@tanstack/react-virtual', () => ({
@@ -26,7 +31,7 @@ vi.mock('next-intl', () => ({
 
 describe('BidirectionalScroll', () => {
   let queryClient: QueryClient;
-  let mockQueryResult: Partial<UseInfiniteQueryResult<unknown[], Error>>;
+  let mockQueryResult: Partial<UseInfiniteQueryResult<InfiniteData<MockItem[]>, Error>>;
 
   beforeEach(() => {
     queryClient = new QueryClient({
@@ -50,34 +55,36 @@ describe('BidirectionalScroll', () => {
   });
 
   const createMockQueryResult = (
-    overrides?: Partial<UseInfiniteQueryResult<unknown[], Error>>,
-  ): Partial<UseInfiniteQueryResult<unknown[], Error>> => ({
-    data: {
-      pages: [[{ id: 1, content: 'Item 1' }], [{ id: 2, content: 'Item 2' }]],
-      pageParams: [undefined, 1],
-    } as InfiniteData<unknown[]>,
-    isPending: false,
-    isError: false,
-    error: null,
-    fetchNextPage: vi.fn(),
-    fetchPreviousPage: vi.fn(),
-    hasNextPage: true,
-    hasPreviousPage: true,
-    isFetchingNextPage: false,
-    isFetchingPreviousPage: false,
-    ...overrides,
-  });
+    overrides?: Partial<UseInfiniteQueryResult<InfiniteData<MockItem[]>, Error>>,
+  ): Partial<UseInfiniteQueryResult<InfiniteData<MockItem[]>, Error>> => {
+    const base: Partial<UseInfiniteQueryResult<InfiniteData<MockItem[]>, Error>> = {
+      data: {
+        pages: [[{ id: 1, content: 'Item 1' }], [{ id: 2, content: 'Item 2' }]],
+        pageParams: [undefined, 1],
+      },
+      isPending: false,
+      isError: false,
+      error: null,
+      fetchNextPage: vi.fn(),
+      fetchPreviousPage: vi.fn(),
+      hasNextPage: true,
+      hasPreviousPage: true,
+      isFetchingNextPage: false,
+      isFetchingPreviousPage: false,
+    };
+    return { ...base, ...overrides } as Partial<UseInfiniteQueryResult<InfiniteData<MockItem[]>, Error>>;
+  };
 
-  const defaultRenderItem = (item: { id: number; content: string }) => <div>{item.content}</div>;
+  const defaultRenderItem = (item: MockItem) => <div>{item.content}</div>;
 
   const renderComponent = (
-    queryResult: Partial<UseInfiniteQueryResult<unknown[], Error>>,
+    queryResult: Partial<UseInfiniteQueryResult<InfiniteData<MockItem[]>, Error>>,
     renderItem = defaultRenderItem,
   ) =>
     render(
       <QueryClientProvider client={queryClient}>
         <BidirectionalScroll
-          queryResult={queryResult as UseInfiniteQueryResult<unknown[], Error>}
+          queryResult={queryResult as UseInfiniteQueryResult<InfiniteData<MockItem[]>, Error>}
           renderItem={renderItem}
         />
       </QueryClientProvider>,
@@ -103,7 +110,7 @@ describe('BidirectionalScroll', () => {
 
   it('renders empty state when no items available', () => {
     mockQueryResult = createMockQueryResult({
-      data: { pages: [], pageParams: [] } as InfiniteData<unknown[]>,
+      data: { pages: [], pageParams: [] },
       hasNextPage: false,
       hasPreviousPage: false,
     });
@@ -153,7 +160,7 @@ describe('BidirectionalScroll', () => {
       data: {
         pages: [items],
         pageParams: [undefined],
-      } as InfiniteData<unknown[]>,
+      },
       fetchNextPage: mockFetchNextPage,
       hasNextPage: true,
     });
@@ -286,7 +293,7 @@ describe('BidirectionalScroll', () => {
       data: {
         pages: [[{ id: 1, content: 'Item 1' }]],
         pageParams: [undefined],
-      } as InfiniteData<unknown[]>,
+      },
     });
     renderComponent(mockQueryResult);
 
