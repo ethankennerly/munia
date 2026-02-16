@@ -39,6 +39,10 @@ const nextConfig = {
         source: '/ingest/:path*',
         destination: 'https://us.i.posthog.com/:path*',
       },
+      {
+        source: '/:locale/ingest/:path*',
+        destination: 'https://us.i.posthog.com/:path*',
+      },
     ];
   },
   // Required to support PostHog trailing slash API requests
