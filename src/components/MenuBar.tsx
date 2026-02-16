@@ -3,6 +3,7 @@
 import { Feather, GridFeedCards, LogOutCircle, NotificationBell, Profile, Search, WorldNet } from '@/svg_components';
 import { useSessionUserData } from '@/hooks/useSessionUserData';
 import { useNotificationsCountQuery } from '@/hooks/queries/useNotificationsCountQuery';
+import { useNotificationsSSE } from '@/hooks/useNotificationsSSE';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { LogoText } from './LogoText';
@@ -14,6 +15,7 @@ export function MenuBar() {
   const [user] = useSessionUserData();
   const username = user?.username || 'user-not-found';
   const { data: notificationCount } = useNotificationsCountQuery();
+  useNotificationsSSE();
 
   return (
     <FixedBottomNavContainer>

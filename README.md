@@ -13,6 +13,7 @@ In this [demo](https://munia-rho.vercel.app), Ethan Kennerly enhanced the follow
 - Polish infinite scroll of [posts](https://munia-rho.vercel.app/feed)
 - Polish editing a profile
 - Polish loading progress
+- Optimize notifications with [server-side events](https://upstash.com/blog/sse-streaming-llm-responses)
 - Upgrade Next.js 16
 - Translate [English](https://munia-rho.vercel.app/en) into [Spanish](https://munia-rho.vercel.app/es).
 - Speed up reloading an [image](https://developer.chrome.com/docs/performance/insights/cache)
