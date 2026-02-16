@@ -6,6 +6,7 @@ import { useSession } from 'next-auth/react';
 import { GetUser } from '@/types/definitions';
 import { useTranslations } from 'next-intl';
 import { useToast } from '../useToast';
+import posthog from 'posthog-js';
 
 /**
  * This hook is only used by the profile's profile/cover photo
@@ -37,6 +38,11 @@ export function useSessionUserDataMutation() {
       qc.setQueryData<GetUser>(['users', userId], updatedUser);
       // Invalidate with refetch to ensure all components get fresh data
       qc.invalidateQueries({ queryKey: ['users', userId], refetchType: 'active' });
+
+      // Track profile update event
+      posthog.capture('profile_updated', {
+        updated_fields: Object.keys(updatedUser).filter((key) => updatedUser[key as keyof GetUser] !== undefined),
+      });
 
       showToast({
         type: 'success',

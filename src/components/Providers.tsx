@@ -17,9 +17,22 @@ import { ReplayProvider } from '@/lib/replay/replayContext';
 import { setupDeploymentSync } from '@/lib/utils/deploymentSync';
 import { ClickDebounce } from '@/components/ui/ClickDebounce';
 import NextTopLoader from 'nextjs-toploader';
+import posthog from 'posthog-js';
 
 export function Providers({ children, session }: { children: React.ReactNode; session: Session | null }) {
   useEffect(() => setupDeploymentSync(window), []);
+
+  // Identify user in PostHog when session changes
+  useEffect(() => {
+    if (session?.user?.id) {
+      posthog.identify(session.user.id, {
+        name: session.user.name,
+      });
+    } else {
+      // Reset PostHog when user logs out
+      posthog.reset();
+    }
+  }, [session?.user?.id, session?.user?.name]);
 
   return (
     <ThemeContextProvider>

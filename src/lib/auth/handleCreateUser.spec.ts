@@ -6,6 +6,7 @@ import { importProfilePic } from './importProfilePic';
 
 vi.mock('@/lib/auth/importProfilePic', () => ({ importProfilePic: vi.fn().mockResolvedValue(null) }));
 vi.mock('@/lib/logging', () => ({ logger: { info: vi.fn(), warn: vi.fn(), debug: vi.fn() } }));
+vi.mock('@/lib/posthog-server', () => ({ getPostHogClient: () => ({ capture: vi.fn(), identify: vi.fn() }) }));
 
 beforeEach(() => {
   vi.clearAllMocks();

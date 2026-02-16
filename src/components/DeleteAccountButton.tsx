@@ -6,6 +6,7 @@ import { signOut } from 'next-auth/react';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
 import { useTranslations } from 'next-intl';
 import { Delete } from '@/svg_components';
+import posthog from 'posthog-js';
 
 export function DeleteAccountButton() {
   const t = useTranslations();
@@ -35,7 +36,11 @@ export function DeleteAccountButton() {
     }
   }, [t]);
 
-  const openDialog = useCallback(() => setOpen(true), []);
+  const openDialog = useCallback(() => {
+    // Track account deletion request (when dialog opens)
+    posthog.capture('account_deletion_requested');
+    setOpen(true);
+  }, []);
   const closeDialog = useCallback(() => setOpen(false), []);
 
   return (

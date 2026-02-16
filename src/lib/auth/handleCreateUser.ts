@@ -1,4 +1,5 @@
 import { logger } from '@/lib/logging';
+import { getPostHogClient } from '@/lib/posthog-server';
 
 export type CreateUserParams = {
   user: unknown;
@@ -51,6 +52,27 @@ export async function handleCreateUser({ user, account, profile }: CreateUserPar
     const profileKeys = profile && typeof profile === 'object' ? Object.keys(profile as object) : [];
     logger.info({ msg: 'createUser_event', provider: String(provider ?? 'unknown'), profileKeys });
 
+    // Track user sign-up event server-side
+    const userId = user && typeof user === 'object' ? ((user as { id?: unknown }).id as string | undefined) : undefined;
+    if (userId) {
+      const posthog = getPostHogClient();
+      posthog.capture({
+        distinctId: userId,
+        event: 'user_signed_up',
+        properties: {
+          provider: provider ?? 'unknown',
+        },
+      });
+      // Identify the user in PostHog
+      posthog.identify({
+        distinctId: userId,
+        properties: {
+          signup_provider: provider ?? 'unknown',
+          created_at: new Date().toISOString(),
+        },
+      });
+    }
+
     if (!provider || !IMPORT_PROVIDERS.has(provider)) return;
 
     const picture = extractImageUrl(user, profile);
@@ -59,14 +81,13 @@ export async function handleCreateUser({ user, account, profile }: CreateUserPar
       return;
     }
 
-    // Lazily import to avoid heavy deps at module load
-    const { importProfilePic } = await import('@/lib/auth/importProfilePic');
-    const userId = user && typeof user === 'object' ? ((user as { id?: unknown }).id as string | undefined) : undefined;
     if (!userId) {
       logger.warn({ msg: 'createUser_no_userId' });
       return;
     }
 
+    // Lazily import to avoid heavy deps at module load
+    const { importProfilePic } = await import('@/lib/auth/importProfilePic');
     await importProfilePic({ pictureUrl: picture, userId, provider });
   } catch (err) {
     logger.warn({ msg: 'createUser_import_profile_failed', err: (err as Error)?.message ?? 'unknown' });

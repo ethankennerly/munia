@@ -3,6 +3,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useSession } from 'next-auth/react';
 import { GetPost } from '@/types/definitions';
+import posthog from 'posthog-js';
 
 export function usePostLikesMutations({ postId }: { postId: number }) {
   const qc = useQueryClient();
@@ -53,6 +54,11 @@ export function usePostLikesMutations({ postId }: { postId: number }) {
         };
       });
 
+      // Track post like event
+      posthog.capture('post_liked', {
+        post_id: postId,
+      });
+
       // Return a context object with the snapshotted value
       return { previousPost };
     },
@@ -99,6 +105,11 @@ export function usePostLikesMutations({ postId }: { postId: number }) {
           },
           isLiked: false,
         };
+      });
+
+      // Track post unlike event
+      posthog.capture('post_unliked', {
+        post_id: postId,
       });
 
       // Return a context object with the snapshotted value

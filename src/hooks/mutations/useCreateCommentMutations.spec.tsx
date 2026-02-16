@@ -14,6 +14,7 @@ vi.mock('next-intl', () => ({
     return key;
   },
 }));
+vi.mock('posthog-js', () => ({ default: { capture: vi.fn(), captureException: vi.fn() } }));
 vi.mock('@tanstack/react-query', () => ({
   useMutation: (opts: {
     mutationFn: (vars: unknown) => Promise<unknown>;
@@ -54,7 +55,7 @@ describe('useCreateCommentMutations', () => {
   });
 
   it('shows comment success toast with localized title', async () => {
-    const createdComment = { id: 1, postId: 1 };
+    const createdComment = { id: 1, postId: 1, content: 'Hi' };
     vi.stubGlobal(
       'fetch',
       vi.fn(() => Promise.resolve({ ok: true, json: () => Promise.resolve(createdComment) })),

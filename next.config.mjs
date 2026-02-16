@@ -28,6 +28,21 @@ const nextConfig = {
     mcpServer: true,
     scrollRestoration: true,
   },
+  // PostHog reverse proxy to avoid ad-blockers
+  async rewrites() {
+    return [
+      {
+        source: '/ingest/static/:path*',
+        destination: 'https://us-assets.i.posthog.com/static/:path*',
+      },
+      {
+        source: '/ingest/:path*',
+        destination: 'https://us.i.posthog.com/:path*',
+      },
+    ];
+  },
+  // Required to support PostHog trailing slash API requests
+  skipTrailingSlashRedirect: true,
   images: {
     // 30 days in seconds (60 * 60 * 24 * 30)
     minimumCacheTTL: 2592000,

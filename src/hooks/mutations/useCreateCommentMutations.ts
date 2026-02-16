@@ -3,6 +3,7 @@ import { useTranslations } from 'next-intl';
 import { GetComment } from '@/types/definitions';
 import { useErrorNotifier } from '../useErrorNotifier';
 import { useToast } from '../useToast';
+import posthog from 'posthog-js';
 
 export function useCreateCommentMutations() {
   const qc = useQueryClient();
@@ -30,6 +31,14 @@ export function useCreateCommentMutations() {
         if (!oldComments) return oldComments;
         return [...oldComments, createdComment];
       });
+
+      // Track comment submission event
+      posthog.capture('comment_submitted', {
+        comment_id: createdComment.id,
+        post_id: createdComment.postId,
+        content_length: createdComment.content.length,
+      });
+
       showToast({
         title: t('hooks_mutations_comment_success'),
         message: t('your_comment_has_been_created'),
@@ -37,6 +46,7 @@ export function useCreateCommentMutations() {
       });
     },
     onError: (err) => {
+      posthog.captureException(err);
       notifyError(err);
     },
   });

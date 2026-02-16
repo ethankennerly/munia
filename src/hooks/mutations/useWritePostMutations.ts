@@ -7,6 +7,7 @@ import { revokeVisualMediaObjectUrls } from '@/lib/revokeVisualMediaObjectUrls';
 import { useTranslations } from 'next-intl';
 import { useToast } from '../useToast';
 import { useErrorNotifier } from '../useErrorNotifier';
+import posthog from 'posthog-js';
 
 export function useWritePostMutations({
   content,
@@ -84,11 +85,20 @@ export function useWritePostMutations({
           pageParams: newPageParams,
         };
       });
+      // Track post creation event
+      posthog.capture('post_created', {
+        post_id: createdPost.id,
+        has_media: visualMedia.length > 0,
+        media_count: visualMedia.length,
+        content_length: content.length,
+      });
+
       showToast({ title: t('hooks_mutations_post_success'), type: 'success' });
       revokeVisualMediaObjectUrls(visualMedia);
       exitCreatePostModal();
     },
     onError: (err) => {
+      posthog.captureException(err);
       notifyError(err, t('errors_creating_post'));
       clearVisualMedia?.();
     },
@@ -132,11 +142,20 @@ export function useWritePostMutations({
           pageParams: oldData.pageParams,
         };
       });
+      // Track post edit event
+      posthog.capture('post_edited', {
+        post_id: updatedPost.id,
+        has_media: visualMedia.length > 0,
+        media_count: visualMedia.length,
+        content_length: content.length,
+      });
+
       showToast({ title: t('successfully_edited'), type: 'success' });
       revokeVisualMediaObjectUrls(visualMedia);
       exitCreatePostModal();
     },
     onError: (err) => {
+      posthog.captureException(err);
       notifyError(err, t('errors_creating_post'));
       clearVisualMedia?.();
     },

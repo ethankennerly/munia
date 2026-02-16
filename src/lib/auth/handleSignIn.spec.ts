@@ -3,6 +3,7 @@ import { describe, it, expect, vi, beforeEach, type Mock } from 'vitest';
 vi.mock('@/lib/auth/importProfilePic', () => ({ importProfilePic: vi.fn().mockResolvedValue(null) }));
 vi.mock('@/lib/logging', () => ({ logger: { info: vi.fn(), warn: vi.fn(), debug: vi.fn() } }));
 vi.mock('@/lib/prisma/prisma', () => ({ default: { user: { findUnique: vi.fn() } } }));
+vi.mock('@/lib/posthog-server', () => ({ getPostHogClient: () => ({ capture: vi.fn(), identify: vi.fn() }) }));
 
 import prisma from '@/lib/prisma/prisma';
 import { logger } from '@/lib/logging';

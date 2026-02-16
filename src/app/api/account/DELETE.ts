@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { auth } from '@/auth';
 import { deleteAccount } from '@/lib/account/deleteAccount';
 import { logger } from '@/lib/logging';
+import { getPostHogClient } from '@/lib/posthog-server';
 
 // 5 minutes in ms
 const RECENT_MS = 5 * 60 * 1000;
@@ -41,6 +42,19 @@ export async function DELETE(req: Request) {
       files: result.deletedFileNames.length,
       at: new Date().toISOString(),
     });
+
+    // Track account deletion event server-side
+    if (result.deletedUserId) {
+      const posthog = getPostHogClient();
+      posthog.capture({
+        distinctId: result.deletedUserId,
+        event: 'account_deleted',
+        properties: {
+          deleted_files_count: result.deletedFileNames.length,
+        },
+      });
+    }
+
     return NextResponse.json({ ok: true });
   } catch (err) {
     logger.error({ msg: 'User deletion failed', err: (err as Error).message });
