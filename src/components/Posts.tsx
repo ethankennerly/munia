@@ -6,6 +6,7 @@ import { useCallback, useEffect, useMemo } from 'react';
 import { NO_PREV_DATA_LOADED, POSTS_PER_PAGE } from '@/constants';
 import { chunk } from 'lodash';
 import { useShouldAnimate } from '@/hooks/useShouldAnimate';
+import { useFeedLikesSSE } from '@/hooks/useFeedLikesSSE';
 import { logger } from '@/lib/logging-client';
 import BidirectionalScroll from './ui/BidirectionalScroll';
 import { Post } from './Post';
@@ -296,6 +297,11 @@ export function Posts({ type, hashtag, userId }: PostsProps) {
     staleTime: 60000 * 10,
     retry: 2,
   });
+
+  // SSE: push like-count updates for visible posts instead of relying
+  // solely on optimistic mutations or stale-time-based refetches.
+  const visiblePostIds = useMemo(() => queryResult.data?.pages.flat().map((p) => p.id) ?? [], [queryResult.data]);
+  useFeedLikesSSE(visiblePostIds);
 
   useEffect(() => {
     // Reset the queries when the page has just been pushed, this is to account
