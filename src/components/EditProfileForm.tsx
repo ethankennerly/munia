@@ -305,7 +305,7 @@ export function EditProfileForm({ redirectTo, defaultUsername }: { redirectTo?: 
               {t('contexts_dialogscontext_submit')}
             </Button>
           </div>
-          {userData?.id && !isSubmitting && <DeleteAccountButton />}
+          {!defaultUsername && userData?.id && !isSubmitting && <DeleteAccountButton />}
         </fieldset>
       </form>
     </div>

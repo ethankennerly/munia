@@ -52,7 +52,7 @@ describe('importGoogleProfilePic', () => {
     expect(postCreateMock).not.toHaveBeenCalled();
     expect(logger.info).toHaveBeenCalledWith(
       expect.objectContaining({
-        msg: 'import_google_profile_metric',
+        msg: 'import_profile_metric',
         event: 'success',
       }),
     );
@@ -63,7 +63,7 @@ describe('importGoogleProfilePic', () => {
     expect(res).toBeNull();
     expect(uploadObject).not.toHaveBeenCalled();
     expect(logger.info).toHaveBeenCalledWith(
-      expect.objectContaining({ msg: 'import_google_profile_metric', event: 'failure', reason: 'disallowed_host' }),
+      expect.objectContaining({ msg: 'import_profile_metric', event: 'failure', reason: 'disallowed_host' }),
     );
   });
 

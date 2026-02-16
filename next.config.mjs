@@ -37,6 +37,21 @@ const nextConfig = {
         hostname: 'munia-s3-bucket.s3.us-east-1.amazonaws.com',
         port: '',
       },
+      // GitHub Avatars
+      {
+        protocol: 'https',
+        hostname: 'avatars.githubusercontent.com',
+      },
+      // Facebook Profile Photos
+      {
+        protocol: 'https',
+        hostname: 'platform-lookaside.fbsbx.com',
+      },
+      // Mock/Placeholder Profile Photos
+      {
+        protocol: 'https',
+        hostname: 'i.pravatar.cc',
+      },
     ],
   },
   env: {

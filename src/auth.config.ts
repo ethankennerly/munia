@@ -19,7 +19,27 @@ const providers: NextAuthConfig['providers'] = [
   // In 2016, Facebook allowed a bad actor to impersonate an email address.
   // https://www.bitdefender.com/en-us/blog/labs/attackers-pose-as-account-owners-via-facebook-login-flaw
   // Also, Facebook does not check PKCE/state in the same way.
-  Facebook,
+  // Configure to request large profile pictures (picture.type(large)) instead of default 50x50
+  Facebook({
+    userinfo: {
+      url: 'https://graph.facebook.com/me',
+      async request(context: { tokens: { access_token: string } }) {
+        // Request explicitly with large picture type
+        const res = await fetch('https://graph.facebook.com/me?fields=id,name,email,picture.type(large)', {
+          headers: { Authorization: `Bearer ${context.tokens.access_token}` },
+        });
+        return res.json();
+      },
+    },
+    profile(profile) {
+      return {
+        id: profile.id,
+        name: profile.name,
+        email: profile.email,
+        image: profile.picture?.data?.url,
+      };
+    },
+  }),
 ];
 
 // Add mock OAuth provider only if environment variables are defined (localhost testing)
@@ -37,33 +57,12 @@ if (process.env.AUTH_MOCK_EMAIL) {
         if (credentials?.email && credentials?.name) {
           const email = (credentials.email as string).toLowerCase().trim();
           const name = (credentials.name as string).trim();
-          const mockId = `mock:${email}`;
 
-          // Look up existing user by email, or create if doesn't exist
-          // Use deterministic mock ID: mock:${email} for unique identity per email
-          let user = await prisma.user.findUnique({
-            where: { email },
-            select: { id: true, email: true, name: true },
-          });
-
-          if (!user) {
-            // User doesn't exist - create with deterministic mock ID
-            user = await prisma.user.create({
-              data: {
-                id: mockId,
-                email,
-                name,
-                emailVerified: new Date(),
-              },
-              select: { id: true, email: true, name: true },
-            });
-          }
-
-          return {
-            id: user.id,
-            name: user.name || name,
-            email: user.email || email,
-          };
+          // Credentials providers bypass PrismaAdapter, so events.createUser
+          // never fires. handleMockOAuthUser handles user creation and
+          // profile picture import directly.
+          const { handleMockOAuthUser } = await import('@/lib/auth/handleMockOAuthUser');
+          return await handleMockOAuthUser({ email, name });
         }
         // "Standard refusal" simulation
         return null;
