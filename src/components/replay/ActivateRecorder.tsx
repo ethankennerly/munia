@@ -5,6 +5,22 @@ import { recordActivate } from '@/lib/replay/recordActivate';
 import { getReplayConfig } from '@/lib/replay/config';
 import { useSession } from 'next-auth/react';
 import { useReplayContext } from '@/lib/replay/replayContext';
+import * as Sentry from '@sentry/nextjs';
+
+function logEventAndUserId(event: MouseEvent | KeyboardEvent, userId: string | undefined) {
+  const activateId = recordActivate(event);
+  if (activateId && userId) {
+    logActivateToSentry(activateId, userId);
+  }
+}
+
+function logActivateToSentry(activateId: string, userId: string) {
+  const attributes: Record<string, string> = {
+    activateId: activateId,
+    userId: userId,
+  };
+  Sentry.logger.info('activate', attributes);
+}
 
 /**
  * Records activation events (click, tap, Enter, Space) for session replay.
@@ -17,28 +33,24 @@ export function ActivateRecorder() {
   const { isReplaying } = useReplayContext();
 
   useEffect(() => {
-    // Don't record during replay
     if (isReplaying) {
       return undefined;
     }
 
-    // Only record if enabled and user is authenticated
     if (!config.enabled || !session?.user?.id) {
       return undefined;
     }
 
-    // Add click event listener
     const handleClick = (event: MouseEvent) => {
-      recordActivate(event);
+      logEventAndUserId(event, session?.user?.id);
     };
 
-    // Add keyboard event listener for Enter/Space on buttons/links
     const handleKeyDown = (event: KeyboardEvent) => {
-      recordActivate(event);
+      logEventAndUserId(event, session?.user?.id);
     };
 
-    document.addEventListener('click', handleClick, true); // Use capture phase
-    document.addEventListener('keydown', handleKeyDown, true); // Use capture phase
+    document.addEventListener('click', handleClick, true);
+    document.addEventListener('keydown', handleKeyDown, true);
 
     return () => {
       document.removeEventListener('click', handleClick, true);

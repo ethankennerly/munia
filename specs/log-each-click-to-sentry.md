@@ -6,3 +6,11 @@ Log each click to Sentry to track user interactions and identify potential issue
 
 - [x] Sentry library is installed and configured in the application.
 - [ ] How would a professional Next.js 16 application log each click to Sentry?
+
+```
+Sentry.logger.info("Button clicked", { 
+      buttonId: "checkout-btn",
+      location: "header",
+      userId: "123" 
+    });
+```

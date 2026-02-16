@@ -40,27 +40,27 @@ function getActivateIdFromEvent(event: MouseEvent | KeyboardEvent): string | nul
  * Record an activation event (click, tap, Enter, or Space)
  * Only records if element has data-activate-id attribute
  */
-export function recordActivate(event: MouseEvent | KeyboardEvent): void {
+export function recordActivate(event: MouseEvent | KeyboardEvent): string | null {
   const config = getReplayConfig();
-  if (!config.enabled) return;
+  if (!config.enabled) return null;
 
   const { target } = event;
   // Handle both HTMLElement and SVGElement (SVG elements can be clicked)
   if (!(target instanceof HTMLElement) && !(target instanceof SVGElement) && !(target instanceof Element)) {
-    return;
+    return null;
   }
 
   // Don't record on admin pages
-  if (window.location.pathname.startsWith('/admin')) return;
+  if (window.location.pathname.startsWith('/admin')) return null;
 
   // Don't record on the recording components themselves
-  if (target instanceof Element && target.closest('[data-replay-recorder]')) return;
+  if (target instanceof Element && target.closest('[data-replay-recorder]')) return null;
 
   // For keyboard events, only record Enter or Space on interactive elements
   if (event instanceof KeyboardEvent) {
     const { key } = event;
     if (key !== 'Enter' && key !== ' ') {
-      return;
+      return null;
     }
     // Only record if the element is focusable/interactive
     const isInteractive =
@@ -70,7 +70,7 @@ export function recordActivate(event: MouseEvent | KeyboardEvent): void {
         target.getAttribute('role') === 'button' ||
         target.getAttribute('tabindex') !== null);
     if (!isInteractive) {
-      return;
+      return null;
     }
   }
 
@@ -78,7 +78,7 @@ export function recordActivate(event: MouseEvent | KeyboardEvent): void {
   // This handles cases where click target is a child element (icon, SVG, text)
   const activateId = getActivateIdFromEvent(event);
   if (!activateId) {
-    return; // Skip recording if no activation ID
+    return null; // Skip recording if no activation ID
   }
 
   const command = createActivateCommand({
@@ -89,4 +89,5 @@ export function recordActivate(event: MouseEvent | KeyboardEvent): void {
   });
 
   recordCommand(command);
+  return activateId;
 }
