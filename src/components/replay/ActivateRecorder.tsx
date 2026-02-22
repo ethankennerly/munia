@@ -5,21 +5,21 @@ import { recordActivate } from '@/lib/replay/recordActivate';
 import { getReplayConfig } from '@/lib/replay/config';
 import { useSession } from 'next-auth/react';
 import { useReplayContext } from '@/lib/replay/replayContext';
-import * as Sentry from '@sentry/nextjs';
+import posthog from 'posthog-js';
+import { snakeCase } from 'lodash';
 
-function logEventAndUserId(event: MouseEvent | KeyboardEvent, userId: string | undefined) {
+function logEventAndUserId(event: MouseEvent | KeyboardEvent) {
   const activateId = recordActivate(event);
-  if (activateId && userId) {
-    logActivateToSentry(activateId, userId);
-  }
+  logActivateToPosthog(activateId);
 }
 
-function logActivateToSentry(activateId: string, userId: string) {
-  const attributes: Record<string, string> = {
-    activateId: activateId,
-    userId: userId,
-  };
-  Sentry.logger.info('activate', attributes);
+function logActivateToPosthog(activateId: string | null) {
+  if (!activateId || !process.env.NEXT_PUBLIC_POSTHOG_KEY || !posthog) {
+    return;
+  }
+
+  const snakeCaseId = snakeCase(activateId);
+  posthog.capture(snakeCaseId + '_activated');
 }
 
 /**
@@ -42,11 +42,11 @@ export function ActivateRecorder() {
     }
 
     const handleClick = (event: MouseEvent) => {
-      logEventAndUserId(event, session?.user?.id);
+      logEventAndUserId(event);
     };
 
     const handleKeyDown = (event: KeyboardEvent) => {
-      logEventAndUserId(event, session?.user?.id);
+      logEventAndUserId(event);
     };
 
     document.addEventListener('click', handleClick, true);
