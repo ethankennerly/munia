@@ -73,7 +73,6 @@ model User {
   activities         Activity[]          @relation("activity")
   notifications      Activity[]          @relation("notification")
   role               Role                @default(USER)
-  replaySessions     ReplaySession[]
 }
 
 model VerificationToken {
@@ -215,27 +214,3 @@ enum RelationshipStatus {
   MARRIED
 }
 
-model ReplaySession {
-  id        String    @id @default(cuid())
-  userId    String
-  startedAt DateTime  @default(now())
-  endedAt   DateTime?
-
-  user    User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  actions ReplayAction[]
-
-  @@index([userId, startedAt])
-  @@index([startedAt])
-}
-
-model ReplayAction {
-  id            Int      @id @default(autoincrement())
-  sessionId     String
-  datetimestamp DateTime // Timestamp as datetime
-  type          String   // Encoded type: 'r'=route, 'c'=click, 'i'=input, etc.
-  data          Json     // Compact JSON with encoded keys
-
-  session ReplaySession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
-
-  @@index([sessionId, datetimestamp])
-}
