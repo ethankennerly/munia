@@ -10,10 +10,7 @@ import { VisualMediaModalContextProvider } from '@/contexts/VisualMediaModalCont
 import { SessionProvider } from 'next-auth/react';
 import type { Session } from 'next-auth';
 import React, { useEffect } from 'react';
-import { RouteRecorder } from '@/components/replay/RouteRecorder';
 import { ActivateRecorder } from '@/components/replay/ActivateRecorder';
-import { ScrollRecorder } from '@/components/replay/ScrollRecorder';
-import { ReplayProvider } from '@/lib/replay/replayContext';
 import { setupDeploymentSync } from '@/lib/utils/deploymentSync';
 import { ClickDebounce } from '@/components/ui/ClickDebounce';
 import NextTopLoader from 'nextjs-toploader';
@@ -40,20 +37,16 @@ export function Providers({ children, session }: { children: React.ReactNode; se
       <ToastContextProvider>
         <ReactQueryProvider>
           <SessionProvider session={session}>
-            <ReplayProvider>
-              <RouteRecorder />
-              <ActivateRecorder />
-              <ScrollRecorder />
-              <DialogsContextProvider>
-                <VisualMediaModalContextProvider>
-                  <CreatePostModalContextProvider>
-                    <ShouldAnimateContextProvider>
-                      <ClickDebounce>{children}</ClickDebounce>
-                    </ShouldAnimateContextProvider>
-                  </CreatePostModalContextProvider>
-                </VisualMediaModalContextProvider>
-              </DialogsContextProvider>
-            </ReplayProvider>
+            <ActivateRecorder />
+            <DialogsContextProvider>
+              <VisualMediaModalContextProvider>
+                <CreatePostModalContextProvider>
+                  <ShouldAnimateContextProvider>
+                    <ClickDebounce>{children}</ClickDebounce>
+                  </ShouldAnimateContextProvider>
+                </CreatePostModalContextProvider>
+              </VisualMediaModalContextProvider>
+            </DialogsContextProvider>
           </SessionProvider>
         </ReactQueryProvider>
       </ToastContextProvider>

@@ -1,16 +1,6 @@
 'use client';
 
-import { recordCommand } from './commandBuffer';
-import { createActivateCommand } from './commands/activateCommand';
-import { getReplayConfig } from './config';
-
-/**
- * Get activation ID from event path
- * Uses event.composedPath() to reliably find the interactive element that was clicked
- * Handles cases where click target is a child element (icon, text, SVG) by checking the event path
- */
 function getActivateIdFromEvent(event: MouseEvent | KeyboardEvent): string | null {
-  // Use composedPath() to get the complete event path (more reliable than parent traversal)
   const path = event.composedPath ? event.composedPath() : [];
 
   // Check each element in the path from target to root
@@ -41,9 +31,6 @@ function getActivateIdFromEvent(event: MouseEvent | KeyboardEvent): string | nul
  * Only records if element has data-activate-id attribute
  */
 export function recordActivate(event: MouseEvent | KeyboardEvent): string | null {
-  const config = getReplayConfig();
-  if (!config.enabled) return null;
-
   const { target } = event;
   // Handle both HTMLElement and SVGElement (SVG elements can be clicked)
   if (!(target instanceof HTMLElement) && !(target instanceof SVGElement) && !(target instanceof Element)) {
@@ -74,20 +61,5 @@ export function recordActivate(event: MouseEvent | KeyboardEvent): string | null
     }
   }
 
-  // Use event path to reliably find the activation ID
-  // This handles cases where click target is a child element (icon, SVG, text)
-  const activateId = getActivateIdFromEvent(event);
-  if (!activateId) {
-    return null; // Skip recording if no activation ID
-  }
-
-  const command = createActivateCommand({
-    timestamp: Date.now(),
-    payload: {
-      selector: activateId, // Activation ID only (will be encoded as 's')
-    },
-  });
-
-  recordCommand(command);
-  return activateId;
+  return getActivateIdFromEvent(event);
 }

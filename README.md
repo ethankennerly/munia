@@ -15,6 +15,8 @@ In this [demo](https://munia-rho.vercel.app), Ethan Kennerly enhanced the follow
 - Polish loading progress
 - Optimize notifications with [server-side events](https://upstash.com/blog/sse-streaming-llm-responses)
 - Upgrade Next.js 16
+- Integrate Posthog analytics
+- Integrate Sentry error tracking
 - Translate [English](https://munia-rho.vercel.app/en) into [Spanish](https://munia-rho.vercel.app/es).
 - Speed up reloading an [image](https://developer.chrome.com/docs/performance/insights/cache)
 - Collapse a long [post](https://munia-rho.vercel.app/feed)
@@ -22,7 +24,6 @@ In this [demo](https://munia-rho.vercel.app), Ethan Kennerly enhanced the follow
 - Configure [login](https://munia-rho.vercel.app/register) Email, Facebook, GitHub, Google, or Mock.
 - Import profile picture from Google
 - Link Google or GitHub by email ([Facebook](https://www.bitdefender.com/en-us/blog/labs/attackers-pose-as-account-owners-via-facebook-login-flaw) linking is unsafe)
-- Admin replays clicks and scrolling
 - Terms of Service
 - Privacy Policy
 
@@ -40,6 +41,8 @@ In this [demo](https://munia-rho.vercel.app), Ethan Kennerly enhanced the follow
 - [Prisma 5](https://www.prisma.io/)
 - [AWS S3 3](https://aws.amazon.com/s3/)
 - [AWS SES 3](https://aws.amazon.com/ses/)
+- [Posthog 1](https://posthog.com/)
+- [Sentry 10](https://sentry.io/)
 
 ## More Info
 

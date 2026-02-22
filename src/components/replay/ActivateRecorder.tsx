@@ -2,11 +2,12 @@
 
 import { useEffect } from 'react';
 import { recordActivate } from '@/lib/replay/recordActivate';
-import { getReplayConfig } from '@/lib/replay/config';
-import { useSession } from 'next-auth/react';
-import { useReplayContext } from '@/lib/replay/replayContext';
 import posthog from 'posthog-js';
 import { snakeCase } from 'lodash';
+
+function isPosthogEnabled() {
+  return process.env.NEXT_PUBLIC_POSTHOG_KEY && posthog;
+}
 
 function logEventAndUserId(event: MouseEvent | KeyboardEvent) {
   const activateId = recordActivate(event);
@@ -14,7 +15,7 @@ function logEventAndUserId(event: MouseEvent | KeyboardEvent) {
 }
 
 function logActivateToPosthog(activateId: string | null) {
-  if (!activateId || !process.env.NEXT_PUBLIC_POSTHOG_KEY || !posthog) {
+  if (!activateId || !isPosthogEnabled()) {
     return;
   }
 
@@ -23,21 +24,11 @@ function logActivateToPosthog(activateId: string | null) {
 }
 
 /**
- * Records activation events (click, tap, Enter, Space) for session replay.
- * Only records when replay is enabled and user is authenticated.
- * Does not record during active replay sessions.
+ * Records activation events (click, tap, Enter, Space) to Posthog.
  */
 export function ActivateRecorder() {
-  const { data: session } = useSession();
-  const config = getReplayConfig();
-  const { isReplaying } = useReplayContext();
-
   useEffect(() => {
-    if (isReplaying) {
-      return undefined;
-    }
-
-    if (!config.enabled || !session?.user?.id) {
+    if (!isPosthogEnabled()) {
       return undefined;
     }
 
@@ -56,7 +47,7 @@ export function ActivateRecorder() {
       document.removeEventListener('click', handleClick, true);
       document.removeEventListener('keydown', handleKeyDown, true);
     };
-  }, [config.enabled, session?.user?.id, isReplaying]);
+  });
 
   return null;
 }
