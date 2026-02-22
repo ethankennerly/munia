@@ -4,8 +4,11 @@ A responsive and accessible full stack social media web app by Leandro Norcio.
 
 ## What's New
 
+- Video comparison: [September 2025](https://norcio-dot-dev-public-files.s3.us-east-1.amazonaws.com/munia/showcase.mp4) vs [February 2026](https://drive.google.com/file/d/1KPM3IW3e-FtjoMMs6LAoaMdK5xxfDhnV/view?pli=1).
+
 In this [demo](https://munia-rho.vercel.app), Ethan Kennerly enhanced the following features:
 
+- Lighthouse score 100 in Performance, Accessibility, Best Practices, and SEO.
 - Patch DoS vulnerability ([2025-12-11](https://react.dev/blog/2025/12/11/denial-of-service-and-source-code-exposure-in-react-server-components))
 - [Delete](https://www.lexology.com/library/detail.aspx?g=a20bdb6d-dffa-4936-8507-3201876b891b) an account
 - [Remove](https://github.com/leandronorcio/munia/issues/1) a post

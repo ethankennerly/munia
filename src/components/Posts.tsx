@@ -57,7 +57,7 @@ export function Posts({ type, hashtag, userId, initialPosts }: PostsProps) {
       pages: [initialPosts.map((p) => ({ id: p.id, commentsShown: false as const }))],
       pageParams: [{ cursor: 0, direction: 'forward' }],
     };
-  }, []);
+  }, [initialPosts]);
 
   const queryResult = useInfiniteQuery<PostIds, Error, InfiniteData<PostIds>, QueryKey>({
     queryKey,
