@@ -56,14 +56,6 @@ export async function handleCreateUser({ user, account, profile }: CreateUserPar
     const userId = user && typeof user === 'object' ? ((user as { id?: unknown }).id as string | undefined) : undefined;
     if (userId) {
       const posthog = getPostHogClient();
-      posthog?.capture({
-        distinctId: userId,
-        event: 'user_signed_up',
-        properties: {
-          provider: provider ?? 'unknown',
-        },
-      });
-      // Identify the user in PostHog
       posthog?.identify({
         distinctId: userId,
         properties: {

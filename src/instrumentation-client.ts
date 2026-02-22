@@ -51,7 +51,6 @@ if (posthogKey) {
     defaults: '2026-01-30',
     capture_exceptions: false,
     capture_pageview: false,
-    // Turn on debug in development mode
     debug: process.env.NODE_ENV === 'development',
   });
 }

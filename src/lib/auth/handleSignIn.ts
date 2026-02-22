@@ -1,6 +1,5 @@
 import { logger } from '@/lib/logging';
 import prisma from '@/lib/prisma/prisma';
-import { getPostHogClient } from '@/lib/posthog-server';
 
 export type SignInParams = {
   user: unknown;
@@ -53,18 +52,6 @@ export async function handleSignIn({ user, account, profile }: SignInParams) {
     logger.info({ msg: 'signIn_event', provider: String(provider ?? 'unknown') });
 
     const userId = user && typeof user === 'object' ? ((user as { id?: unknown }).id as string | undefined) : undefined;
-
-    // Track user sign-in event server-side
-    if (userId) {
-      const posthog = getPostHogClient();
-      posthog?.capture({
-        distinctId: userId,
-        event: 'user_signed_in',
-        properties: {
-          provider: provider ?? 'unknown',
-        },
-      });
-    }
 
     if (!provider || !IMPORT_PROVIDERS.has(provider)) return;
 
