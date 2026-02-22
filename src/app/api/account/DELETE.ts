@@ -46,7 +46,7 @@ export async function DELETE(req: Request) {
     // Track account deletion event server-side
     if (result.deletedUserId) {
       const posthog = getPostHogClient();
-      posthog.capture({
+      posthog?.capture({
         distinctId: result.deletedUserId,
         event: 'account_deleted',
         properties: {

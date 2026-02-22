@@ -33,7 +33,7 @@ export function useCreateCommentMutations() {
       });
 
       // Track comment submission event
-      posthog.capture('comment_submitted', {
+      posthog?.capture('comment_submitted', {
         comment_id: createdComment.id,
         post_id: createdComment.postId,
         content_length: createdComment.content.length,
@@ -46,7 +46,7 @@ export function useCreateCommentMutations() {
       });
     },
     onError: (err) => {
-      posthog.captureException(err);
+      posthog?.captureException(err);
       notifyError(err);
     },
   });

@@ -57,7 +57,7 @@ export async function handleSignIn({ user, account, profile }: SignInParams) {
     // Track user sign-in event server-side
     if (userId) {
       const posthog = getPostHogClient();
-      posthog.capture({
+      posthog?.capture({
         distinctId: userId,
         event: 'user_signed_in',
         properties: {

@@ -38,13 +38,16 @@ export const onRouterTransitionStart = Sentry.captureRouterTransitionStart;
 
 // Initialize PostHog for analytics
 // https://posthog.com/docs/libraries/next-js
-posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY!, {
-  // Use reverse proxy to avoid ad-blockers
-  api_host: '/ingest',
-  ui_host: 'https://us.posthog.com',
-  defaults: '2026-01-30',
-  capture_exceptions: false,
-  capture_pageview: false,
-  // Turn on debug in development mode
-  debug: process.env.NODE_ENV === 'development',
-});
+const posthogKey = process.env.NEXT_PUBLIC_POSTHOG_KEY;
+if (posthogKey) {
+  posthog.init(posthogKey!, {
+    // Use reverse proxy to avoid ad-blockers
+    api_host: '/ingest',
+    ui_host: process.env.NEXT_PUBLIC_POSTHOG_HOST,
+    defaults: '2026-01-30',
+    capture_exceptions: false,
+    capture_pageview: false,
+    // Turn on debug in development mode
+    debug: process.env.NODE_ENV === 'development',
+  });
+}

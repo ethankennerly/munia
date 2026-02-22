@@ -56,7 +56,7 @@ export async function handleCreateUser({ user, account, profile }: CreateUserPar
     const userId = user && typeof user === 'object' ? ((user as { id?: unknown }).id as string | undefined) : undefined;
     if (userId) {
       const posthog = getPostHogClient();
-      posthog.capture({
+      posthog?.capture({
         distinctId: userId,
         event: 'user_signed_up',
         properties: {
@@ -64,7 +64,7 @@ export async function handleCreateUser({ user, account, profile }: CreateUserPar
         },
       });
       // Identify the user in PostHog
-      posthog.identify({
+      posthog?.identify({
         distinctId: userId,
         properties: {
           signup_provider: provider ?? 'unknown',
