@@ -5,7 +5,6 @@ import { GetUser } from '@/types/definitions';
 import { useSession } from 'next-auth/react';
 import { useToast } from '../useToast';
 import { useTranslations } from 'next-intl';
-import posthog from 'posthog-js';
 
 async function follow({ userId, targetUserId }: { userId: string; targetUserId: string }, t: (key: string) => string) {
   const res = await fetch(`/api/users/${userId}/following`, {
@@ -66,11 +65,6 @@ export function useFollowsMutations({ targetUserId }: { targetUserId: string }) 
         };
       });
 
-      // Track user follow event
-      posthog.capture('user_followed', {
-        target_user_id: targetUserId,
-      });
-
       // Return a context object with the snapshotted value
       return { previousTargetUser };
     },
@@ -104,11 +98,6 @@ export function useFollowsMutations({ targetUserId }: { targetUserId: string }) 
           isFollowing: false,
           followerCount: (oldTargetUser.followerCount || 0) - 1,
         };
-      });
-
-      // Track user unfollow event
-      posthog.capture('user_unfollowed', {
-        target_user_id: targetUserId,
       });
 
       // Return a context object with the snapshotted value

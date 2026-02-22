@@ -83,7 +83,6 @@ export function MockOAuthFormPage({ defaultEmail, defaultName, callbackUrl: prop
       });
 
       if (result?.ok) {
-        // Redirect to callback URL
         router.push(callbackUrl);
       } else {
         // Handle error (e.g., invalid credentials)

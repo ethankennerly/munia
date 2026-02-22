@@ -3,7 +3,6 @@
 import { useEffect } from 'react';
 import { recordActivate } from '@/lib/replay/recordActivate';
 import posthog from 'posthog-js';
-import { snakeCase } from 'lodash';
 import { useSession } from 'next-auth/react';
 
 function isPosthogEnabled() {
@@ -24,8 +23,7 @@ function logActivateToPosthog(activateId: string | null, userId: string | undefi
   if (userId) {
     eventProperties.distinct_id = userId;
   }
-  const snakeCaseId = snakeCase(activateId);
-  posthog.capture(snakeCaseId + '_activated', eventProperties);
+  posthog.capture(activateId + '_activated', eventProperties);
 }
 
 /**

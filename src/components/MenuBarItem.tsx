@@ -9,6 +9,7 @@ import React, { SVGProps, ReactElement, useCallback, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { Badge } from './ui/Badge';
 import { ButtonNaked } from './ui/ButtonNaked';
+import posthog from 'posthog-js';
 
 export function MenuBarItem({
   children,
@@ -38,6 +39,10 @@ export function MenuBarItem({
           } catch (error) {
             // Log error but continue with redirect even if signOut fails
             console.error('Sign out error:', error);
+          }
+
+          if (process.env.NEXT_PUBLIC_POSTHOG_KEY) {
+            posthog.reset();
           }
           // Manually redirect using router to ensure correct origin (mobile device IP)
           // Redirect even if signOut failed to ensure user is logged out on client side

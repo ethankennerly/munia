@@ -15,7 +15,7 @@ In this [demo](https://munia-rho.vercel.app), Ethan Kennerly enhanced the follow
 - Polish loading progress
 - Optimize notifications with [server-side events](https://upstash.com/blog/sse-streaming-llm-responses)
 - Upgrade Next.js 16
-- Integrate Posthog analytics
+- Integrate Posthog analytics and session replay
 - Integrate Sentry error tracking
 - Translate [English](https://munia-rho.vercel.app/en) into [Spanish](https://munia-rho.vercel.app/es).
 - Speed up reloading an [image](https://developer.chrome.com/docs/performance/insights/cache)

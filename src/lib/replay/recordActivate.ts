@@ -1,5 +1,7 @@
 'use client';
 
+import { snakeCase } from 'lodash';
+
 function getActivateIdFromEvent(event: MouseEvent | KeyboardEvent): string | null {
   const path = event.composedPath ? event.composedPath() : [];
 
@@ -16,7 +18,7 @@ function getActivateIdFromEvent(event: MouseEvent | KeyboardEvent): string | nul
     if (isInteractive) {
       const id = element.getAttribute('data-activate-id');
       if (id) {
-        return id;
+        return snakeCase(id);
       }
       // Found interactive element but no ID - stop searching (shouldn't record)
       return null;

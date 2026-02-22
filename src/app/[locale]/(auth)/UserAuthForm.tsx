@@ -136,7 +136,6 @@ export function UserAuthForm({
       await signIn(provider, {
         callbackUrl,
       });
-      // Note: signIn with OAuth providers will redirect, so code below won't execute
     },
     [callbackUrl],
   );

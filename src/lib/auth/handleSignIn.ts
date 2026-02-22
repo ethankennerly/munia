@@ -1,5 +1,6 @@
 import { logger } from '@/lib/logging';
 import prisma from '@/lib/prisma/prisma';
+import { getPostHogClient } from '../posthog-server';
 
 export type SignInParams = {
   user: unknown;
@@ -60,6 +61,17 @@ export async function handleSignIn({ user, account, profile }: SignInParams) {
     // Check current DB state to avoid overwriting an existing profilePhoto
     const dbUser = await prisma.user.findUnique({ where: { id: userId }, select: { profilePhoto: true } });
     if (!dbUser) return;
+
+    if (userId) {
+      const posthog = getPostHogClient();
+      posthog?.identify({
+        distinctId: userId,
+        properties: {
+          signup_provider: provider ?? 'unknown',
+          created_at: new Date().toISOString(),
+        },
+      });
+    }
 
     if (dbUser.profilePhoto) {
       logger.info({ msg: 'signIn_has_profile_photo', userId });

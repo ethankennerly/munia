@@ -22,6 +22,10 @@ export function DeleteAccountButton() {
         body: JSON.stringify({ confirm: true, recentAuthTimestamp: Date.now() }),
       });
       if (!res.ok) throw new Error(t('api_account_delete_deletion_failed'));
+
+      if (process.env.NEXT_PUBLIC_POSTHOG_KEY) {
+        posthog.reset();
+      }
       // Use redirect: false to prevent client-side redirect, then manually redirect with correct origin
       await signOut({ redirect: false });
       // Manually redirect using window.location to ensure correct origin (mobile device IP)
@@ -38,7 +42,6 @@ export function DeleteAccountButton() {
 
   const openDialog = useCallback(() => {
     // Track account deletion request (when dialog opens)
-    posthog.capture('account_deletion_requested');
     setOpen(true);
   }, []);
   const closeDialog = useCallback(() => setOpen(false), []);

@@ -6,7 +6,6 @@ import { usePathname, useSearchParams } from 'next/navigation';
 import { useRouter } from 'nextjs-toploader/app';
 import { useCallback, useRef } from 'react';
 import { useTranslations } from 'next-intl';
-import posthog from 'posthog-js';
 
 export function DiscoverSearch({ label }: { label?: string }) {
   const t = useTranslations();
@@ -14,7 +13,6 @@ export function DiscoverSearch({ label }: { label?: string }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const pathname = usePathname();
-  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   const handleChange = useCallback(
     (search: string) => {
@@ -23,16 +21,6 @@ export function DiscoverSearch({ label }: { label?: string }) {
         params.delete('search');
       } else {
         params.set('search', search);
-
-        // Debounce search tracking to avoid tracking every keystroke
-        if (debounceTimerRef.current) {
-          clearTimeout(debounceTimerRef.current);
-        }
-        debounceTimerRef.current = setTimeout(() => {
-          posthog.capture('user_search_performed', {
-            search_query_length: search.length,
-          });
-        }, 1000);
       }
 
       const url = `${pathname}?${params.toString()}`;

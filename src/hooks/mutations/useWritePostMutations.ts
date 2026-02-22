@@ -85,13 +85,6 @@ export function useWritePostMutations({
           pageParams: newPageParams,
         };
       });
-      // Track post creation event
-      posthog.capture('post_created', {
-        post_id: createdPost.id,
-        has_media: visualMedia.length > 0,
-        media_count: visualMedia.length,
-        content_length: content.length,
-      });
 
       showToast({ title: t('hooks_mutations_post_success'), type: 'success' });
       revokeVisualMediaObjectUrls(visualMedia);
@@ -141,13 +134,6 @@ export function useWritePostMutations({
           pages: chunk(oldPosts, POSTS_PER_PAGE),
           pageParams: oldData.pageParams,
         };
-      });
-      // Track post edit event
-      posthog.capture('post_edited', {
-        post_id: updatedPost.id,
-        has_media: visualMedia.length > 0,
-        media_count: visualMedia.length,
-        content_length: content.length,
       });
 
       showToast({ title: t('successfully_edited'), type: 'success' });
