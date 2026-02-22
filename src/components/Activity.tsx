@@ -24,7 +24,8 @@ export function Activity({
   createdAt,
   isNotificationRead,
   content,
-}: GetActivity) {
+  priority = false,
+}: GetActivity & { priority?: boolean }) {
   const t = useTranslations();
   const { data: session } = useSession();
   const userId = session?.user.id;
@@ -76,14 +77,19 @@ export function Activity({
     markAsReadMutation.mutate({ notificationId: id });
   };
 
+  // Shared props for all ActivityCard instances – priority is forwarded so that
+  // the first visible card can hint the browser to prioritize the avatar image.
+  const cardProps = {
+    type,
+    user: userToDisplay,
+    date: new Date(createdAt),
+    isRead,
+    priority,
+  };
+
   if (type === 'CREATE_FOLLOW') {
     return (
-      <ActivityCard
-        type={type}
-        user={userToDisplay}
-        date={new Date(createdAt)}
-        isRead={isRead}
-        onClick={navigate(`/${isActivity ? targetUser.username : sourceUser.username}`)}>
+      <ActivityCard {...cardProps} onClick={navigate(`/${isActivity ? targetUser.username : sourceUser.username}`)}>
         {actionText}
       </ActivityCard>
     );
@@ -91,12 +97,7 @@ export function Activity({
 
   if (type === 'POST_LIKE') {
     return (
-      <ActivityCard
-        type={type}
-        user={userToDisplay}
-        date={new Date(createdAt)}
-        isRead={isRead}
-        onClick={navigate(`/posts/${targetId}`)}>
+      <ActivityCard {...cardProps} onClick={navigate(`/posts/${targetId}`)}>
         {actionText}: &quot;{content}
         &quot;
       </ActivityCard>
@@ -104,12 +105,7 @@ export function Activity({
   }
   if (type === 'POST_MENTION') {
     return (
-      <ActivityCard
-        type={type}
-        user={userToDisplay}
-        date={new Date(createdAt)}
-        isRead={isRead}
-        onClick={navigate(`/posts/${sourceId}`)}>
+      <ActivityCard {...cardProps} onClick={navigate(`/posts/${sourceId}`)}>
         {actionText}: &quot;{content}
         &quot;
       </ActivityCard>
@@ -118,12 +114,7 @@ export function Activity({
 
   if (type === 'CREATE_COMMENT') {
     return (
-      <ActivityCard
-        type={type}
-        user={userToDisplay}
-        date={new Date(createdAt)}
-        isRead={isRead}
-        onClick={navigate(`/comments/${sourceId}`)}>
+      <ActivityCard {...cardProps} onClick={navigate(`/comments/${sourceId}`)}>
         {actionText}: &quot;
         {content}&quot;
       </ActivityCard>
@@ -131,12 +122,7 @@ export function Activity({
   }
   if (type === 'COMMENT_LIKE') {
     return (
-      <ActivityCard
-        type={type}
-        user={userToDisplay}
-        date={new Date(createdAt)}
-        isRead={isRead}
-        onClick={navigate(`/comments/${targetId}`)}>
+      <ActivityCard {...cardProps} onClick={navigate(`/comments/${targetId}`)}>
         {actionText}: &quot;{content}
         &quot;
       </ActivityCard>
@@ -144,12 +130,7 @@ export function Activity({
   }
   if (type === 'COMMENT_MENTION') {
     return (
-      <ActivityCard
-        type={type}
-        user={userToDisplay}
-        date={new Date(createdAt)}
-        isRead={isRead}
-        onClick={navigate(`/comments/${sourceId}`)}>
+      <ActivityCard {...cardProps} onClick={navigate(`/comments/${sourceId}`)}>
         {actionText}: &quot;{content}
         &quot;
       </ActivityCard>
@@ -158,12 +139,7 @@ export function Activity({
 
   if (type === 'CREATE_REPLY') {
     return (
-      <ActivityCard
-        type={type}
-        user={userToDisplay}
-        date={new Date(createdAt)}
-        isRead={isRead}
-        onClick={navigate(`/comments/${sourceId}`)}>
+      <ActivityCard {...cardProps} onClick={navigate(`/comments/${sourceId}`)}>
         {actionText}: &quot;{content}
         &quot;
       </ActivityCard>
@@ -171,12 +147,7 @@ export function Activity({
   }
   if (type === 'REPLY_LIKE') {
     return (
-      <ActivityCard
-        type={type}
-        user={userToDisplay}
-        date={new Date(createdAt)}
-        isRead={isRead}
-        onClick={navigate(`/comments/${targetId}`)}>
+      <ActivityCard {...cardProps} onClick={navigate(`/comments/${targetId}`)}>
         {actionText}: &quot;{content}
         &quot;
       </ActivityCard>
@@ -184,12 +155,7 @@ export function Activity({
   }
   if (type === 'REPLY_MENTION') {
     return (
-      <ActivityCard
-        type={type}
-        user={userToDisplay}
-        date={new Date(createdAt)}
-        isRead={isRead}
-        onClick={navigate(`/comments/${sourceId}`)}>
+      <ActivityCard {...cardProps} onClick={navigate(`/comments/${sourceId}`)}>
         {actionText}: &quot;{content}&quot;
       </ActivityCard>
     );

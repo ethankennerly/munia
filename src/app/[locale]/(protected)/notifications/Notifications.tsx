@@ -16,7 +16,13 @@ import { SomethingWentWrong } from '@/components/SometingWentWrong';
 import { getNotifications } from '@/lib/client_data_fetching/getNotifications';
 import { useTranslations } from 'next-intl';
 
-export function Notifications({ userId }: { userId: string }) {
+export function Notifications({
+  userId,
+  initialNotifications,
+}: {
+  userId: string;
+  initialNotifications?: GetActivity[];
+}) {
   const t = useTranslations();
   const { data: notificationCount } = useNotificationsCountQuery();
   const { markAllAsReadMutation } = useNotificationsReadStatusMutations();
@@ -32,6 +38,14 @@ export function Notifications({ userId }: { userId: string }) {
   >({
     queryKey: ['users', userId, 'notifications'],
     initialPageParam: 0,
+    // Populate React Query cache with server-prefetched data so the LCP element
+    // renders immediately without waiting for a client-side API round-trip.
+    ...(initialNotifications && {
+      initialData: {
+        pages: [initialNotifications],
+        pageParams: [0],
+      },
+    }),
     queryFn: async ({ pageParam: cursor, direction }) => {
       const activities = await getNotifications({
         userId,
@@ -93,7 +107,12 @@ export function Notifications({ userId }: { userId: string }) {
     }
     return [];
   }, [notificationCount]);
-  const bottomLoaderStyle = useMemo(() => ({ display: data ? 'block' : 'none' }), [data]);
+  // Use server-prefetched data as an immediate fallback so the notification text
+  // is present in the SSR HTML. React Query may start with isPending=true during
+  // the server render, which would render the skeleton instead of content.
+  const notifications = data?.pages.flat() ?? initialNotifications;
+
+  const bottomLoaderStyle = useMemo(() => ({ display: notifications ? 'block' : 'none' }), [notifications]);
 
   return (
     <div>
@@ -112,10 +131,10 @@ export function Notifications({ userId }: { userId: string }) {
         </DropdownMenuButton>
       </div>
       <div>
-        {isPending ? (
+        {notifications == null ? (
           <ActivitySkeletonList count={5} />
         ) : (
-          data?.pages.flat().map((activity) => <Activity key={activity.id} {...activity} />)
+          notifications.map((activity, index) => <Activity key={activity.id} {...activity} priority={index === 0} />)
         )}
       </div>
 

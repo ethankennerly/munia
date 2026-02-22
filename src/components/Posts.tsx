@@ -19,15 +19,29 @@ export type PostsProps =
       type: 'hashtag';
       userId?: undefined;
       hashtag: string;
+      initialPosts?: undefined;
     }
   | {
       type: 'profile' | 'feed';
       userId: string;
       hashtag?: undefined;
+      /** Server-prefetched first-page posts. Eliminates client-side skeleton on initial render. */
+      initialPosts?: GetPost[];
     };
 
-export function Posts({ type, hashtag, userId }: PostsProps) {
+export function Posts({ type, hashtag, userId, initialPosts }: PostsProps) {
   const qc = useQueryClient();
+
+  // Pre-populate individual post caches from server-prefetched data so each
+  // <Post> component reads from cache immediately instead of fetching.
+  if (initialPosts) {
+    for (const post of initialPosts) {
+      if (!qc.getQueryData(['posts', post.id])) {
+        qc.setQueryData(['posts', post.id], post);
+      }
+    }
+  }
+
   // Need to memoize `queryKey`, so when used in a dependency array, it won't trigger the `useEffect`/`useCallback`
   const queryKey = useMemo(
     () => (type === 'hashtag' ? ['posts', { hashtag }] : ['users', userId, 'posts', { type }]),
@@ -35,9 +49,20 @@ export function Posts({ type, hashtag, userId }: PostsProps) {
   );
   const { shouldAnimate } = useShouldAnimate();
 
+  // Build initialData from server-prefetched posts so isPending=false on SSR,
+  // preventing the skeleton from appearing in the initial HTML.
+  const initialData = useMemo(() => {
+    if (!initialPosts?.length) return undefined;
+    return {
+      pages: [initialPosts.map((p) => ({ id: p.id, commentsShown: false as const }))],
+      pageParams: [{ cursor: 0, direction: 'forward' }],
+    };
+  }, []);
+
   const queryResult = useInfiniteQuery<PostIds, Error, InfiniteData<PostIds>, QueryKey>({
     queryKey,
     initialPageParam: { cursor: 0, direction: 'forward' },
+    ...(initialData && { initialData }),
     queryFn: async ({ pageParam, signal: tanstackSignal }) => {
       const fetchAsync = async (combinedSignal?: AbortSignal) => {
         // Handle both object format and legacy number format for backward compatibility

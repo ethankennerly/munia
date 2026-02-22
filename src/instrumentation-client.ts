@@ -42,15 +42,32 @@ export const onRouterTransitionStart = process.env.NEXT_PUBLIC_SENTRY_DSN
 
 // Initialize PostHog for analytics
 // https://posthog.com/docs/libraries/next-js
+//
+// Deferred until after the 'load' event so PostHog's eager scripts
+// (posthog-recorder.js, surveys.js) do not contribute to LCP / TBT.
+// All pageview / event captures that happen before init() are queued
+// by posthog-js and flushed once it initialises.
 const posthogKey = process.env.NEXT_PUBLIC_POSTHOG_KEY;
 if (posthogKey) {
-  posthog.init(posthogKey!, {
-    // Use reverse proxy to avoid ad-blockers
-    api_host: '/ingest',
-    ui_host: process.env.NEXT_PUBLIC_POSTHOG_HOST,
-    defaults: '2026-01-30',
-    capture_exceptions: false,
-    capture_pageview: false,
-    debug: process.env.NODE_ENV === 'development',
-  });
+  const initPostHog = () => {
+    posthog.init(posthogKey!, {
+      // Use reverse proxy to avoid ad-blockers
+      api_host: '/ingest',
+      ui_host: process.env.NEXT_PUBLIC_POSTHOG_HOST,
+      defaults: '2026-01-30',
+      capture_exceptions: false,
+      capture_pageview: false,
+      debug: process.env.NODE_ENV === 'development',
+    });
+  };
+
+  if (typeof window !== 'undefined') {
+    // Defer to after the page load event to avoid blocking LCP
+    if (document.readyState === 'complete') {
+      // Page already loaded (e.g. soft navigation)
+      setTimeout(initPostHog, 0);
+    } else {
+      window.addEventListener('load', () => setTimeout(initPostHog, 0), { once: true });
+    }
+  }
 }

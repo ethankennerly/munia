@@ -16,9 +16,11 @@ interface ActivityCardProps extends ComponentProps<'div'> {
   date: Date;
   type: ActivityType;
   isRead: boolean;
+  /** Set to true for above-the-fold cards to improve LCP. */
+  priority?: boolean;
 }
 
-export function ActivityCard({ children, user, date, type, isRead, ...rest }: ActivityCardProps) {
+export function ActivityCard({ children, user, date, type, isRead, priority = false, ...rest }: ActivityCardProps) {
   const { formatTimeAgo } = useTimeAgo();
   const t = useTranslations();
   const ref = useRef(null);
@@ -36,7 +38,7 @@ export function ActivityCard({ children, user, date, type, isRead, ...rest }: Ac
       aria-label={t('open_link')}
       {...rest}>
       <div className="relative h-16 w-16 sm:h-20 sm:w-20">
-        <ProfilePhoto name={user.name} username={user.username} photoUrl={user.profilePhoto} />
+        <ProfilePhoto name={user.name} username={user.username} photoUrl={user.profilePhoto} priority={priority} />
         <ActivityIcon type={type} />
       </div>
 
