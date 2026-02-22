@@ -7,6 +7,7 @@ import { v4 as uuid } from 'uuid';
 import { uploadObject } from '@/lib/s3/uploadObject';
 import { fileNameToUrl } from '@/lib/s3/fileNameToUrl';
 import { getServerUser } from '@/lib/getServerUser';
+import { resizePhoto } from '@/lib/resizePhoto';
 
 const ALLOWED_FILE_TYPES = ['image/jpeg', 'image/jpg', 'image/png'];
 export async function useUpdateProfileAndCoverPhoto({
@@ -32,15 +33,17 @@ export async function useUpdateProfileAndCoverPhoto({
   }
 
   try {
-    const fileExtension = file.type.split('/')[1];
     if (!ALLOWED_FILE_TYPES.includes(file.type)) {
       return NextResponse.json({ error: 'Unsupported file type.' }, { status: 400 });
     }
 
+    // Resize and crop to max dimensions before uploading
+    const rawBuffer = Buffer.from(await file.arrayBuffer());
+    const { buffer, mimeType, extension } = await resizePhoto(rawBuffer, toUpdate);
+
     // Upload image to S3
-    const buffer = Buffer.from(await file.arrayBuffer());
-    const fileName = `${Date.now()}-${uuid()}.${fileExtension}`;
-    await uploadObject(buffer, fileName, file.type);
+    const fileName = `${Date.now()}-${uuid()}.${extension}`;
+    await uploadObject(buffer, fileName, mimeType);
 
     await prisma.user.update({
       where: {
